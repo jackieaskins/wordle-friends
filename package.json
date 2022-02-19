@@ -8,7 +8,8 @@
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
     "precommit": "npm run precommit --workspaces --if-present",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "frontend": "npm run -w frontend start"
   },
   "keywords": [],
   "author": "",
