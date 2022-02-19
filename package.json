@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "cdk": "npm run cdk --workspace cdk",
-    "deploy": "npm run build && npm run cdk synth && npm run cdk deploy",
+    "deploy": "npm run build && npm run synth --workspace cdk && npm run deploy --workspace cdk",
     "format": "npm run format --workspaces --if-present",
     "frontend": "npm run start --workspace frontend",
     "lint": "npm run lint --workspaces --if-present",

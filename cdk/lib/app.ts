@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
+import { BackendStack } from "./backend-stack";
 import { FrontendStack } from "./frontend-stack";
 
 const env = {
@@ -9,3 +10,4 @@ const env = {
 
 const app = new cdk.App();
 new FrontendStack(app, "WordleFriendsFrontendStack", { env });
+new BackendStack(app, "WordleFriendsBackendStack-Alpha", { env });

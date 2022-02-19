@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy --all",
     "format": "prettier --write .",
     "lint": "eslint --ext ts lib",
     "lint:fix": "npm run lint -- --fix",
