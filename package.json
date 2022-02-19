@@ -3,7 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "format": "npm run format --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "precommit": "npm run precommit --workspaces --if-present",
+    "prepare": "husky install"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -12,5 +18,8 @@
     "cdk",
     "eslint-config",
     "api"
-  ]
+  ],
+  "devDependencies": {
+    "husky": "^7.0.4"
+  }
 }
