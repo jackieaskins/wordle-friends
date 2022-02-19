@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "cdk": "npm run cdk --workspace cdk",
+    "deploy": "npm run build && npm run cdk synth && npm run cdk deploy",
     "format": "npm run format --workspaces --if-present",
+    "frontend": "npm run start --workspace frontend",
     "lint": "npm run lint --workspaces --if-present",
     "lint:fix": "npm run lint:fix --workspaces --if-present",
     "precommit": "npm run precommit --workspaces --if-present",
     "prepare": "husky install",
-    "frontend": "npm run -w frontend start"
+    "watch": "npm run watch --workspaces --if-present"
   },
   "keywords": [],
   "author": "",

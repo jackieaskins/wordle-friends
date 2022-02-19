@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
+    "watch": "npm run build --watch",
     "format": "prettier --write .",
     "lint": "eslint --ext ts src",
     "lint:fix": "npm run lint -- --fix",
