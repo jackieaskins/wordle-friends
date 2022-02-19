@@ -1,5 +1,5 @@
 {
-  "name": "we-wordle-frontend",
+  "name": "wordle-friends-frontend",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -31,7 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "babel-loader": "^8.2.3",
     "eslint": "^8.9.0",
-    "eslint-config-we-wordle": "^0.0.1",
+    "eslint-config-wordle-friends": "^0.0.1",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",

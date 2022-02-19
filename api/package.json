@@ -1,5 +1,5 @@
 {
-  "name": "we-wordle-api",
+  "name": "wordle-friends-api",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -19,7 +19,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "eslint": "^8.9.0",
-    "eslint-config-we-wordle": "^0.0.1",
+    "eslint-config-wordle-friends": "^0.0.1",
     "eslint-plugin-import": "^2.25.4",
     "lint-staged": "^12.3.4",
     "prettier": "^2.5.1"

@@ -1,6 +1,6 @@
 {
   "extends": [
-    "we-wordle",
+    "wordle-friends",
     "plugin:jsx-a11y/recommended",
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
