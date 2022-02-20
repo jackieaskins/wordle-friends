@@ -10,4 +10,8 @@ const env = {
 
 const app = new cdk.App();
 new FrontendStack(app, "WordleFriendsFrontendStack", { env });
-new BackendStack(app, "WordleFriendsBackendStack-Alpha", { env });
+new BackendStack(app, "WordleFriendsBackendStack-Alpha", {
+  env,
+  stage: "alpha",
+});
+new BackendStack(app, "WordleFriendsBackendStack", { env, stage: "prod" });

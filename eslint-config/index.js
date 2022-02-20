@@ -10,13 +10,14 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   reportUnusedDisableDirectives: true,
   rules: {
-    "@typescript-eslint/explicit-module-boundary-types": ["error"],
+    "@typescript-eslint/explicit-module-boundary-types": "error",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       { ignoreRestSiblings: true },
     ],
     "arrow-body-style": ["error", "as-needed"],
-    "no-debugger": ["error"],
+    "no-debugger": "error",
+    "require-await": "error",
   },
 };

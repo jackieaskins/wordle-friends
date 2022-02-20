@@ -8,7 +8,6 @@ import {
   SSLMethod,
   ViewerCertificate,
 } from "aws-cdk-lib/aws-cloudfront";
-import { CanonicalUserPrincipal, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 import { BlockPublicAccess, Bucket } from "aws-cdk-lib/aws-s3";
@@ -49,23 +48,20 @@ export class FrontendStack extends Stack {
       publicReadAccess: false,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
     });
-    assetsBucket.addToResourcePolicy(
-      new PolicyStatement({
-        actions: ["s3:GetObject"],
-        resources: [assetsBucket.arnForObjects("*")],
-        principals: [
-          new CanonicalUserPrincipal(
-            originAccessIdentity.cloudFrontOriginAccessIdentityS3CanonicalUserId
-          ),
-        ],
-      })
-    );
+    assetsBucket.grantRead(originAccessIdentity);
 
     const distribution = new CloudFrontWebDistribution(
       this,
       "CloudFrontWebDistribution",
       {
         viewerCertificate,
+        errorConfigurations: [
+          {
+            errorCode: 404,
+            responseCode: 200,
+            responsePagePath: "/index.html",
+          },
+        ],
         originConfigs: [
           {
             s3OriginSource: {

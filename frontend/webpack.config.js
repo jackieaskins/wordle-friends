@@ -1,4 +1,5 @@
 const path = require("path");
+const DotenvWebpackPlugin = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
@@ -10,6 +11,7 @@ module.exports = (env, argv) => {
     devServer: {
       hot: true,
       open: true,
+      historyApiFallback: true,
     },
     devtool: isDevelopment ? "cheap-module-source-map" : "source-map",
     resolve: {
@@ -38,6 +40,7 @@ module.exports = (env, argv) => {
       filename: "bundle.js",
     },
     plugins: [
+      new DotenvWebpackPlugin({ path: `./.env.${argv.mode}` }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, "src", "index.html"),
       }),
