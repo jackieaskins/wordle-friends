@@ -1,8 +1,8 @@
-import { Grid } from "@mui/material";
+import { Stack } from "@chakra-ui/react";
 import { Auth } from "aws-amplify";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import TextFormField from "../form/TextFormField";
+import InputField from "../form/InputField";
 import { getPendingEmail, removePendingEmail } from "../localStorage";
 import AuthForm from "./AuthForm";
 
@@ -27,25 +27,21 @@ export default function VerifyEmail(): JSX.Element {
       onSubmit={onSubmit}
     >
       {() => (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextFormField
-              disabled={!!pendingEmail}
-              label="Email address"
-              name="email"
-              required
-              type="email"
-            />
-          </Grid>
+        <Stack width="100%">
+          <InputField
+            isDisabled={!!pendingEmail}
+            label="Email address"
+            name="email"
+            required
+            type="email"
+          />
 
-          <Grid item xs={12}>
-            <TextFormField
-              label="Verification code"
-              name="verificationCode"
-              required
-            />
-          </Grid>
-        </Grid>
+          <InputField
+            label="Verification code"
+            name="verificationCode"
+            required
+          />
+        </Stack>
       )}
     </AuthForm>
   );

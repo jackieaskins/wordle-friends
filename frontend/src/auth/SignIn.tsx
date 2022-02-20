@@ -1,7 +1,7 @@
-import { Grid, Link } from "@mui/material";
+import { Flex, Link, Stack } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import TextFormField from "../form/TextFormField";
+import InputField from "../form/InputField";
 import { useAuth } from "./AuthContext";
 import AuthForm from "./AuthForm";
 
@@ -20,45 +20,37 @@ export default function SignIn(): JSX.Element {
     <AuthForm
       buttonText="Sign in"
       footer={
-        <Grid container>
-          <Grid item xs>
-            <Link component={RouterLink} to="/forgot">
-              Forgot password?
-            </Link>
-          </Grid>
+        <Flex justifyContent="space-between" width="100%">
+          <Link as={RouterLink} to="/forgot">
+            Forgot password?
+          </Link>
 
-          <Grid item>
-            <Link component={RouterLink} to="/signup">
-              {"Don't have an account? Sign up."}
-            </Link>
-          </Grid>
-        </Grid>
+          <Link as={RouterLink} to="/signup">
+            {"Don't have an account? Sign up."}
+          </Link>
+        </Flex>
       }
       headerText="Sign in"
       onSubmit={onSubmit}
     >
       {() => (
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextFormField
-              autoComplete="email"
-              label="Email address"
-              name="email"
-              required
-              type="email"
-            />
-          </Grid>
+        <Stack width="100%">
+          <InputField
+            autoComplete="email"
+            label="Email address"
+            name="email"
+            required
+            type="email"
+          />
 
-          <Grid item xs={12}>
-            <TextFormField
-              autoComplete="current-password"
-              label="Password"
-              name="password"
-              required
-              type="password"
-            />
-          </Grid>
-        </Grid>
+          <InputField
+            autoComplete="current-password"
+            label="Password"
+            name="password"
+            required
+            type="password"
+          />
+        </Stack>
       )}
     </AuthForm>
   );

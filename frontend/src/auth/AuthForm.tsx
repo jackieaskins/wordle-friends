@@ -1,5 +1,4 @@
-import { LoadingButton } from "@mui/lab";
-import { Alert, Box, Container, Typography } from "@mui/material";
+import { Alert, Button, Container, Heading, Stack } from "@chakra-ui/react";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 import {
   FieldValues,
@@ -41,60 +40,44 @@ export default function AuthForm({
   const onSubmitWrapper = useCallback(
     async (values) => {
       setGeneralError(null);
-
       try {
         await onSubmit(values);
-      } catch (e) {
-        setGeneralError((e as any)?.message || "Unable to submit form");
+      } catch (e: any) {
+        setGeneralError(e?.message || "Unable to submit form");
       }
     },
     [onSubmit]
   );
 
   return (
-    <Container maxWidth="xs">
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography component="h1" variant="h4">
-          {headerText}
-        </Typography>
+    <Container maxW="xl" centerContent minH="100vh" justifyContent="center">
+      <FormProvider {...formProps}>
+        <Stack
+          display="flex"
+          width="100%"
+          alignItems="center"
+          spacing={4}
+          onSubmit={handleSubmit(onSubmitWrapper)}
+          as="form"
+          noValidate
+        >
+          <Heading>{headerText}</Heading>
 
-        <FormProvider {...formProps}>
-          <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmitWrapper)}
-            noValidate
-            sx={{ mt: 3 }}
-          >
-            {children(formProps)}
+          {children(formProps)}
 
-            {generalError && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {generalError}
-              </Alert>
-            )}
+          {generalError && (
+            <Alert status="error" mt={2}>
+              {generalError}
+            </Alert>
+          )}
 
-            <LoadingButton
-              loading={isLoading}
-              fullWidth
-              sx={{ mt: 3, mb: 2 }}
-              type="submit"
-              variant="contained"
-            >
-              {buttonText}
-            </LoadingButton>
+          <Button isLoading={isLoading} isFullWidth type="submit">
+            {buttonText}
+          </Button>
 
-            {footer}
-          </Box>
-        </FormProvider>
-      </Box>
+          {footer}
+        </Stack>
+      </FormProvider>
     </Container>
   );
 }

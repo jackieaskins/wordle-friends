@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button, Heading } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { useAuth } from "./auth/AuthContext";
 
@@ -11,12 +11,8 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      <Typography component="h1" variant="h3">
-        Wordle with Friends
-      </Typography>
-      <Button variant="contained" onClick={logout}>
-        Log out
-      </Button>
+      <Heading>Wordle with Friends</Heading>
+      <Button onClick={logout}>Log out</Button>
     </>
   );
 }
