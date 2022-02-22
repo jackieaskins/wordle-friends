@@ -14,13 +14,17 @@
     "frontend": "npm run start -w frontend",
     "lint": "npm run lint -ws --if-present",
     "lint:fix": "npm run lint:fix -ws --if-present",
-    "precommit": "npm run precommit -ws --if-present",
+    "precommit": "lint-staged",
     "prepare": "husky install",
     "watch": "npm run watch -ws --if-present"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "lint-staged": {
+    "*.{js,json,md,ts,tsx}": "prettier --write",
+    "*.{ts,tsx}": "eslint --fix"
+  },
   "workspaces": [
     "frontend",
     "cdk",
@@ -28,6 +32,7 @@
     "api"
   ],
   "devDependencies": {
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "lint-staged": "^12.3.4"
   }
 }

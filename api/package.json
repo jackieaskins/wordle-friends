@@ -6,22 +6,16 @@
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --ext ts src",
-    "lint:fix": "npm run lint -- --fix",
-    "precommit": "lint-staged"
+    "lint:fix": "npm run lint -- --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "lint-staged": {
-    "*.{js,json,md,ts}": "prettier --write",
-    "*.ts": "eslint --fix"
-  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "eslint": "^8.9.0",
     "eslint-config-wordle-friends": "^0.0.1",
     "eslint-plugin-import": "^2.25.4",
-    "lint-staged": "^12.3.4",
     "prettier": "^2.5.1"
   }
 }

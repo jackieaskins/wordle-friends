@@ -4,15 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precommit": "lint-staged",
     "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "lint-staged": {
-    "*.{js,json,md}": "prettier --write"
-  },
   "peerDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "eslint": "^8.9.0",
@@ -25,7 +21,6 @@
     "typescript": "^4.5.5"
   },
   "devDependencies": {
-    "lint-staged": "^12.3.4",
     "prettier": "^2.5.1"
   }
 }
