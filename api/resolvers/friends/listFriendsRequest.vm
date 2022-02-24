@@ -1,0 +1,27 @@
+{
+  "version": "2018-05-29",
+  "operation": "Query",
+  "index": "#USER_ID_STATUS_INDEX#",
+#if($ctx.args.limit)
+  "limit": $util.dynamodb.toDynamoDBJson($ctx.args.limit),
+#end
+#if($ctx.args.nextToken)
+  "nextToken": $util.dynamodb.toDynamoDBJson($ctx.args.nextToken),
+#end
+  "query": {
+#if($ctx.args.status)
+    "expression": "userId = :userId and #status = :status",
+    "expressionNames": {
+      "#status": "status",
+    },
+#else
+    "expression": "userId = :userId",
+#end
+    "expressionValues": {
+#if($ctx.args.status)
+      ":status": $util.dynamodb.toDynamoDBJson($ctx.args.status),
+#end
+      ":userId": $util.dynamodb.toDynamoDBJson($ctx.identity.sub)
+    }
+  }
+}

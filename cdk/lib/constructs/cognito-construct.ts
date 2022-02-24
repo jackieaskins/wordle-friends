@@ -18,12 +18,14 @@ const VERIFICATION_MESSAGE =
   "Thanks for signing up for Wordle Friends! Your verification code is {####}";
 
 export class CognitoConstruct extends Construct {
+  userPool: UserPool;
+
   constructor(scope: Construct, id: string, props: CognitoConstructProps) {
     super(scope, id);
 
     const { stage } = props;
 
-    const userPool = new UserPool(this, "UserPool", {
+    this.userPool = new UserPool(this, "UserPool", {
       userPoolName: `wordle-friends-userpool-${stage}`,
       selfSignUpEnabled: true,
       userVerification: {
@@ -47,7 +49,7 @@ export class CognitoConstruct extends Construct {
       },
     });
 
-    const userPoolWebClient = userPool.addClient("UserPoolWebClient", {
+    const userPoolWebClient = this.userPool.addClient("UserPoolWebClient", {
       userPoolClientName: `wordle-friends-userpool-webclient-${stage}`,
       authFlows: {
         userPassword: true,
@@ -62,7 +64,7 @@ export class CognitoConstruct extends Construct {
       cognitoIdentityProviders: [
         {
           clientId: userPoolWebClient.userPoolClientId,
-          providerName: userPool.userPoolProviderName,
+          providerName: this.userPool.userPoolProviderName,
         },
       ],
     });
@@ -91,7 +93,7 @@ export class CognitoConstruct extends Construct {
           ambiguousRoleResolution: "AuthenticatedRole",
           identityProvider: `cognito-idp.${
             Stack.of(this).region
-          }.amazonaws.com/${userPool.userPoolId}:${
+          }.amazonaws.com/${this.userPool.userPoolId}:${
             userPoolWebClient.userPoolClientId
           }`,
         },
@@ -99,7 +101,7 @@ export class CognitoConstruct extends Construct {
     });
 
     new CfnOutput(this, "UserPoolId", {
-      value: userPool.userPoolId,
+      value: this.userPool.userPoolId,
     });
     new CfnOutput(this, "UserPoolWebClientId", {
       value: userPoolWebClient.userPoolClientId,

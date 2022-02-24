@@ -1,0 +1,12 @@
+#if ($ctx.error)
+  $util.appendError($ctx.error.message, $ctx.error.type, null, $ctx.result.cancellationReasons)
+#end
+
+#foreach($result in $ctx.result.keys)
+  #if($result.userId == $ctx.identity.sub)
+    #set($friendRequest = $result)
+    #break
+  #end
+#end
+
+$util.toJson($friendRequest)

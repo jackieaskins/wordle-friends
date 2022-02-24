@@ -1,0 +1,28 @@
+{
+  "version": "2018-05-29",
+  "operation": "TransactWriteItems",
+  "transactItems": [
+    {
+      "table": "#FRIENDS_TABLE#",
+      "operation": "PutItem",
+      "key": {
+        "userId": $util.dynamodb.toDynamoDBJson($ctx.identity.sub),
+        "status": $util.dynamodb.toDynamoDBJson("SENT")
+      },
+      "attributeValues": {
+        "friendId": $util.dynamodb.toDynamoDBJson($ctx.args.friendId)
+      }
+    },
+    {
+      "table": "#FRIENDS_TABLE#",
+      "operation": "PutItem",
+      "key": {
+        "userId": $util.dynamodb.toDynamoDBJson($ctx.args.friendId),
+        "status": $util.dynamodb.toDynamoDBJson("RECEIVED")
+      },
+      "attributeValues": {
+        "friendId": $util.dynamodb.toDynamoDBJson($ctx.identity.sub)
+      }
+    }
+  ]
+}

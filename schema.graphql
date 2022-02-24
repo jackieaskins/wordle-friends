@@ -1,0 +1,34 @@
+schema {
+  mutation: Mutation
+  query: Query
+}
+
+enum FriendStatus {
+  ACCEPTED
+  SENT
+  RECEIVED
+}
+
+type Friend {
+  userId: String!
+  friendId: String!
+  status: FriendStatus!
+}
+
+type FriendKey {
+  userId: String!
+  status: FriendStatus!
+}
+
+type PaginatedFriends {
+  friends: [Friend!]!
+  nextToken: String
+}
+
+type Query {
+  listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends
+}
+
+type Mutation {
+  sendFriendRequest(friendId: String!): FriendKey!
+}
