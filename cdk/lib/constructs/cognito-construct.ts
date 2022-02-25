@@ -6,12 +6,16 @@ import {
   UserPool,
   VerificationEmailStyle,
 } from "aws-cdk-lib/aws-cognito";
+import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { FederatedPrincipal, Role } from "aws-cdk-lib/aws-iam";
+import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
+import path from "path";
 import { Stage } from "../types";
 
 export interface CognitoConstructProps {
   stage: Stage;
+  userAttributesTable: Table;
 }
 
 const VERIFICATION_MESSAGE =
@@ -20,10 +24,29 @@ const VERIFICATION_MESSAGE =
 export class CognitoConstruct extends Construct {
   userPool: UserPool;
 
-  constructor(scope: Construct, id: string, props: CognitoConstructProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    { stage, userAttributesTable }: CognitoConstructProps
+  ) {
     super(scope, id);
 
-    const { stage } = props;
+    const postConfirmationHandler = new Function(
+      this,
+      "PostConfirmationHandler",
+      {
+        code: Code.fromAsset(
+          path.join(__dirname, "../../../backend/lambdas/postConfirmation.zip")
+        ),
+        functionName: `wordle-friends-post-confirmation-${stage}`,
+        handler: "index.handler",
+        runtime: Runtime.NODEJS_14_X,
+        environment: {
+          USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
+        },
+      }
+    );
+    userAttributesTable.grantWriteData(postConfirmationHandler);
 
     this.userPool = new UserPool(this, "UserPool", {
       userPoolName: `wordle-friends-userpool-${stage}`,
@@ -47,6 +70,7 @@ export class CognitoConstruct extends Construct {
           mutable: true,
         },
       },
+      lambdaTriggers: { postConfirmation: postConfirmationHandler },
     });
 
     const userPoolWebClient = this.userPool.addClient("UserPoolWebClient", {

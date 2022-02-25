@@ -1,4 +1,4 @@
-#if ($ctx.error)
+#if($ctx.error)
   $util.appendError($ctx.error.message, $ctx.error.type, null, $ctx.result.cancellationReasons)
 #end
 

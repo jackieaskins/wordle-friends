@@ -1,8 +1,10 @@
 import {
+  AppsyncFunction,
   AuthorizationType,
   FieldLogLevel,
   GraphqlApi,
   MappingTemplate,
+  Resolver,
   Schema,
 } from "@aws-cdk/aws-appsync-alpha";
 import { Stack, StackProps } from "aws-cdk-lib";
@@ -22,7 +24,7 @@ function getMappingTemplateFromFile(
   replaceStrings?: Record<string, string>
 ): MappingTemplate {
   const fileContents = fs
-    .readFileSync(path.join(__dirname, "../../api/resolvers", mappingPath))
+    .readFileSync(path.join(__dirname, "../../backend/resolvers", mappingPath))
     .toString();
   const templateStr = Object.entries(replaceStrings ?? {}).reduce(
     (prev, [pattern, value]) => prev.split(pattern).join(value),
@@ -37,8 +39,15 @@ export class BackendStack extends Stack {
 
     const { stage } = props;
 
-    const { userPool } = new CognitoConstruct(this, "Cognito", { stage });
-    const { friendsTable } = new DynamoConstruct(this, "Dynamo", { stage });
+    const { friendsTable, userAttributesTable } = new DynamoConstruct(
+      this,
+      "Dynamo",
+      { stage }
+    );
+    const { userPool } = new CognitoConstruct(this, "Cognito", {
+      userAttributesTable,
+      stage,
+    });
 
     const api = new GraphqlApi(this, "GraphqlApi", {
       name: `wordle-friends-${stage}`,
@@ -52,20 +61,58 @@ export class BackendStack extends Stack {
       },
     });
 
+    const userDS = api.addDynamoDbDataSource(
+      "UserAttributesDataSource",
+      userAttributesTable
+    );
     const friendsDS = api.addDynamoDbDataSource(
       "FriendsDataSource",
       friendsTable
     );
 
-    friendsDS.createResolver({
+    const listFriendsFunction = new AppsyncFunction(
+      this,
+      "ListFriendsAppsyncFunction",
+      {
+        name: `listFriendsFunction`,
+        api,
+        dataSource: friendsDS,
+        requestMappingTemplate: getMappingTemplateFromFile(
+          "friends/listFriendsRequest.vm",
+          { "#USER_ID_STATUS_INDEX#": FriendsTableIndex.UserIdStatus }
+        ),
+        responseMappingTemplate: getMappingTemplateFromFile(
+          "friends/listFriendsResponse.vm"
+        ),
+      }
+    );
+    const batchGetUsersFunction = new AppsyncFunction(
+      this,
+      "BatchGetUsersAppsyncFunction",
+      {
+        name: `batchGetUsersFunction`,
+        api,
+        dataSource: userDS,
+        requestMappingTemplate: getMappingTemplateFromFile(
+          "users/batchGetUsersRequest.vm",
+          { "#USER_ATTRIBUTES_TABLE#": userAttributesTable.tableName }
+        ),
+        responseMappingTemplate: getMappingTemplateFromFile(
+          "users/batchGetUsersResponse.vm",
+          { "#USER_ATTRIBUTES_TABLE#": userAttributesTable.tableName }
+        ),
+      }
+    );
+    new Resolver(this, "ListFriendsResolver", {
+      api,
       typeName: "Query",
       fieldName: "listFriends",
+      pipelineConfig: [listFriendsFunction, batchGetUsersFunction],
       requestMappingTemplate: getMappingTemplateFromFile(
-        "friends/listFriendsRequest.vm",
-        { "#USER_ID_STATUS_INDEX#": FriendsTableIndex.UserIdStatus }
+        "friends/listFriendsBefore.vm"
       ),
       responseMappingTemplate: getMappingTemplateFromFile(
-        "friends/listFriendsResponse.vm"
+        "friends/listFriendsAfter.vm"
       ),
     });
 

@@ -9,9 +9,15 @@ enum FriendStatus {
   RECEIVED
 }
 
+type User {
+  userId: String!
+  firstName: String!
+  lastName: String!
+}
+
 type Friend {
   userId: String!
-  friendId: String!
+  friend: User!
   status: FriendStatus!
 }
 

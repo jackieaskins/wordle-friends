@@ -1,6 +1,0 @@
-{
-#if($ctx.result.nextToken)
-  "nextToken": $util.toJson($ctx.result.nextToken),
-#end
-  "friends": $utils.toJson($ctx.result.items)
-}

@@ -6,11 +6,11 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSourceMap": true,
     "inlineSources": true,
+    "isolatedModules": true,
     "lib": ["es2018"],
     "module": "commonjs",
-    "outDir": "dist",
     "strict": true,
     "target": "ES2018"
   },
-  "include": ["lib"]
+  "include": ["lambdas"]
 }

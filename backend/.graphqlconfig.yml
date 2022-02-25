@@ -2,19 +2,19 @@ projects:
   Codegen Project:
     schemaPath: schema.graphql
     includes:
-      - frontend/src/api/**/*.ts
+      - ../frontend/src/api/**/*.ts
     excludes:
       - ./amplify/**
     extensions:
       amplify:
         codeGenTarget: typescript
-        generatedFileName: frontend/src/API.ts
-        docsFilePath: frontend/src/api
+        generatedFileName: ../frontend/src/API.ts
+        docsFilePath: ../frontend/src/api
         region: us-east-1
         apiId: null
         frontend: javascript
         framework: react
-        maxDepth: 2
+        maxDepth: 5
 extensions:
   amplify:
     version: 3

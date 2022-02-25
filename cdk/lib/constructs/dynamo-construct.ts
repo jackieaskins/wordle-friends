@@ -13,6 +13,7 @@ export interface DynamoConstructProps {
 
 export class DynamoConstruct extends Construct {
   friendsTable: Table;
+  userAttributesTable: Table;
 
   constructor(scope: Construct, id: string, { stage }: DynamoConstructProps) {
     super(scope, id);
@@ -28,6 +29,12 @@ export class DynamoConstruct extends Construct {
       partitionKey: { name: "userId", type: AttributeType.STRING },
       sortKey: { name: "status", type: AttributeType.STRING },
       projectionType: ProjectionType.ALL,
+    });
+
+    this.userAttributesTable = new Table(this, "UserArributsTable", {
+      tableName: `wordle-friends-user-attributes-${stage}`,
+      partitionKey: { name: "userId", type: AttributeType.STRING },
+      billingMode: BillingMode.PAY_PER_REQUEST,
     });
   }
 }

@@ -1,3 +1,7 @@
+#if($ctx.identity.sub == $ctx.args.friendId)
+  $util.error("can't add self as friend", "ValidationError")
+#end
+
 {
   "version": "2018-05-29",
   "operation": "TransactWriteItems",
