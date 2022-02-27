@@ -7,6 +7,7 @@ import {
   useEffect,
   useReducer,
 } from "react";
+import { useQueryClient } from "react-query";
 
 export type UserInfo = {
   email: string;
@@ -77,6 +78,7 @@ export function AuthProvider({
 }: {
   children: ReactNode;
 }): JSX.Element {
+  const queryClient = useQueryClient();
   const [{ isLoading, currentUserInfo }, dispatchUserInfo] = useReducer(
     userInfoReducer,
     { isLoading: true }
@@ -111,7 +113,8 @@ export function AuthProvider({
   const signOut = useCallback(async () => {
     await Auth.signOut();
     dispatchUserInfo({ type: "set" });
-  }, []);
+    queryClient.clear();
+  }, [queryClient]);
 
   if (isLoading) {
     return <div>Loading user info</div>;

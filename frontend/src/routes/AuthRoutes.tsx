@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import FriendList from "../friends/FriendList";
+import FriendsPage from "../friends/FriendsPage";
 import Home from "../Home";
 import Navbar from "../nav/Navbar";
 
@@ -11,7 +11,7 @@ export default function AuthRoutes(): JSX.Element {
       <Box px={6} pt={4}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/friends" element={<FriendList />} />
+          <Route path="/friends" element={<FriendsPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
       </Box>

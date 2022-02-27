@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Flex,
   Link,
@@ -7,9 +8,11 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { useReceivedFriendRequests } from "../friends/apis";
 
 export default function Navbar(): JSX.Element {
   const { signOut } = useAuth();
+  const { data: friendRequests } = useReceivedFriendRequests();
 
   return (
     <Flex
@@ -29,9 +32,14 @@ export default function Navbar(): JSX.Element {
         Wordle with Friends
       </Link>
 
-      <Link as={RouterLink} to="/friends" ml={6}>
-        Friends
-      </Link>
+      <Flex alignItems="center">
+        <Link as={RouterLink} to="/friends" ml={6}>
+          Friends
+        </Link>
+        {(friendRequests?.length ?? 0) > 0 && (
+          <Badge ml={2}>{friendRequests?.length}</Badge>
+        )}
+      </Flex>
 
       <Spacer />
 

@@ -9,6 +9,9 @@ Amplify.configure({
     userPoolId: process.env.USER_POOL_ID,
     userPoolWebClientId: process.env.USER_POOL_WEB_CLIENT_ID,
   },
+  aws_appsync_graphqlEndpoint: process.env.GRAPHQL_ENDPOINT,
+  aws_appsync_region: process.env.REGION,
+  aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS",
 });
 
 ReactDOM.render(<App />, document.getElementById("root"));

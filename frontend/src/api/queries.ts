@@ -7,12 +7,9 @@ export const listFriends = /* GraphQL */ `
     listFriends(status: $status, limit: $limit, nextToken: $nextToken) {
       friends {
         userId
-        friend {
-          userId
-          firstName
-          lastName
-        }
         status
+        firstName
+        lastName
       }
       nextToken
     }
