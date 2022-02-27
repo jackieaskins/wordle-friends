@@ -1,15 +1,13 @@
 import {
-  AppsyncFunction,
   AuthorizationType,
   FieldLogLevel,
   GraphqlApi,
-  MappingTemplate,
-  Resolver,
+  LambdaDataSource,
   Schema,
 } from "@aws-cdk/aws-appsync-alpha";
-import { Stack, StackProps } from "aws-cdk-lib";
+import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
-import fs from "fs";
 import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
@@ -19,19 +17,10 @@ interface BackendStackProps extends StackProps {
   stage: Stage;
 }
 
-function getMappingTemplateFromFile(
-  mappingPath: string,
-  replaceStrings?: Record<string, string>
-): MappingTemplate {
-  const fileContents = fs
-    .readFileSync(path.join(__dirname, "../../backend/resolvers", mappingPath))
-    .toString();
-  const templateStr = Object.entries(replaceStrings ?? {}).reduce(
-    (prev, [pattern, value]) => prev.split(pattern).join(value),
-    fileContents
-  );
-  return MappingTemplate.fromString(templateStr);
-}
+const RESOLVERS = {
+  Query: ["listFriends"],
+  Mutation: ["acceptFriendRequest", "deleteFriend", "sendFriendRequest"],
+};
 
 export class BackendStack extends Stack {
   constructor(scope: Construct, id: string, props: BackendStackProps) {
@@ -51,7 +40,9 @@ export class BackendStack extends Stack {
 
     const api = new GraphqlApi(this, "GraphqlApi", {
       name: `wordle-friends-${stage}`,
-      schema: Schema.fromAsset(path.join(__dirname, "../../schema.graphql")),
+      schema: Schema.fromAsset(
+        path.join(__dirname, "../../backend/schema.graphql")
+      ),
       logConfig: { fieldLogLevel: FieldLogLevel.ALL },
       authorizationConfig: {
         defaultAuthorization: {
@@ -61,71 +52,32 @@ export class BackendStack extends Stack {
       },
     });
 
-    const userDS = api.addDynamoDbDataSource(
-      "UserAttributesDataSource",
-      userAttributesTable
-    );
-    const friendsDS = api.addDynamoDbDataSource(
-      "FriendsDataSource",
-      friendsTable
-    );
+    const apiHandler = new Function(this, "ApiLambda", {
+      code: Code.fromAsset(
+        path.join(__dirname, "../../backend/lambdas/api.zip")
+      ),
+      functionName: `wordle-friends-api-${stage}`,
+      handler: "index.handler",
+      runtime: Runtime.NODEJS_14_X,
+      timeout: Duration.seconds(10),
+      environment: {
+        USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
+        USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
+        FRIENDS_TABLE: friendsTable.tableName,
+      },
+    });
+    userAttributesTable.grantReadWriteData(apiHandler);
+    friendsTable.grantReadWriteData(apiHandler);
 
-    const listFriendsFunction = new AppsyncFunction(
-      this,
-      "ListFriendsAppsyncFunction",
-      {
-        name: `listFriendsFunction`,
-        api,
-        dataSource: friendsDS,
-        requestMappingTemplate: getMappingTemplateFromFile(
-          "friends/listFriendsRequest.vm",
-          { "#USER_ID_STATUS_INDEX#": FriendsTableIndex.UserIdStatus }
-        ),
-        responseMappingTemplate: getMappingTemplateFromFile(
-          "friends/listFriendsResponse.vm"
-        ),
-      }
-    );
-    const batchGetUsersFunction = new AppsyncFunction(
-      this,
-      "BatchGetUsersAppsyncFunction",
-      {
-        name: `batchGetUsersFunction`,
-        api,
-        dataSource: userDS,
-        requestMappingTemplate: getMappingTemplateFromFile(
-          "users/batchGetUsersRequest.vm",
-          { "#USER_ATTRIBUTES_TABLE#": userAttributesTable.tableName }
-        ),
-        responseMappingTemplate: getMappingTemplateFromFile(
-          "users/batchGetUsersResponse.vm",
-          { "#USER_ATTRIBUTES_TABLE#": userAttributesTable.tableName }
-        ),
-      }
-    );
-    new Resolver(this, "ListFriendsResolver", {
+    const apiLambdaDS = new LambdaDataSource(this, "ApiLambdaDataSource", {
       api,
-      typeName: "Query",
-      fieldName: "listFriends",
-      pipelineConfig: [listFriendsFunction, batchGetUsersFunction],
-      requestMappingTemplate: getMappingTemplateFromFile(
-        "friends/listFriendsBefore.vm"
-      ),
-      responseMappingTemplate: getMappingTemplateFromFile(
-        "friends/listFriendsAfter.vm"
-      ),
+      lambdaFunction: apiHandler,
     });
 
-    friendsDS.createResolver({
-      typeName: "Mutation",
-      fieldName: "sendFriendRequest",
-      requestMappingTemplate: getMappingTemplateFromFile(
-        "friends/sendFriendRequestRequest.vm",
-        { "#FRIENDS_TABLE#": friendsTable.tableName }
-      ),
-      responseMappingTemplate: getMappingTemplateFromFile(
-        "friends/sendFriendRequestResponse.vm"
-      ),
+    Object.entries(RESOLVERS).forEach(([typeName, fieldNames]) => {
+      fieldNames.forEach((fieldName) => {
+        apiLambdaDS.createResolver({ typeName, fieldName });
+      });
     });
   }
 }

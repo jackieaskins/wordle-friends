@@ -1,2 +1,0 @@
-$util.qr($ctx.stash.put("userId", $ctx.identity.sub))
-{}

@@ -9,21 +9,16 @@ enum FriendStatus {
   RECEIVED
 }
 
-type User {
+type Friend {
   userId: String!
+  status: FriendStatus!
   firstName: String!
   lastName: String!
 }
 
-type Friend {
-  userId: String!
-  friend: User!
-  status: FriendStatus!
-}
-
 type FriendKey {
   userId: String!
-  status: FriendStatus!
+  friendId: String!
 }
 
 type PaginatedFriends {
@@ -36,5 +31,7 @@ type Query {
 }
 
 type Mutation {
+  acceptFriendRequest(friendId: String!): FriendKey!
+  deleteFriend(friendId: String!): FriendKey!
   sendFriendRequest(friendId: String!): FriendKey!
 }

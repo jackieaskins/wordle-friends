@@ -1,4 +1,4 @@
-import { CfnOutput, Stack } from "aws-cdk-lib";
+import { CfnOutput, Duration, Stack } from "aws-cdk-lib";
 import {
   AccountRecovery,
   CfnIdentityPool,
@@ -41,6 +41,7 @@ export class CognitoConstruct extends Construct {
         functionName: `wordle-friends-post-confirmation-${stage}`,
         handler: "index.handler",
         runtime: Runtime.NODEJS_14_X,
+        timeout: Duration.seconds(30),
         environment: {
           USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
         },

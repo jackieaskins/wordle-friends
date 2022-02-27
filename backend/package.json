@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run build:postconfirmation",
-    "build:postconfirmation": "npm --prefix ./lambdas/postConfirmation install && rm -f ./lambdas/postConfirmation.zip && cd ./lambdas/postConfirmation && zip -r -X ../postConfirmation.zip .",
-    "graphql-codegen": "npx amplify codegen",
+    "build": "tsc && npm run pack:postconfirmation && npm run pack:api",
     "format": "prettier --write .",
+    "graphql-codegen": "npx amplify codegen",
     "lint": "eslint --ext ts src",
     "lint:fix": "npm run lint -- --fix",
+    "pack:api": "npm --prefix ./lambdas/api install && rm -f ./lambdas/api.zip && cd ./lambdas/api && zip -r -X ../api.zip .",
+    "pack:postconfirmation": "npm --prefix ./lambdas/postConfirmation install && rm -f ./lambdas/postConfirmation.zip && cd ./lambdas/postConfirmation && zip -r -X ../postConfirmation.zip .",
     "watch": "tsc -w"
   },
   "keywords": [],
@@ -25,6 +26,6 @@
     "prettier": "^2.5.1"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.52.0"
+    "@aws-sdk/client-dynamodb": "^3.53.0"
   }
 }
