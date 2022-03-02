@@ -27,8 +27,8 @@ export async function listFriends(
       : "userId = :userId",
     ExpressionAttributeNames: status ? { "#status": "status" } : undefined,
     ExpressionAttributeValues: {
-      ":userId": { S: userId },
-      ...(status ? { ":status": { S: status } } : {}),
+      ":userId": userId,
+      ...(status ? { ":status": status } : {}),
     },
   });
 
@@ -53,8 +53,8 @@ export async function listFriends(
 
   const userAttributesMap = Object.fromEntries(
     userAttributes.map(({ userId, firstName, lastName }) => [
-      userId.S,
-      { userId: userId.S, firstName: firstName.S, lastName: lastName.S },
+      userId,
+      { userId, firstName, lastName },
     ])
   );
 
@@ -62,8 +62,8 @@ export async function listFriends(
     __typename: "PaginatedFriends",
     friends: friends.map(({ friendId, status }) => ({
       __typename: "Friend",
-      status: status.S,
-      ...userAttributesMap[friendId.S as string],
+      status,
+      ...userAttributesMap[friendId],
     })),
     nextToken: lastEvaluatedKey ? JSON.stringify(lastEvaluatedKey) : null,
   };

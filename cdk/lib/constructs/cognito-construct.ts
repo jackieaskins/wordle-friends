@@ -19,7 +19,7 @@ export interface CognitoConstructProps {
 }
 
 const VERIFICATION_MESSAGE =
-  "Thanks for signing up for Wordle Friends! Your verification code is {####}";
+  "Thanks for signing up for Wordle with Friends! Your verification code is {####}";
 
 export class CognitoConstruct extends Construct {
   userPool: UserPool;
@@ -53,7 +53,7 @@ export class CognitoConstruct extends Construct {
       userPoolName: `wordle-friends-userpool-${stage}`,
       selfSignUpEnabled: true,
       userVerification: {
-        emailSubject: "Verify your email for Wordle Friends",
+        emailSubject: "Verify your email for Wordle with Friends",
         emailBody: VERIFICATION_MESSAGE,
         emailStyle: VerificationEmailStyle.CODE,
         smsMessage: VERIFICATION_MESSAGE,

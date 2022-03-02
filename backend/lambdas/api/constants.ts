@@ -1,3 +1,4 @@
+export const POSTS_TABLE = process.env.POSTS_TABLE as string;
 export const USER_ATTRIBUTES_TABLE = process.env
   .USER_ATTRIBUTES_TABLE as string;
 export const FRIENDS_TABLE = process.env.FRIENDS_TABLE as string;

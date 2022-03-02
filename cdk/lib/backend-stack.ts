@@ -18,8 +18,13 @@ interface BackendStackProps extends StackProps {
 }
 
 const RESOLVERS = {
-  Query: ["listFriends"],
-  Mutation: ["acceptFriendRequest", "deleteFriend", "sendFriendRequest"],
+  Query: ["listFriends", "getCurrentUserPost"],
+  Mutation: [
+    "acceptFriendRequest",
+    "deleteFriend",
+    "sendFriendRequest",
+    "createPost",
+  ],
 };
 
 export class BackendStack extends Stack {
@@ -28,11 +33,8 @@ export class BackendStack extends Stack {
 
     const { stage } = props;
 
-    const { friendsTable, userAttributesTable } = new DynamoConstruct(
-      this,
-      "Dynamo",
-      { stage }
-    );
+    const { friendsTable, postsTable, userAttributesTable } =
+      new DynamoConstruct(this, "Dynamo", { stage });
     const { userPool } = new CognitoConstruct(this, "Cognito", {
       userAttributesTable,
       stage,
@@ -43,7 +45,7 @@ export class BackendStack extends Stack {
       schema: Schema.fromAsset(
         path.join(__dirname, "../../backend/schema.graphql")
       ),
-      logConfig: { fieldLogLevel: FieldLogLevel.ALL },
+      logConfig: { fieldLogLevel: FieldLogLevel.ERROR },
       authorizationConfig: {
         defaultAuthorization: {
           authorizationType: AuthorizationType.USER_POOL,
@@ -64,10 +66,12 @@ export class BackendStack extends Stack {
         USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
         USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
         FRIENDS_TABLE: friendsTable.tableName,
+        POSTS_TABLE: postsTable.tableName,
       },
     });
     userAttributesTable.grantReadWriteData(apiHandler);
     friendsTable.grantReadWriteData(apiHandler);
+    postsTable.grantReadWriteData(apiHandler);
 
     const apiLambdaDS = new LambdaDataSource(this, "ApiLambdaDataSource", {
       api,

@@ -18,13 +18,13 @@ export async function deleteFriend(
       {
         Delete: {
           TableName: FRIENDS_TABLE,
-          Key: { userId: { S: userId }, friendId: { S: friendId } },
+          Key: { userId, friendId },
         },
       },
       {
         Delete: {
           TableName: FRIENDS_TABLE,
-          Key: { userId: { S: friendId }, friendId: { S: userId } },
+          Key: { userId: friendId, friendId: userId },
         },
       },
     ],

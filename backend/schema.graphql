@@ -9,6 +9,12 @@ enum FriendStatus {
   RECEIVED
 }
 
+type User {
+  userId: String!
+  firstName: String!
+  lastName: String!
+}
+
 type Friend {
   userId: String!
   status: FriendStatus!
@@ -26,12 +32,77 @@ type PaginatedFriends {
   nextToken: String
 }
 
+enum Color {
+  GREEN
+  YELLOW
+}
+
+interface BasePost {
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type CurrentUserPost implements BasePost {
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+  guesses: [String!]
+}
+
+type FullPost implements BasePost {
+  user: User!
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+  guesses: [String!]
+}
+
+type PartialPost implements BasePost {
+  user: User!
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+}
+
+type MinimalPost implements BasePost {
+  user: User!
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  numGuesses: Int!
+}
+
+union Posts = FullPost | PartialPost | MinimalPost
+
+type PaginatedPosts {
+  posts: [Posts!]!
+  nextToken: String
+}
+
+input PostInput {
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  colors: [[Color]!]!
+  guesses: [String!]
+}
+
 type Query {
-  listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends
+  listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends!
+  getCurrentUserPost(puzzleDate: AWSDate!): CurrentUserPost
 }
 
 type Mutation {
   acceptFriendRequest(friendId: String!): FriendKey!
   deleteFriend(friendId: String!): FriendKey!
   sendFriendRequest(friendId: String!): FriendKey!
+  createPost(input: PostInput!): CurrentUserPost!
 }

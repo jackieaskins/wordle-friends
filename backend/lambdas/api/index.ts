@@ -5,8 +5,10 @@ import {
   Context,
 } from "aws-lambda";
 import { acceptFriendRequest } from "./mutations/acceptFriendRequest";
+import { createPost } from "./mutations/createPost";
 import { deleteFriend } from "./mutations/deleteFriend";
 import { sendFriendRequest } from "./mutations/sendFriendRequest";
+import { getCurrentUserPost } from "./queries/getCurrentUserPost";
 import { listFriends } from "./queries/listFriends";
 
 export async function handler(
@@ -33,6 +35,10 @@ export async function handler(
       return callback(null, await sendFriendRequest(userId, event));
     case "acceptFriendRequest":
       return callback(null, await acceptFriendRequest(userId, event));
+    case "createPost":
+      return callback(null, await createPost(userId, event));
+    case "getCurrentUserPost":
+      return callback(null, await getCurrentUserPost(userId, event));
   }
 
   throw new Error("Unsupported operation");

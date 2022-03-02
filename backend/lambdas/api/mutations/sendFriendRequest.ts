@@ -24,11 +24,7 @@ export async function sendFriendRequest(
       {
         Put: {
           TableName: FRIENDS_TABLE,
-          Item: {
-            userId: { S: userId },
-            friendId: { S: friendId },
-            status: { S: FriendStatus.SENT },
-          },
+          Item: { userId, friendId, status: FriendStatus.SENT },
           ConditionExpression: "attribute_not_exists(userId)",
         },
       },
@@ -36,9 +32,9 @@ export async function sendFriendRequest(
         Put: {
           TableName: FRIENDS_TABLE,
           Item: {
-            userId: { S: friendId },
-            friendId: { S: userId },
-            status: { S: FriendStatus.RECEIVED },
+            userId: friendId,
+            friendId: userId,
+            status: FriendStatus.RECEIVED,
           },
           ConditionExpression: "attribute_not_exists(userId)",
         },

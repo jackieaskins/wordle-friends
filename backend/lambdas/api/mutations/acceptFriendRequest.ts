@@ -24,26 +24,19 @@ export async function acceptFriendRequest(
       {
         Update: {
           TableName: FRIENDS_TABLE,
-          Key: { userId: { S: userId }, friendId: { S: friendId } },
+          Key: { userId, friendId },
           UpdateExpression: "SET #status = :status",
           ExpressionAttributeNames: { "#status": "status" },
-          ExpressionAttributeValues: {
-            ":status": { S: FriendStatus.ACCEPTED },
-          },
+          ExpressionAttributeValues: { ":status": FriendStatus.ACCEPTED },
         },
       },
       {
         Update: {
           TableName: FRIENDS_TABLE,
-          Key: {
-            friendId: { S: userId },
-            userId: { S: friendId },
-          },
+          Key: { friendId: userId, userId: friendId },
           UpdateExpression: "SET #status = :status",
           ExpressionAttributeNames: { "#status": "status" },
-          ExpressionAttributeValues: {
-            ":status": { S: FriendStatus.ACCEPTED },
-          },
+          ExpressionAttributeValues: { ":status": FriendStatus.ACCEPTED },
         },
       },
     ],

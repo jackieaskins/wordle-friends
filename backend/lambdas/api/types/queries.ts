@@ -15,3 +15,15 @@ export const listFriends = /* GraphQL */ `
     }
   }
 `;
+export const getCurrentUserPost = /* GraphQL */ `
+  query GetCurrentUserPost($puzzleDate: AWSDate!) {
+    getCurrentUserPost(puzzleDate: $puzzleDate) {
+      puzzleDate
+      isHardMode
+      createdAt
+      updatedAt
+      colors
+      guesses
+    }
+  }
+`;
