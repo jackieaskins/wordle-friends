@@ -1,6 +1,6 @@
 import {
+  Center,
   Flex,
-  Spinner,
   Table,
   Tbody,
   Td,
@@ -11,6 +11,7 @@ import {
 import { ReactNode } from "react";
 import { UseQueryResult } from "react-query";
 import { Friend } from "../API";
+import LoadingIndicator from "../common/LoadingIndicator";
 
 type FriendsTableProps = {
   useFriendsQuery: () => UseQueryResult<Friend[]>;
@@ -34,10 +35,9 @@ export default function FriendsTable({
         {isLoading && (
           <Tr>
             <Td color={grayColor}>
-              <Flex justifyContent="center" alignItems="center">
-                <Spinner size="sm" />
-                <Text ml={2}>{loadingNode}</Text>
-              </Flex>
+              <Center>
+                <LoadingIndicator>{loadingNode}</LoadingIndicator>
+              </Center>
             </Td>
           </Tr>
         )}

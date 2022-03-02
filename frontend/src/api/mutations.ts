@@ -26,3 +26,15 @@ export const sendFriendRequest = /* GraphQL */ `
     }
   }
 `;
+export const createPost = /* GraphQL */ `
+  mutation CreatePost($input: PostInput!) {
+    createPost(input: $input) {
+      puzzleDate
+      isHardMode
+      createdAt
+      updatedAt
+      colors
+      guesses
+    }
+  }
+`;

@@ -1,5 +1,5 @@
 import { Alert, Button, Container, Heading, Stack } from "@chakra-ui/react";
-import { ReactNode, useCallback, useMemo, useState } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import {
   FieldValues,
   FormProvider,
@@ -28,14 +28,9 @@ export default function AuthForm({
   const [generalError, setGeneralError] = useState<string | null>(null);
   const formProps = useForm({ defaultValues });
   const {
-    formState: { isSubmitting, isValidating },
+    formState: { isSubmitting },
     handleSubmit,
   } = formProps;
-
-  const isLoading = useMemo(
-    () => isSubmitting || isValidating,
-    [isSubmitting, isValidating]
-  );
 
   const onSubmitWrapper = useCallback(
     async (values) => {
@@ -71,7 +66,7 @@ export default function AuthForm({
             </Alert>
           )}
 
-          <Button isLoading={isLoading} isFullWidth type="submit">
+          <Button isLoading={isSubmitting} isFullWidth type="submit">
             {buttonText}
           </Button>
 

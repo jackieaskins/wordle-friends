@@ -8,6 +8,74 @@ export type FriendKey = {
   friendId: string;
 };
 
+export type PostInput = {
+  puzzleDate: string;
+  isHardMode: boolean;
+  colors: Array<Array<Color | null>>;
+  guesses?: Array<string> | null;
+};
+
+export enum Color {
+  GREEN = "GREEN",
+  YELLOW = "YELLOW",
+}
+
+export type CurrentUserPost = {
+  __typename: "CurrentUserPost";
+  puzzleDate: string;
+  isHardMode: boolean;
+  createdAt: string;
+  updatedAt: string;
+  colors: Array<Array<Color | null>>;
+  guesses?: Array<string> | null;
+};
+
+export type BasePost = {
+  __typename: "BasePost";
+  puzzleDate: string;
+  isHardMode: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type FullPost = {
+  __typename: "FullPost";
+  user: User;
+  puzzleDate: string;
+  isHardMode: boolean;
+  createdAt: string;
+  updatedAt: string;
+  colors: Array<Array<Color | null>>;
+  guesses?: Array<string> | null;
+};
+
+export type User = {
+  __typename: "User";
+  userId: string;
+  firstName: string;
+  lastName: string;
+};
+
+export type PartialPost = {
+  __typename: "PartialPost";
+  user: User;
+  puzzleDate: string;
+  isHardMode: boolean;
+  createdAt: string;
+  updatedAt: string;
+  colors: Array<Array<Color | null>>;
+};
+
+export type MinimalPost = {
+  __typename: "MinimalPost";
+  user: User;
+  puzzleDate: string;
+  isHardMode: boolean;
+  createdAt: string;
+  updatedAt: string;
+  numGuesses: number;
+};
+
 export enum FriendStatus {
   ACCEPTED = "ACCEPTED",
   SENT = "SENT",
@@ -64,6 +132,22 @@ export type SendFriendRequestMutation = {
   };
 };
 
+export type CreatePostMutationVariables = {
+  input: PostInput;
+};
+
+export type CreatePostMutation = {
+  createPost: {
+    __typename: "CurrentUserPost";
+    puzzleDate: string;
+    isHardMode: boolean;
+    createdAt: string;
+    updatedAt: string;
+    colors: Array<Array<Color | null>>;
+    guesses?: Array<string> | null;
+  };
+};
+
 export type ListFriendsQueryVariables = {
   status?: FriendStatus | null;
   limit?: number | null;
@@ -71,7 +155,7 @@ export type ListFriendsQueryVariables = {
 };
 
 export type ListFriendsQuery = {
-  listFriends?: {
+  listFriends: {
     __typename: "PaginatedFriends";
     friends: Array<{
       __typename: "Friend";
@@ -81,5 +165,21 @@ export type ListFriendsQuery = {
       lastName: string;
     }>;
     nextToken?: string | null;
+  };
+};
+
+export type GetCurrentUserPostQueryVariables = {
+  puzzleDate: string;
+};
+
+export type GetCurrentUserPostQuery = {
+  getCurrentUserPost?: {
+    __typename: "CurrentUserPost";
+    puzzleDate: string;
+    isHardMode: boolean;
+    createdAt: string;
+    updatedAt: string;
+    colors: Array<Array<Color | null>>;
+    guesses?: Array<string> | null;
   } | null;
 };

@@ -34,7 +34,7 @@ export default function InputField({
     <FormControl isRequired={required} isInvalid={!!errors[name]} label={label}>
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
       <Input
-        isFullWidth
+        width="100%"
         id={name}
         {...inputProps}
         {...register(name, {

@@ -117,7 +117,7 @@ export function AuthProvider({
   }, [queryClient]);
 
   if (isLoading) {
-    return <div>Loading user info</div>;
+    return <div />;
   }
 
   return (

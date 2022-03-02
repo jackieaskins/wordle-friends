@@ -1,5 +1,3 @@
-import { GraphQLResult } from "@aws-amplify/api-graphql";
-import { API, graphqlOperation } from "aws-amplify";
 import {
   useMutation,
   UseMutationResult,
@@ -26,20 +24,12 @@ import {
   sendFriendRequest,
 } from "../api/mutations";
 import { listFriends } from "../api/queries";
+import { callGraphql } from "../graphql";
 
 type FriendsQueryKey =
   | "sentFriendRequests"
   | "receivedFriendRequests"
   | "friends";
-
-async function callGraphql<V, R>(
-  query: string,
-  variables?: V
-): Promise<GraphQLResult<R>> {
-  return (await API.graphql(
-    graphqlOperation(query, variables)
-  )) as GraphQLResult<R>;
-}
 
 export function useSendFriendRequest(): UseMutationResult<
   FriendKey | undefined,

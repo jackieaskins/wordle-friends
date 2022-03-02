@@ -1,5 +1,10 @@
-import { Heading } from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
+import UserPostSection from "./posts/UserPostSection";
 
 export default function Home(): JSX.Element {
-  return <Heading>Wordle with Friends</Heading>;
+  return (
+    <Container maxW="xl" centerContent mt={6}>
+      <UserPostSection />
+    </Container>
+  );
 }

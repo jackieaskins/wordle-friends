@@ -1,6 +1,10 @@
 import { Amplify } from "aws-amplify";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import ReactDOM from "react-dom";
 import App from "./App";
+
+dayjs.extend(relativeTime);
 
 Amplify.configure({
   Auth: {

@@ -20,6 +20,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: TEN_MINUTES_IN_MS,
+      retry: false,
     },
   },
 });
