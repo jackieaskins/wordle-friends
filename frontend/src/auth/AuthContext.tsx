@@ -21,6 +21,7 @@ export type SignUpProps = {
   firstName: string;
   lastName: string;
   password: string;
+  shareSquares: boolean;
 };
 
 type AuthContextState = {
@@ -97,13 +98,14 @@ export function AuthProvider({
   }, []);
 
   const signUp = useCallback(
-    async ({ email, password, firstName, lastName }) => {
+    async ({ email, password, firstName, lastName, showSquares }) => {
       await Auth.signUp({
         username: email,
         password,
         attributes: {
           given_name: firstName,
           family_name: lastName,
+          "custom:showSquares": showSquares ? "true" : "false",
         },
       });
     },

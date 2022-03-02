@@ -1,6 +1,7 @@
 import { CfnOutput, Duration, Stack } from "aws-cdk-lib";
 import {
   AccountRecovery,
+  BooleanAttribute,
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
   UserPool,
@@ -72,6 +73,9 @@ export class CognitoConstruct extends Construct {
         },
       },
       lambdaTriggers: { postConfirmation: postConfirmationHandler },
+      customAttributes: {
+        showSquares: new BooleanAttribute({ mutable: true }),
+      },
     });
 
     const userPoolWebClient = this.userPool.addClient("UserPoolWebClient", {

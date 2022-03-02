@@ -1,4 +1,4 @@
-import { Link, Stack } from "@chakra-ui/react";
+import { Checkbox, Link, Stack } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import InputField from "../form/InputField";
@@ -30,7 +30,7 @@ export default function SignUp(): JSX.Element {
       headerText="Sign up"
       onSubmit={onSubmit}
     >
-      {({ getValues }) => (
+      {({ getValues, register }) => (
         <Stack width="100%">
           <InputField
             autoComplete="given-name"
@@ -92,6 +92,10 @@ export default function SignUp(): JSX.Element {
             }}
             type="password"
           />
+
+          <Checkbox {...register("showSquares")}>
+            {"Show friends' guess colors before you've entered your results"}
+          </Checkbox>
         </Stack>
       )}
     </AuthForm>
