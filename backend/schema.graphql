@@ -40,6 +40,7 @@ enum Color {
 interface BasePost {
   puzzleDate: AWSDate!
   isHardMode: Boolean!
+  message: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   colors: [[Color]!]!
@@ -49,6 +50,7 @@ interface BasePost {
 type CurrentUserPost implements BasePost {
   puzzleDate: AWSDate!
   isHardMode: Boolean!
+  message: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   colors: [[Color]!]!
@@ -59,6 +61,7 @@ type Post implements BasePost {
   user: User!
   puzzleDate: AWSDate!
   isHardMode: Boolean!
+  message: String
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
   colors: [[Color]!]!
@@ -73,6 +76,7 @@ type PaginatedPosts {
 input PostInput {
   puzzleDate: AWSDate!
   isHardMode: Boolean!
+  message: String
   colors: [[Color]!]!
   guesses: [String!]
 }

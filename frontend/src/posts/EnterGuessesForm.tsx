@@ -1,12 +1,15 @@
 import {
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   HStack,
   Input,
   InputGroup,
   InputLeftAddon,
   Stack,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import { ChangeEventHandler, useCallback, useState } from "react";
 import { useCreatePost } from "../posts/api";
@@ -20,11 +23,12 @@ type EnterGuessesFormProps = {
 export default function EnterGuessesForm({
   parsedResult: { date, guessColors, guessSquares, isHardMode },
 }: EnterGuessesFormProps): JSX.Element {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { mutate: createPost } = useCreatePost();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [guesses, setGuesses] = useState<string[]>(guessColors.map(() => ""));
+  const [message, setMessage] = useState("");
 
-  const onChange: (index: number) => ChangeEventHandler<HTMLInputElement> =
+  const onGuessChange: (index: number) => ChangeEventHandler<HTMLInputElement> =
     useCallback(
       (index) =>
         ({ target: { value } }) => {
@@ -36,6 +40,9 @@ export default function EnterGuessesForm({
         },
       [guesses]
     );
+  const onMessageChange = useCallback(({ target: { value } }) => {
+    setMessage(value);
+  }, []);
 
   const shareResults = useCallback(
     (event) => {
@@ -49,6 +56,7 @@ export default function EnterGuessesForm({
             colors: guessColors,
             isHardMode,
             puzzleDate: formatDateString(date),
+            message: message || undefined,
             guesses,
           },
         },
@@ -59,7 +67,7 @@ export default function EnterGuessesForm({
         }
       );
     },
-    [createPost, date, guessColors, guesses, isHardMode]
+    [createPost, date, guessColors, guesses, isHardMode, message]
   );
 
   return (
@@ -69,14 +77,33 @@ export default function EnterGuessesForm({
         <Text>{isHardMode && "Hard mode"}</Text>
       </Flex>
 
-      {guesses.map((guess, guessIndex) => (
-        <HStack key={guessIndex}>
-          <InputGroup size="lg">
-            <InputLeftAddon>{guessSquares[guessIndex]}</InputLeftAddon>
-            <Input value={guess} onChange={onChange(guessIndex)} />
-          </InputGroup>
-        </HStack>
-      ))}
+      <FormControl>
+        <FormLabel>Comment</FormLabel>
+        <Textarea
+          rows={1}
+          onChange={onMessageChange}
+          value={message}
+          placeholder="Enter an optional comment"
+        />
+      </FormControl>
+
+      <FormControl>
+        <FormLabel>Guesses</FormLabel>
+        <Stack spacing={1}>
+          {guesses.map((guess, guessIndex) => (
+            <HStack key={guessIndex}>
+              <InputGroup>
+                <InputLeftAddon>{guessSquares[guessIndex]}</InputLeftAddon>
+                <Input
+                  value={guess}
+                  onChange={onGuessChange(guessIndex)}
+                  placeholder={`Enter guess ${guessIndex + 1}`}
+                />
+              </InputGroup>
+            </HStack>
+          ))}
+        </Stack>
+      </FormControl>
 
       <Button
         type="submit"

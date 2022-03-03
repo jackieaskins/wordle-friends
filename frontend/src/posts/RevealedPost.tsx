@@ -20,6 +20,7 @@ export default function RevealedPost({
     user: { firstName, lastName },
     colors,
     isHardMode,
+    message,
     guesses,
     createdAt,
   },
@@ -44,15 +45,21 @@ export default function RevealedPost({
   );
 
   return (
-    <Stack width="100%" p={6} bg={bgColor} borderRadius="lg" spacing={6}>
-      <Flex justifyContent="space-between">
-        <Stack spacing={0}>
-          <Text as="strong">
-            {firstName} {lastName}
-          </Text>
-          {isHardMode && <Text>Hard mode</Text>}
-        </Stack>
-        <Text>{dayjs().to(createdAt)}</Text>
+    <Flex
+      width="100%"
+      p={6}
+      bg={bgColor}
+      borderRadius="lg"
+      justifyContent="space-between"
+    >
+      <Flex direction="column">
+        <Text as="strong">
+          {firstName} {lastName}
+        </Text>
+        <Text fontSize="xs" color="gray.500">
+          {dayjs().to(createdAt)} {isHardMode && <span> - Hard mode</span>}
+        </Text>
+        <Text mt={2}>{message}</Text>
       </Flex>
 
       <Center>
@@ -73,6 +80,6 @@ export default function RevealedPost({
           ))}
         </Stack>
       </Center>
-    </Stack>
+    </Flex>
   );
 }

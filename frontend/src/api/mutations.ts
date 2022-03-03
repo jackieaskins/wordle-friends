@@ -31,6 +31,7 @@ export const createPost = /* GraphQL */ `
     createPost(input: $input) {
       puzzleDate
       isHardMode
+      message
       createdAt
       updatedAt
       colors

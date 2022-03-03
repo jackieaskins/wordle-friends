@@ -20,6 +20,7 @@ export const getCurrentUserPost = /* GraphQL */ `
     getCurrentUserPost(puzzleDate: $puzzleDate) {
       puzzleDate
       isHardMode
+      message
       createdAt
       updatedAt
       colors
@@ -46,6 +47,7 @@ export const listFriendPosts = /* GraphQL */ `
         }
         puzzleDate
         isHardMode
+        message
         createdAt
         updatedAt
         colors

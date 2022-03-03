@@ -11,6 +11,7 @@ export type FriendKey = {
 export type PostInput = {
   puzzleDate: string;
   isHardMode: boolean;
+  message?: string | null;
   colors: Array<Array<Color | null>>;
   guesses?: Array<string> | null;
 };
@@ -24,6 +25,7 @@ export type CurrentUserPost = {
   __typename: "CurrentUserPost";
   puzzleDate: string;
   isHardMode: boolean;
+  message?: string | null;
   createdAt: string;
   updatedAt: string;
   colors: Array<Array<Color | null>>;
@@ -34,6 +36,7 @@ export type BasePost = {
   __typename: "BasePost";
   puzzleDate: string;
   isHardMode: boolean;
+  message?: string | null;
   createdAt: string;
   updatedAt: string;
   colors: Array<Array<Color | null>>;
@@ -45,6 +48,7 @@ export type Post = {
   user: User;
   puzzleDate: string;
   isHardMode: boolean;
+  message?: string | null;
   createdAt: string;
   updatedAt: string;
   colors: Array<Array<Color | null>>;
@@ -129,6 +133,7 @@ export type CreatePostMutation = {
     __typename: "CurrentUserPost";
     puzzleDate: string;
     isHardMode: boolean;
+    message?: string | null;
     createdAt: string;
     updatedAt: string;
     colors: Array<Array<Color | null>>;
@@ -165,6 +170,7 @@ export type GetCurrentUserPostQuery = {
     __typename: "CurrentUserPost";
     puzzleDate: string;
     isHardMode: boolean;
+    message?: string | null;
     createdAt: string;
     updatedAt: string;
     colors: Array<Array<Color | null>>;
@@ -191,6 +197,7 @@ export type ListFriendPostsQuery = {
       };
       puzzleDate: string;
       isHardMode: boolean;
+      message?: string | null;
       createdAt: string;
       updatedAt: string;
       colors: Array<Array<Color | null>>;

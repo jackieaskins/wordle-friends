@@ -71,6 +71,7 @@ export async function listFriendPosts(
         userId: postUserId,
         puzzleDate,
         isHardMode,
+        message,
         createdAt,
         updatedAt,
         colors,
@@ -92,6 +93,7 @@ export async function listFriendPosts(
           },
           puzzleDate,
           isHardMode,
+          message,
           createdAt,
           updatedAt,
           colors:
