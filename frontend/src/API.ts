@@ -36,10 +36,12 @@ export type BasePost = {
   isHardMode: boolean;
   createdAt: string;
   updatedAt: string;
+  colors: Array<Array<Color | null>>;
+  guesses?: Array<string> | null;
 };
 
-export type FullPost = {
-  __typename: "FullPost";
+export type Post = {
+  __typename: "Post";
   user: User;
   puzzleDate: string;
   isHardMode: boolean;
@@ -54,26 +56,6 @@ export type User = {
   userId: string;
   firstName: string;
   lastName: string;
-};
-
-export type PartialPost = {
-  __typename: "PartialPost";
-  user: User;
-  puzzleDate: string;
-  isHardMode: boolean;
-  createdAt: string;
-  updatedAt: string;
-  colors: Array<Array<Color | null>>;
-};
-
-export type MinimalPost = {
-  __typename: "MinimalPost";
-  user: User;
-  puzzleDate: string;
-  isHardMode: boolean;
-  createdAt: string;
-  updatedAt: string;
-  numGuesses: number;
 };
 
 export enum FriendStatus {
@@ -94,6 +76,12 @@ export type Friend = {
   status: FriendStatus;
   firstName: string;
   lastName: string;
+};
+
+export type PaginatedPosts = {
+  __typename: "PaginatedPosts";
+  posts: Array<Post>;
+  nextToken?: string | null;
 };
 
 export type AcceptFriendRequestMutationVariables = {
@@ -182,4 +170,32 @@ export type GetCurrentUserPostQuery = {
     colors: Array<Array<Color | null>>;
     guesses?: Array<string> | null;
   } | null;
+};
+
+export type ListFriendPostsQueryVariables = {
+  puzzleDate: string;
+  limit?: number | null;
+  nextToken?: string | null;
+};
+
+export type ListFriendPostsQuery = {
+  listFriendPosts: {
+    __typename: "PaginatedPosts";
+    posts: Array<{
+      __typename: "Post";
+      user: {
+        __typename: "User";
+        userId: string;
+        firstName: string;
+        lastName: string;
+      };
+      puzzleDate: string;
+      isHardMode: boolean;
+      createdAt: string;
+      updatedAt: string;
+      colors: Array<Array<Color | null>>;
+      guesses?: Array<string> | null;
+    }>;
+    nextToken?: string | null;
+  };
 };

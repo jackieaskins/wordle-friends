@@ -17,8 +17,9 @@ import {
   TransactWriteCommandInput,
   TransactWriteCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
+import { REGION } from "./constants";
 
-const client = new DynamoDBClient({ region: process.env.REGION });
+const client = new DynamoDBClient({ region: REGION });
 const docClient = DynamoDBDocumentClient.from(client, {
   marshallOptions: { removeUndefinedValues: true },
 });

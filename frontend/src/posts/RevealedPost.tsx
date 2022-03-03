@@ -9,10 +9,10 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useCallback } from "react";
-import { Color, FullPost } from "../API";
+import { Color, Post } from "../API";
 
 type RevealedPostProps = {
-  post: FullPost;
+  post: Post;
 };
 
 export default function RevealedPost({
@@ -56,17 +56,17 @@ export default function RevealedPost({
       </Flex>
 
       <Center>
-        <Stack>
-          {guesses?.map((guess, guessIndex) => (
-            <HStack key={guessIndex}>
-              {guess.split("").map((letter, letterIndex) => (
+        <Stack spacing={1}>
+          {colors.map((row, rowIndex) => (
+            <HStack key={rowIndex} spacing={1}>
+              {row.map((color, colorIndex) => (
                 <Square
-                  size="30px"
-                  key={letterIndex}
-                  color={getColor(colors[guessIndex][letterIndex], "fg")}
-                  bg={getColor(colors[guessIndex][letterIndex], "bg")}
+                  size="25px"
+                  key={colorIndex}
+                  color={getColor(color, "fg")}
+                  bg={getColor(color, "bg")}
                 >
-                  {letter.toUpperCase()}
+                  {guesses?.[rowIndex].charAt(colorIndex).toUpperCase()}
                 </Square>
               ))}
             </HStack>

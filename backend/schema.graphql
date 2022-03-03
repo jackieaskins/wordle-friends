@@ -42,6 +42,8 @@ interface BasePost {
   isHardMode: Boolean!
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+  guesses: [String!]
 }
 
 type CurrentUserPost implements BasePost {
@@ -53,7 +55,7 @@ type CurrentUserPost implements BasePost {
   guesses: [String!]
 }
 
-type FullPost implements BasePost {
+type Post implements BasePost {
   user: User!
   puzzleDate: AWSDate!
   isHardMode: Boolean!
@@ -63,28 +65,8 @@ type FullPost implements BasePost {
   guesses: [String!]
 }
 
-type PartialPost implements BasePost {
-  user: User!
-  puzzleDate: AWSDate!
-  isHardMode: Boolean!
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-  colors: [[Color]!]!
-}
-
-type MinimalPost implements BasePost {
-  user: User!
-  puzzleDate: AWSDate!
-  isHardMode: Boolean!
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-  numGuesses: Int!
-}
-
-union Posts = FullPost | PartialPost | MinimalPost
-
 type PaginatedPosts {
-  posts: [Posts!]!
+  posts: [Post!]!
   nextToken: String
 }
 
@@ -98,6 +80,7 @@ input PostInput {
 type Query {
   listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends!
   getCurrentUserPost(puzzleDate: AWSDate!): CurrentUserPost
+  listFriendPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
 }
 
 type Mutation {

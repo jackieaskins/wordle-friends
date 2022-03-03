@@ -9,19 +9,22 @@ import {
 import {
   CreatePostMutation,
   CreatePostMutationVariables,
-  FullPost,
   GetCurrentUserPostQuery,
   GetCurrentUserPostQueryVariables,
+  ListFriendPostsQuery,
+  ListFriendPostsQueryVariables,
+  Post,
   User,
 } from "../API";
 import { createPost } from "../api/mutations";
-import { getCurrentUserPost } from "../api/queries";
+import { getCurrentUserPost, listFriendPosts } from "../api/queries";
 import { useAuth, UserInfo } from "../auth/AuthContext";
 import { callGraphql } from "../graphql";
 import { formatDateString } from "../utils/dates";
 
 enum PostsQueryKey {
   CurrentUserPost = "currentUserPost",
+  ListFriendPosts = "listFriendPosts",
 }
 
 function generateUser(currentUserInfo: UserInfo): User {
@@ -30,7 +33,7 @@ function generateUser(currentUserInfo: UserInfo): User {
 }
 
 export function useCreatePost(): UseMutationResult<
-  FullPost,
+  Post,
   Error,
   CreatePostMutationVariables
 > {
@@ -47,7 +50,7 @@ export function useCreatePost(): UseMutationResult<
       if (data) {
         return {
           ...data.createPost,
-          __typename: "FullPost",
+          __typename: "Post",
           user: generateUser(currentUserInfo as UserInfo),
         };
       }
@@ -64,10 +67,10 @@ export function useCreatePost(): UseMutationResult<
   );
 }
 
-export function useGetCurrentUserPost(): UseQueryResult<FullPost | null> {
+export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
   const { currentUserInfo } = useAuth();
 
-  return useQuery<FullPost | null>(PostsQueryKey.CurrentUserPost, async () => {
+  return useQuery<Post | null>(PostsQueryKey.CurrentUserPost, async () => {
     const currentUserPost = (
       await callGraphql<
         GetCurrentUserPostQueryVariables,
@@ -79,12 +82,25 @@ export function useGetCurrentUserPost(): UseQueryResult<FullPost | null> {
       return null;
     }
 
-    const post: FullPost = {
+    const post: Post = {
       ...currentUserPost,
-      __typename: "FullPost",
+      __typename: "Post",
       user: generateUser(currentUserInfo as UserInfo),
     };
 
     return post;
   });
+}
+
+export function useListFriendPosts(): UseQueryResult<Post[]> {
+  return useQuery<Post[]>(
+    PostsQueryKey.ListFriendPosts,
+    async () =>
+      (
+        await callGraphql<ListFriendPostsQueryVariables, ListFriendPostsQuery>(
+          listFriendPosts,
+          { puzzleDate: formatDateString(dayjs()) }
+        )
+      ).data?.listFriendPosts.posts ?? []
+  );
 }

@@ -27,3 +27,31 @@ export const getCurrentUserPost = /* GraphQL */ `
     }
   }
 `;
+export const listFriendPosts = /* GraphQL */ `
+  query ListFriendPosts(
+    $puzzleDate: AWSDate!
+    $limit: Int
+    $nextToken: String
+  ) {
+    listFriendPosts(
+      puzzleDate: $puzzleDate
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      posts {
+        user {
+          userId
+          firstName
+          lastName
+        }
+        puzzleDate
+        isHardMode
+        createdAt
+        updatedAt
+        colors
+        guesses
+      }
+      nextToken
+    }
+  }
+`;

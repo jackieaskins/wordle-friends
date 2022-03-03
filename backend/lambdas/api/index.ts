@@ -9,6 +9,7 @@ import { createPost } from "./mutations/createPost";
 import { deleteFriend } from "./mutations/deleteFriend";
 import { sendFriendRequest } from "./mutations/sendFriendRequest";
 import { getCurrentUserPost } from "./queries/getCurrentUserPost";
+import { listFriendPosts } from "./queries/listFriendPosts";
 import { listFriends } from "./queries/listFriends";
 
 export async function handler(
@@ -39,6 +40,8 @@ export async function handler(
       return callback(null, await createPost(userId, event));
     case "getCurrentUserPost":
       return callback(null, await getCurrentUserPost(userId, event));
+    case "listFriendPosts":
+      return callback(null, await listFriendPosts(userId, event));
   }
 
   throw new Error("Unsupported operation");
