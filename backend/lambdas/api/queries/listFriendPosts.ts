@@ -39,6 +39,15 @@ export async function listFriendPosts(
     } as AppSyncResolverEvent<ListFriendsQueryVariables>),
     getUser(authorization),
   ]);
+
+  if (!friends?.length) {
+    return {
+      __typename: "PaginatedPosts",
+      nextToken: newNextToken,
+      posts: [],
+    };
+  }
+
   const friendsById = Object.fromEntries(
     friends.map((friend) => [friend.userId, friend])
   );

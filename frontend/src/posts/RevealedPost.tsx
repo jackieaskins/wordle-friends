@@ -25,10 +25,10 @@ export default function RevealedPost({
     createdAt,
   },
 }: RevealedPostProps): JSX.Element {
-  const bgColor = useColorModeValue("gray.100", "gray.900");
+  const bgColor = useColorModeValue("gray.200", "gray.900");
 
   const normalFg = useColorModeValue("gray.600", "white");
-  const normalBg = useColorModeValue("white", "gray.600");
+  const normalBg = useColorModeValue("gray.300", "gray.600");
 
   const getColor = useCallback(
     (color: Color | null, ground: "fg" | "bg") => {

@@ -18,7 +18,7 @@ export default function Navbar(): JSX.Element {
     <Flex
       alignItems="center"
       minH="60px"
-      bg={useColorModeValue("gray.50", "gray.900")}
+      bg={useColorModeValue("gray.200", "gray.900")}
       py={2}
       px={6}
     >
