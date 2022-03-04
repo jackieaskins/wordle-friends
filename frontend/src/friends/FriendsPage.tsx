@@ -14,7 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useEffect, useMemo } from "react";
-import { useAuth } from "../auth/AuthContext";
+import { useCurrentUser } from "../auth/CurrentUserContext";
 import AcceptedFriendsActions from "./AcceptedFriendsActions";
 import {
   useFriends,
@@ -27,12 +27,8 @@ import ReceivedFriendRequestsActions from "./ReceivedFriendRequestsActions";
 import SentFriendRequestsActions from "./SentFriendRequestsActions";
 
 export default function FriendsPage(): JSX.Element {
-  const { currentUserInfo } = useAuth();
+  const { id: userId } = useCurrentUser();
   const toast = useToast();
-  const userId = useMemo(
-    () => currentUserInfo?.id ?? "",
-    [currentUserInfo?.id]
-  );
   const { hasCopied, onCopy } = useClipboard(userId);
 
   useEffect(() => {

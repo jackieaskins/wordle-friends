@@ -19,7 +19,8 @@ import {
   Post,
   User,
 } from "wordle-friends-graphql";
-import { useAuth, UserInfo } from "../auth/AuthContext";
+import { UserInfo } from "../auth/AuthContext";
+import { useCurrentUser } from "../auth/CurrentUserContext";
 import { callGraphql } from "../graphql";
 import { formatDateString } from "../utils/dates";
 
@@ -28,8 +29,7 @@ enum PostsQueryKey {
   ListFriendPosts = "listFriendPosts",
 }
 
-function generateUser(currentUserInfo: UserInfo): User {
-  const { id: userId, firstName, lastName } = currentUserInfo;
+function generateUser({ id: userId, firstName, lastName }: UserInfo): User {
   return { __typename: "User", userId, firstName, lastName };
 }
 
@@ -39,7 +39,7 @@ export function useCreatePost(): UseMutationResult<
   CreatePostMutationVariables
 > {
   const queryClient = useQueryClient();
-  const { currentUserInfo } = useAuth();
+  const currentUser = useCurrentUser();
 
   return useMutation(
     async (input) => {
@@ -52,7 +52,7 @@ export function useCreatePost(): UseMutationResult<
         return {
           ...data.createPost,
           __typename: "Post",
-          user: generateUser(currentUserInfo as UserInfo),
+          user: generateUser(currentUser),
         };
       }
 
@@ -70,7 +70,7 @@ export function useCreatePost(): UseMutationResult<
 }
 
 export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
-  const { currentUserInfo } = useAuth();
+  const currentUser = useCurrentUser();
 
   return useQuery<Post | null>(PostsQueryKey.CurrentUserPost, async () => {
     const currentUserPost = (
@@ -87,7 +87,7 @@ export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
     const post: Post = {
       ...currentUserPost,
       __typename: "Post",
-      user: generateUser(currentUserInfo as UserInfo),
+      user: generateUser(currentUser),
     };
 
     return post;
