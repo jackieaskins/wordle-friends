@@ -9,7 +9,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { parseInt } from "lodash";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Color } from "../API";
+import { Color } from "wordle-friends-graphql";
 import { formatDateString } from "../utils/dates";
 
 export type ParsedWordleResult = {

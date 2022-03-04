@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { UseQueryResult } from "react-query";
-import { Friend } from "../API";
+import { Friend } from "wordle-friends-graphql";
 import LoadingIndicator from "../common/LoadingIndicator";
 
 type FriendsTableProps = {

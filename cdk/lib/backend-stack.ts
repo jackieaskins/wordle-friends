@@ -50,7 +50,7 @@ export class BackendStack extends Stack {
     const api = new GraphqlApi(this, "GraphqlApi", {
       name: `wordle-friends-${stage}`,
       schema: Schema.fromAsset(
-        path.join(__dirname, "../../backend/schema.graphql")
+        path.join(__dirname, "../../graphql/schema.graphql")
       ),
       logConfig: { fieldLogLevel: FieldLogLevel.ERROR },
       authorizationConfig: {

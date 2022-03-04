@@ -7,17 +7,18 @@ import {
   UseQueryResult,
 } from "react-query";
 import {
+  createPost,
   CreatePostMutation,
   CreatePostMutationVariables,
+  getCurrentUserPost,
   GetCurrentUserPostQuery,
   GetCurrentUserPostQueryVariables,
+  listFriendPosts,
   ListFriendPostsQuery,
   ListFriendPostsQueryVariables,
   Post,
   User,
-} from "../API";
-import { createPost } from "../api/mutations";
-import { getCurrentUserPost, listFriendPosts } from "../api/queries";
+} from "wordle-friends-graphql";
 import { useAuth, UserInfo } from "../auth/AuthContext";
 import { callGraphql } from "../graphql";
 import { formatDateString } from "../utils/dates";

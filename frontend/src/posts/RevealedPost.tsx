@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useCallback } from "react";
-import { Color, Post } from "../API";
+import { Color, Post } from "wordle-friends-graphql";
 
 type RevealedPostProps = {
   post: Post;

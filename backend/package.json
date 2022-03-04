@@ -6,7 +6,6 @@
   "scripts": {
     "build": "tsc && npm run pack:postconfirmation && npm run pack:api",
     "format": "prettier --write .",
-    "graphql-codegen": "npx amplify codegen",
     "lint": "eslint --ext ts lambdas",
     "lint:fix": "npm run lint -- --fix",
     "pack:api": "npm --prefix ./lambdas/api install && rm -f ./lambdas/api.zip && cd ./lambdas/api && zip -r -X ../api.zip .",

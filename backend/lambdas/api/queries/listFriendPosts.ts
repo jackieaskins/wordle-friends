@@ -1,18 +1,18 @@
 import { AppSyncResolverEvent } from "aws-lambda";
-import { getUser } from "../cognito";
-import { POSTS_TABLE } from "../constants";
-import { batchGet } from "../dynamo";
 import {
   FriendStatus,
   GetCurrentUserPostQueryVariables,
   ListFriendPostsQueryVariables,
   ListFriendsQueryVariables,
   PaginatedPosts,
-} from "../types";
-import { getCurrentUserPost } from "./getCurrentUserPost";
-import { listFriends } from "./listFriends";
+} from "wordle-friends-graphql";
+import { getUser } from "../cognito";
+import { POSTS_TABLE } from "../constants";
+import { batchGet } from "../dynamo";
+import { getCurrentUserPostHandler } from "./getCurrentUserPost";
+import { listFriendsHandler } from "./listFriends";
 
-export async function listFriendPosts(
+export async function listFriendPostsHandler(
   userId: string,
   {
     arguments: { puzzleDate, limit, nextToken },
@@ -31,10 +31,10 @@ export async function listFriendPosts(
     { nextToken: newNextToken, friends },
     { UserAttributes: userAttributes },
   ] = await Promise.all([
-    getCurrentUserPost(userId, {
+    getCurrentUserPostHandler(userId, {
       arguments: { puzzleDate },
     } as AppSyncResolverEvent<GetCurrentUserPostQueryVariables>),
-    listFriends(userId, {
+    listFriendsHandler(userId, {
       arguments: { nextToken, limit, status: FriendStatus.ACCEPTED },
     } as AppSyncResolverEvent<ListFriendsQueryVariables>),
     getUser(authorization),

@@ -1,9 +1,12 @@
 import { AppSyncResolverEvent } from "aws-lambda";
+import {
+  CurrentUserPost,
+  GetCurrentUserPostQueryVariables,
+} from "wordle-friends-graphql";
 import { POSTS_TABLE } from "../constants";
 import { get } from "../dynamo";
-import { CurrentUserPost, GetCurrentUserPostQueryVariables } from "../types";
 
-export async function getCurrentUserPost(
+export async function getCurrentUserPostHandler(
   userId: string,
   {
     arguments: { puzzleDate },

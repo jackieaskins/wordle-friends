@@ -11,7 +11,7 @@
     "deploy:backend": "npm run build -w backend -w cdk && npm run synth:backend -w cdk && npm run deploy:backend -w cdk && npm run graphql-codegen",
     "deploy:backend:alpha": "npm run graphql-codegen && npm run build -w backend -w cdk && npm run synth:backend:alpha -w cdk && npm run deploy:backend:alpha -w cdk",
     "deploy:backend:prod": "npm run build -w backend -w cdk && npm run synth:backend:prod -w cdk && npm run deploy:backend:prod -w cdk",
-    "graphql-codegen": "npm run graphql-codegen -w backend",
+    "graphql-codegen": "npm run graphql-codegen -w graphql",
     "format": "npm run format -ws --if-present",
     "frontend": "npm run start -w frontend",
     "lint": "npm run lint -ws --if-present",
@@ -31,7 +31,8 @@
     "backend",
     "cdk",
     "eslint-config",
-    "frontend"
+    "frontend",
+    "graphql"
   ],
   "devDependencies": {
     "husky": "^7.0.4",

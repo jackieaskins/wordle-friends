@@ -1,13 +1,13 @@
 import { AppSyncResolverEvent } from "aws-lambda";
-import { FRIENDS_TABLE } from "../constants";
-import { transactWrite } from "../dynamo";
 import {
   FriendKey,
   FriendStatus,
   SendFriendRequestMutationVariables,
-} from "../types";
+} from "wordle-friends-graphql";
+import { FRIENDS_TABLE } from "../constants";
+import { transactWrite } from "../dynamo";
 
-export async function sendFriendRequest(
+export async function sendFriendRequestHandler(
   userId: string,
   {
     arguments: { friendId },

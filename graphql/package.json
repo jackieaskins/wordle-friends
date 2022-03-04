@@ -1,0 +1,16 @@
+{
+  "name": "wordle-friends-graphql",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run graphql-codegen && tsc",
+    "graphql-codegen": "npx amplify codegen"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

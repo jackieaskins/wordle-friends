@@ -1,13 +1,16 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import {
+  ListFriendsQueryVariables,
+  PaginatedFriends,
+} from "wordle-friends-graphql";
+import {
   FRIENDS_TABLE,
   USER_ATTRIBUTES_TABLE,
   USER_ID_STATUS_INDEX,
 } from "../constants";
 import { batchGet, query } from "../dynamo";
-import { ListFriendsQueryVariables, PaginatedFriends } from "../types";
 
-export async function listFriends(
+export async function listFriendsHandler(
   userId: string,
   {
     arguments: { limit, status, nextToken },

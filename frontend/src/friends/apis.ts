@@ -6,24 +6,22 @@ import {
   UseQueryResult,
 } from "react-query";
 import {
+  acceptFriendRequest,
   AcceptFriendRequestMutation,
   AcceptFriendRequestMutationVariables,
+  deleteFriend,
   DeleteFriendMutation,
   DeleteFriendMutationVariables,
   Friend,
   FriendKey,
   FriendStatus,
+  listFriends,
   ListFriendsQuery,
   ListFriendsQueryVariables,
+  sendFriendRequest,
   SendFriendRequestMutation,
   SendFriendRequestMutationVariables,
-} from "../API";
-import {
-  acceptFriendRequest,
-  deleteFriend,
-  sendFriendRequest,
-} from "../api/mutations";
-import { listFriends } from "../api/queries";
+} from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
 
 type FriendsQueryKey =

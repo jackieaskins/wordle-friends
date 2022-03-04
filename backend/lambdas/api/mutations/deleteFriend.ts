@@ -1,9 +1,12 @@
 import { AppSyncResolverEvent } from "aws-lambda";
+import {
+  DeleteFriendMutationVariables,
+  FriendKey,
+} from "wordle-friends-graphql";
 import { FRIENDS_TABLE } from "../constants";
 import { transactWrite } from "../dynamo";
-import { DeleteFriendMutationVariables, FriendKey } from "../types";
 
-export async function deleteFriend(
+export async function deleteFriendHandler(
   userId: string,
   {
     arguments: { friendId },
