@@ -12,6 +12,7 @@ import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
 import { FriendsTableIndex, Stage } from "./types";
+import { getCloudWatchAlarmTopic } from "./utils";
 
 interface BackendStackProps extends StackProps {
   stage: Stage;
@@ -33,9 +34,15 @@ export class BackendStack extends Stack {
 
     const { stage } = props;
 
+    const cloudWatchAlarmTopic = getCloudWatchAlarmTopic(
+      this,
+      "CloudWatchAlarmTopic"
+    );
+
     const { friendsTable, postsTable, userAttributesTable } =
       new DynamoConstruct(this, "Dynamo", { stage });
     const { userPool } = new CognitoConstruct(this, "Cognito", {
+      cloudWatchAlarmTopic,
       userAttributesTable,
       stage,
     });

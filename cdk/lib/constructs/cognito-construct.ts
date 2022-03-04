@@ -1,4 +1,5 @@
 import { CfnOutput, Duration, Stack } from "aws-cdk-lib";
+import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import {
   AccountRecovery,
   BooleanAttribute,
@@ -10,11 +11,14 @@ import {
 import { Table } from "aws-cdk-lib/aws-dynamodb";
 import { FederatedPrincipal, Role } from "aws-cdk-lib/aws-iam";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { ITopic } from "aws-cdk-lib/aws-sns";
+import { Queue, QueueEncryption } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 import path from "path";
 import { Stage } from "../types";
 
 export interface CognitoConstructProps {
+  cloudWatchAlarmTopic: ITopic;
   stage: Stage;
   userAttributesTable: Table;
 }
@@ -28,9 +32,24 @@ export class CognitoConstruct extends Construct {
   constructor(
     scope: Construct,
     id: string,
-    { stage, userAttributesTable }: CognitoConstructProps
+    { cloudWatchAlarmTopic, stage, userAttributesTable }: CognitoConstructProps
   ) {
     super(scope, id);
+
+    const postConfirmationDLQ = new Queue(this, "PostConfirmationDLQ", {
+      queueName: `wordle-friends-post-confirmation-dlq-${stage}`,
+      encryption: QueueEncryption.KMS_MANAGED,
+    });
+    postConfirmationDLQ
+      .metricApproximateNumberOfMessagesVisible()
+      .createAlarm(this, "PostConfirmationDLQVisibleMessagesAlarm", {
+        threshold: 1,
+        evaluationPeriods: 1,
+        alarmName: `Post Confirmation DLQ Alarm ${stage
+          .charAt(0)
+          .toUpperCase()}${stage.slice(1)}`,
+      })
+      .addAlarmAction(new SnsAction(cloudWatchAlarmTopic));
 
     const postConfirmationHandler = new Function(
       this,
@@ -39,6 +58,8 @@ export class CognitoConstruct extends Construct {
         code: Code.fromAsset(
           path.join(__dirname, "../../../backend/lambdas/postConfirmation.zip")
         ),
+        deadLetterQueueEnabled: true,
+        deadLetterQueue: postConfirmationDLQ,
         functionName: `wordle-friends-post-confirmation-${stage}`,
         handler: "index.handler",
         runtime: Runtime.NODEJS_14_X,
