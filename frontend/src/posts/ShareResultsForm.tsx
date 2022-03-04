@@ -6,9 +6,11 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import dayjs, { Dayjs } from "dayjs";
+import { parseInt } from "lodash";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Color } from "../API";
+import { formatDateString } from "../utils/dates";
 
 export type ParsedWordleResult = {
   isHardMode: boolean;
@@ -33,6 +35,11 @@ function parseWordleResult(wordleResult: string): {
   return { details, guesses };
 }
 
+function getPuzzleDate(details: string): Dayjs {
+  const [, puzzleNum] = details.split(" ");
+  return dayjs("2021-06-19").add(parseInt(puzzleNum), "day");
+}
+
 export default function ShareResultsForm({
   setParsedResult,
 }: ShareResultsFormProps): JSX.Element {
@@ -46,7 +53,6 @@ export default function ShareResultsForm({
   const parse = useCallback(
     ({ wordleResult }) => {
       const { details, guesses } = parseWordleResult(wordleResult);
-      const [, puzzleNum] = details.split(" ");
 
       setParsedResult({
         isHardMode: details.endsWith("*"),
@@ -68,7 +74,7 @@ export default function ShareResultsForm({
               }
             })
         ),
-        date: dayjs("2021-06-19").add(parseInt(puzzleNum), "day"),
+        date: getPuzzleDate(details),
       });
     },
     [setParsedResult]
@@ -88,13 +94,25 @@ export default function ShareResultsForm({
             validate: (value: string) => {
               try {
                 const { details, guesses } = parseWordleResult(value);
-                return (
-                  (details.match(/^Wordle \d+ \d\/6\*?$/) &&
-                    guesses.every((guess) =>
-                      guess.match(/^(🟩|🟨|⬜|⬛){5}$/)
-                    )) ||
-                  "Invalid Wordle result"
-                );
+
+                if (!details.match(/^Wordle \d+ \d\/6\*?$/)) {
+                  return "Invalid Wordle details line";
+                }
+
+                if (
+                  !guesses.every((guess) => guess.match(/^(🟩|🟨|⬜|⬛){5}$/))
+                ) {
+                  return "Invalid guesses";
+                }
+
+                if (
+                  formatDateString(dayjs()) !==
+                  formatDateString(getPuzzleDate(details))
+                ) {
+                  return "Puzzle is not from today";
+                }
+
+                return true;
               } catch (e) {
                 return "Invalid Wordle result";
               }

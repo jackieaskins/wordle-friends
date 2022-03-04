@@ -61,6 +61,7 @@ export function useCreatePost(): UseMutationResult<
       onSuccess: (data) => {
         if (data.puzzleDate === formatDateString(dayjs())) {
           queryClient.setQueryData(PostsQueryKey.CurrentUserPost, data);
+          queryClient.invalidateQueries(PostsQueryKey.ListFriendPosts);
         }
       },
     }
