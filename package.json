@@ -4,20 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:backend": "npm run build -w graphql -w post-confirmation -w backend -w cdk",
     "cdk": "npm run cdk -w cdk",
+    "check-types": "npm run check-types -ws --if-present",
     "deploy": "npm run build -ws --if-present && npm run synth -w cdk && npm run deploy -w cdk",
-    "deploy:prod": "npm run build -ws --if-present && npm run synth:prod -w cdk && npm run deploy:prod -w cdk",
+    "deploy:backend": "npm run build:backend && npm run synth:backend -w cdk && npm run deploy:backend -w cdk",
+    "deploy:backend:alpha": "npm run build:backend && npm run synth:backend:alpha -w cdk && npm run deploy:backend:alpha -w cdk",
+    "deploy:backend:prod": "npm run build:backend && npm run synth:backend:prod -w cdk && npm run deploy:backend:prod -w cdk",
     "deploy:frontend": "npm run build -w frontend -w cdk && npm run synth:frontend -w cdk && npm run deploy:frontend -w cdk",
-    "deploy:backend": "npm run build -w graphql && npm run build -w backend -w cdk && npm run synth:backend -w cdk && npm run deploy:backend -w cdk",
-    "deploy:backend:alpha": "npm run build -w graphql && npm run build -w backend -w cdk && npm run synth:backend:alpha -w cdk && npm run deploy:backend:alpha -w cdk",
-    "deploy:backend:prod": "npm run build -w backend -w cdk && npm run synth:backend:prod -w cdk && npm run deploy:backend:prod -w cdk",
+    "deploy:prod": "npm run build -ws --if-present && npm run synth:prod -w cdk && npm run deploy:prod -w cdk",
     "format": "npm run format -ws --if-present",
     "frontend": "npm run start -w frontend",
     "lint": "npm run lint -ws --if-present",
     "lint:fix": "npm run lint:fix -ws --if-present",
     "precommit": "lint-staged",
     "prepare": "husky install",
-    "check-types": "npm run check-types -ws --if-present",
     "watch": "npm run watch -ws --if-present"
   },
   "keywords": [],
@@ -28,11 +29,12 @@
     "*.{ts,tsx}": "eslint --fix"
   },
   "workspaces": [
-    "backend",
-    "cdk",
     "eslint-config",
+    "graphql",
+    "post-confirmation",
+    "backend",
     "frontend",
-    "graphql"
+    "cdk"
   ],
   "devDependencies": {
     "husky": "^7.0.4",

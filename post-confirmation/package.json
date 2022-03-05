@@ -1,0 +1,29 @@
+{
+  "name": "wordle-friends-post-confirmation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "npm install --no-workspaces --production",
+    "build": "tsc",
+    "postbuild": "rm -f post-confirmation.zip && zip -r ./post-confirmation.zip node_modules dist",
+    "format": "prettier --write .",
+    "lint": "eslint --ext ts src",
+    "check-types": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.53.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.92",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "aws-lambda": "^1.0.7",
+    "eslint": "^8.9.0",
+    "eslint-config-wordle-friends": "file:../eslint-config",
+    "eslint-plugin-import": "^2.25.4",
+    "prettier": "^2.5.1"
+  }
+}
