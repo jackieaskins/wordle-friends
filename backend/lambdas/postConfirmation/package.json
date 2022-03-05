@@ -1,6 +1,0 @@
-{
-  "name": "wordle-friends-lambda-post-confirmation",
-  "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.53.0"
-  }
-}

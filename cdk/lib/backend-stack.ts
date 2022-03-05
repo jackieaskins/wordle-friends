@@ -67,11 +67,9 @@ export class BackendStack extends Stack {
     });
 
     const apiHandler = new Function(this, "ApiLambda", {
-      code: Code.fromAsset(
-        path.join(__dirname, "../../backend/lambdas/api.zip")
-      ),
+      code: Code.fromAsset(path.join(__dirname, "../../api/api.zip")),
       functionName: `wordle-friends-api-${stage}`,
-      handler: "index.handler",
+      handler: "dist/index.handler",
       runtime: Runtime.NODEJS_14_X,
       timeout: Duration.seconds(10),
       environment: {

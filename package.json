@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:backend": "npm run build -w graphql -w post-confirmation -w backend -w cdk",
+    "build:backend": "npm run build -w graphql -w post-confirmation -w api -w cdk",
     "cdk": "npm run cdk -w cdk",
     "check-types": "npm run check-types -ws --if-present",
     "deploy": "npm run build -ws --if-present && npm run synth -w cdk && npm run deploy -w cdk",
@@ -32,7 +32,7 @@
     "eslint-config",
     "graphql",
     "post-confirmation",
-    "backend",
+    "api",
     "frontend",
     "cdk"
   ],
