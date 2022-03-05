@@ -20,7 +20,7 @@ import { Stage } from "../types";
 export interface CognitoConstructProps {
   cloudWatchAlarmTopic: ITopic;
   stage: Stage;
-  userAttributesTable: Table;
+  usersTable: Table;
 }
 
 const VERIFICATION_MESSAGE =
@@ -32,7 +32,7 @@ export class CognitoConstruct extends Construct {
   constructor(
     scope: Construct,
     id: string,
-    { cloudWatchAlarmTopic, stage, userAttributesTable }: CognitoConstructProps
+    { cloudWatchAlarmTopic, stage, usersTable }: CognitoConstructProps
   ) {
     super(scope, id);
 
@@ -65,11 +65,11 @@ export class CognitoConstruct extends Construct {
         runtime: Runtime.NODEJS_14_X,
         timeout: Duration.seconds(30),
         environment: {
-          USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
+          USERS_TABLE: usersTable.tableName,
         },
       }
     );
-    userAttributesTable.grantWriteData(postConfirmationHandler);
+    usersTable.grantWriteData(postConfirmationHandler);
 
     this.userPool = new UserPool(this, "UserPool", {
       userPoolName: `wordle-friends-userpool-${stage}`,

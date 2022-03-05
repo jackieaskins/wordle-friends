@@ -1,6 +1,6 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import {
-  FriendKey,
+  Friend,
   FriendStatus,
   SendFriendRequestMutationVariables,
 } from "wordle-friends-graphql";
@@ -12,19 +12,25 @@ export async function sendFriendRequestHandler(
   {
     arguments: { friendId },
   }: AppSyncResolverEvent<SendFriendRequestMutationVariables>
-): Promise<FriendKey> {
+): Promise<Friend> {
   if (friendId === "" || friendId === userId) {
     throw new Error("Invalid friendId");
   }
 
-  // TODO: Validate friend exists
+  const sentRequest = {
+    id: `${userId}:${friendId}`,
+    userId,
+    friendId,
+    status: FriendStatus.SENT,
+  };
 
+  // TODO: Validate friend exists
   await transactWrite({
     TransactItems: [
       {
         Put: {
           TableName: FRIENDS_TABLE,
-          Item: { userId, friendId, status: FriendStatus.SENT },
+          Item: sentRequest,
           ConditionExpression: "attribute_not_exists(userId)",
         },
       },
@@ -32,6 +38,7 @@ export async function sendFriendRequestHandler(
         Put: {
           TableName: FRIENDS_TABLE,
           Item: {
+            id: `${friendId}:${userId}`,
             userId: friendId,
             friendId: userId,
             status: FriendStatus.RECEIVED,
@@ -42,5 +49,5 @@ export async function sendFriendRequestHandler(
     ],
   });
 
-  return { __typename: "FriendKey", userId, friendId };
+  return { __typename: "Friend", ...sentRequest };
 }

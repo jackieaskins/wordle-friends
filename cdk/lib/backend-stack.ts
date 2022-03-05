@@ -26,6 +26,8 @@ const RESOLVERS = {
     "sendFriendRequest",
     "createPost",
   ],
+  Post: ["user"],
+  Friend: ["friend"],
 };
 
 export class BackendStack extends Stack {
@@ -39,11 +41,14 @@ export class BackendStack extends Stack {
       "CloudWatchAlarmTopic"
     );
 
-    const { friendsTable, postsTable, userAttributesTable } =
-      new DynamoConstruct(this, "Dynamo", { stage });
+    const { friendsTable, postsTable, usersTable } = new DynamoConstruct(
+      this,
+      "Dynamo",
+      { stage }
+    );
     const { userPool } = new CognitoConstruct(this, "Cognito", {
       cloudWatchAlarmTopic,
-      userAttributesTable,
+      usersTable,
       stage,
     });
 
@@ -70,13 +75,13 @@ export class BackendStack extends Stack {
       runtime: Runtime.NODEJS_14_X,
       timeout: Duration.seconds(10),
       environment: {
-        USER_ATTRIBUTES_TABLE: userAttributesTable.tableName,
-        USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
+        USERS_TABLE: usersTable.tableName,
         FRIENDS_TABLE: friendsTable.tableName,
+        USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
         POSTS_TABLE: postsTable.tableName,
       },
     });
-    userAttributesTable.grantReadWriteData(apiHandler);
+    usersTable.grantReadWriteData(apiHandler);
     friendsTable.grantReadWriteData(apiHandler);
     postsTable.grantReadWriteData(apiHandler);
 

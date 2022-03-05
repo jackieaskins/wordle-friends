@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
         <UserPostSection />
 
         {posts?.map((post) => (
-          <RevealedPost key={post.user.userId} post={post} />
+          <RevealedPost key={post.userId} post={post} />
         ))}
       </Stack>
     </Container>

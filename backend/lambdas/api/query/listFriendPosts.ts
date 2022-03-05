@@ -3,14 +3,12 @@ import {
   FriendStatus,
   GetCurrentUserPostQueryVariables,
   ListFriendPostsQueryVariables,
-  ListFriendsQueryVariables,
   PaginatedPosts,
 } from "wordle-friends-graphql";
 import { getUser } from "../cognito";
-import { POSTS_TABLE } from "../constants";
-import { batchGet } from "../dynamo";
+import { FRIENDS_TABLE, POSTS_TABLE, USER_ID_STATUS_INDEX } from "../constants";
+import { batchGet, query } from "../dynamo";
 import { getCurrentUserPostHandler } from "./getCurrentUserPost";
-import { listFriendsHandler } from "./listFriends";
 
 export async function listFriendPostsHandler(
   userId: string,
@@ -28,29 +26,34 @@ export async function listFriendPostsHandler(
   // TODO: Remove casting
   const [
     currentUserPost,
-    { nextToken: newNextToken, friends },
+    { Items: friends, LastEvaluatedKey: lastEvaluatedKey },
     { UserAttributes: userAttributes },
   ] = await Promise.all([
     getCurrentUserPostHandler(userId, {
       arguments: { puzzleDate },
     } as AppSyncResolverEvent<GetCurrentUserPostQueryVariables>),
-    listFriendsHandler(userId, {
-      arguments: { nextToken, limit, status: FriendStatus.ACCEPTED },
-    } as AppSyncResolverEvent<ListFriendsQueryVariables>),
+    query({
+      TableName: FRIENDS_TABLE,
+      IndexName: USER_ID_STATUS_INDEX,
+      Limit: limit ?? 100,
+      ExclusiveStartKey: nextToken ? JSON.parse(nextToken) : undefined,
+      KeyConditionExpression: "userId = :userId and #status = :status",
+      ExpressionAttributeNames: { "#status": "status" },
+      ExpressionAttributeValues: {
+        ":userId": userId,
+        ":status": FriendStatus.ACCEPTED,
+      },
+    }),
     getUser(authorization),
   ]);
 
   if (!friends?.length) {
     return {
       __typename: "PaginatedPosts",
-      nextToken: newNextToken,
+      nextToken: lastEvaluatedKey ? JSON.stringify(lastEvaluatedKey) : null,
       posts: [],
     };
   }
-
-  const friendsById = Object.fromEntries(
-    friends.map((friend) => [friend.userId, friend])
-  );
 
   // TODO: Handle unprocessed keys
   const posts =
@@ -58,8 +61,8 @@ export async function listFriendPostsHandler(
       await batchGet({
         RequestItems: {
           [POSTS_TABLE]: {
-            Keys: friends.map(({ userId: friendId }) => ({
-              userId: friendId,
+            Keys: friends.map(({ friendId: userId }) => ({
+              userId,
               puzzleDate,
             })),
           },
@@ -74,10 +77,11 @@ export async function listFriendPostsHandler(
 
   return {
     __typename: "PaginatedPosts",
-    nextToken: newNextToken,
+    nextToken: lastEvaluatedKey ? JSON.stringify(lastEvaluatedKey) : null,
     posts: posts.map(
       ({
         userId: postUserId,
+        id,
         puzzleDate,
         isHardMode,
         message,
@@ -85,33 +89,21 @@ export async function listFriendPostsHandler(
         updatedAt,
         colors,
         guesses,
-      }) => {
-        const {
-          userId: friendId,
-          firstName,
-          lastName,
-        } = friendsById[postUserId];
-
-        return {
-          __typename: "Post",
-          user: {
-            __typename: "User",
-            userId: friendId,
-            firstName,
-            lastName,
-          },
-          puzzleDate,
-          isHardMode,
-          message,
-          createdAt,
-          updatedAt,
-          colors:
-            hasAlreadyPosted || showSquares
-              ? colors
-              : colors.map(() => [null, null, null, null, null]),
-          guesses: hasAlreadyPosted ? guesses : null,
-        };
-      }
+      }) => ({
+        __typename: "Post",
+        id,
+        userId: postUserId,
+        puzzleDate,
+        isHardMode,
+        message: hasAlreadyPosted ? message : null,
+        createdAt,
+        updatedAt,
+        colors:
+          hasAlreadyPosted || showSquares
+            ? colors
+            : colors.map(() => [null, null, null, null, null]),
+        guesses: hasAlreadyPosted ? guesses : null,
+      })
     ),
   };
 }

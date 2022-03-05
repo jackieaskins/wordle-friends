@@ -29,8 +29,8 @@ enum PostsQueryKey {
   ListFriendPosts = "listFriendPosts",
 }
 
-function generateUser({ id: userId, firstName, lastName }: UserInfo): User {
-  return { __typename: "User", userId, firstName, lastName };
+function generateUser({ id, firstName, lastName }: UserInfo): User {
+  return { __typename: "User", id, firstName, lastName };
 }
 
 export function useCreatePost(): UseMutationResult<

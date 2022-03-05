@@ -6,10 +6,15 @@ export const listFriends = /* GraphQL */ `
   query ListFriends($status: FriendStatus, $limit: Int, $nextToken: String) {
     listFriends(status: $status, limit: $limit, nextToken: $nextToken) {
       friends {
+        id
         userId
+        friendId
         status
-        firstName
-        lastName
+        friend {
+          id
+          firstName
+          lastName
+        }
       }
       nextToken
     }
@@ -18,6 +23,13 @@ export const listFriends = /* GraphQL */ `
 export const getCurrentUserPost = /* GraphQL */ `
   query GetCurrentUserPost($puzzleDate: AWSDate!) {
     getCurrentUserPost(puzzleDate: $puzzleDate) {
+      id
+      userId
+      user {
+        id
+        firstName
+        lastName
+      }
       puzzleDate
       isHardMode
       message
@@ -40,8 +52,10 @@ export const listFriendPosts = /* GraphQL */ `
       nextToken: $nextToken
     ) {
       posts {
+        id
+        userId
         user {
-          userId
+          id
           firstName
           lastName
         }

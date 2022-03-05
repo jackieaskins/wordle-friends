@@ -5,30 +5,48 @@
 export const acceptFriendRequest = /* GraphQL */ `
   mutation AcceptFriendRequest($friendId: String!) {
     acceptFriendRequest(friendId: $friendId) {
+      id
       userId
       friendId
+      status
+      friend {
+        id
+        firstName
+        lastName
+      }
     }
   }
 `;
 export const deleteFriend = /* GraphQL */ `
   mutation DeleteFriend($friendId: String!) {
-    deleteFriend(friendId: $friendId) {
-      userId
-      friendId
-    }
+    deleteFriend(friendId: $friendId)
   }
 `;
 export const sendFriendRequest = /* GraphQL */ `
   mutation SendFriendRequest($friendId: String!) {
     sendFriendRequest(friendId: $friendId) {
+      id
       userId
       friendId
+      status
+      friend {
+        id
+        firstName
+        lastName
+      }
     }
   }
 `;
 export const createPost = /* GraphQL */ `
   mutation CreatePost($input: PostInput!) {
     createPost(input: $input) {
+      id
+      userId
+      user {
+        id
+        firstName
+        lastName
+      }
       puzzleDate
       isHardMode
       message

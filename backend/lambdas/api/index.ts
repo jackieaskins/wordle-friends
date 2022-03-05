@@ -4,19 +4,19 @@ import {
   Callback,
   Context,
 } from "aws-lambda";
-import { acceptFriendRequestHandler } from "./mutations/acceptFriendRequest";
-import { createPostHandler } from "./mutations/createPost";
-import { deleteFriendHandler } from "./mutations/deleteFriend";
-import { sendFriendRequestHandler } from "./mutations/sendFriendRequest";
-import { getCurrentUserPostHandler } from "./queries/getCurrentUserPost";
-import { listFriendPostsHandler } from "./queries/listFriendPosts";
-import { listFriendsHandler } from "./queries/listFriends";
+import { friendHandler } from "./friend/friend";
+import { acceptFriendRequestHandler } from "./mutation/acceptFriendRequest";
+import { createPostHandler } from "./mutation/createPost";
+import { deleteFriendHandler } from "./mutation/deleteFriend";
+import { sendFriendRequestHandler } from "./mutation/sendFriendRequest";
+import { userHandler } from "./post/user";
+import { getCurrentUserPostHandler } from "./query/getCurrentUserPost";
+import { listFriendPostsHandler } from "./query/listFriendPosts";
+import { listFriendsHandler } from "./query/listFriends";
 
-export async function handler(
-  event: AppSyncResolverEvent<any, any>,
-  _context: Context,
-  callback: Callback
-): Promise<void> {
+async function handleField(
+  event: AppSyncResolverEvent<any, any>
+): Promise<any> {
   const {
     info: { fieldName },
     identity,
@@ -29,20 +29,37 @@ export async function handler(
 
   switch (fieldName) {
     case "listFriends":
-      return callback(null, await listFriendsHandler(userId, event));
+      return await listFriendsHandler(userId, event);
     case "deleteFriend":
-      return callback(null, await deleteFriendHandler(userId, event));
+      return await deleteFriendHandler(userId, event);
     case "sendFriendRequest":
-      return callback(null, await sendFriendRequestHandler(userId, event));
+      return await sendFriendRequestHandler(userId, event);
     case "acceptFriendRequest":
-      return callback(null, await acceptFriendRequestHandler(userId, event));
+      return await acceptFriendRequestHandler(userId, event);
     case "createPost":
-      return callback(null, await createPostHandler(userId, event));
+      return await createPostHandler(userId, event);
     case "getCurrentUserPost":
-      return callback(null, await getCurrentUserPostHandler(userId, event));
+      return await getCurrentUserPostHandler(userId, event);
     case "listFriendPosts":
-      return callback(null, await listFriendPostsHandler(userId, event));
+      return await listFriendPostsHandler(userId, event);
+    case "user":
+      return await userHandler(userId, event);
+    case "friend":
+      return await friendHandler(userId, event);
   }
 
   throw new Error("Unsupported operation");
+}
+
+export async function handler(
+  event: AppSyncResolverEvent<any, any>,
+  _context: Context,
+  callback: Callback
+): Promise<void> {
+  try {
+    callback(null, await handleField(event));
+  } catch (e: any) {
+    callback(e, null);
+    throw e;
+  }
 }

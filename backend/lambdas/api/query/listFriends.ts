@@ -1,14 +1,11 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import {
+  Friend,
   ListFriendsQueryVariables,
   PaginatedFriends,
 } from "wordle-friends-graphql";
-import {
-  FRIENDS_TABLE,
-  USER_ATTRIBUTES_TABLE,
-  USER_ID_STATUS_INDEX,
-} from "../constants";
-import { batchGet, query } from "../dynamo";
+import { FRIENDS_TABLE, USER_ID_STATUS_INDEX } from "../constants";
+import { query } from "../dynamo";
 
 export async function listFriendsHandler(
   userId: string,
@@ -23,7 +20,7 @@ export async function listFriendsHandler(
   const { Items: friends, LastEvaluatedKey: lastEvaluatedKey } = await query({
     TableName: FRIENDS_TABLE,
     IndexName: USER_ID_STATUS_INDEX,
-    Limit: limit ?? undefined,
+    Limit: limit ?? 100,
     ExclusiveStartKey: nextToken ? JSON.parse(nextToken) : undefined,
     KeyConditionExpression: status
       ? "userId = :userId and #status = :status"
@@ -35,39 +32,9 @@ export async function listFriendsHandler(
     },
   });
 
-  if (!friends || friends.length === 0) {
-    return { __typename: "PaginatedFriends", friends: [], nextToken: null };
-  }
-
-  // TODO: Handle unprocessed keys
-  const userAttributes =
-    (
-      await batchGet({
-        RequestItems: {
-          [USER_ATTRIBUTES_TABLE]: {
-            ConsistentRead: true,
-            Keys: friends.map(({ friendId }) => ({
-              userId: friendId,
-            })),
-          },
-        },
-      })
-    ).Responses?.[USER_ATTRIBUTES_TABLE] ?? [];
-
-  const userAttributesMap = Object.fromEntries(
-    userAttributes.map(({ userId, firstName, lastName }) => [
-      userId,
-      { userId, firstName, lastName },
-    ])
-  );
-
   return {
     __typename: "PaginatedFriends",
-    friends: friends.map(({ friendId, status }) => ({
-      __typename: "Friend",
-      status,
-      ...userAttributesMap[friendId],
-    })),
+    friends: (friends ?? []) as Friend[],
     nextToken: lastEvaluatedKey ? JSON.stringify(lastEvaluatedKey) : null,
   };
 }

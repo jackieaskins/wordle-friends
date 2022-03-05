@@ -2,10 +2,27 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type FriendKey = {
-  __typename: "FriendKey",
+export type Friend = {
+  __typename: "Friend",
+  id: string,
   userId: string,
   friendId: string,
+  status: FriendStatus,
+  friend?: User | null,
+};
+
+export enum FriendStatus {
+  ACCEPTED = "ACCEPTED",
+  SENT = "SENT",
+  RECEIVED = "RECEIVED",
+}
+
+
+export type User = {
+  __typename: "User",
+  id: string,
+  firstName: string,
+  lastName: string,
 };
 
 export type PostInput = {
@@ -22,31 +39,11 @@ export enum Color {
 }
 
 
-export type CurrentUserPost = {
-  __typename: "CurrentUserPost",
-  puzzleDate: string,
-  isHardMode: boolean,
-  message?: string | null,
-  createdAt: string,
-  updatedAt: string,
-  colors: Array< Array< Color | null > >,
-  guesses?: Array< string > | null,
-};
-
-export type BasePost = {
-  __typename: "BasePost",
-  puzzleDate: string,
-  isHardMode: boolean,
-  message?: string | null,
-  createdAt: string,
-  updatedAt: string,
-  colors: Array< Array< Color | null > >,
-  guesses?: Array< string > | null,
-};
-
 export type Post = {
   __typename: "Post",
-  user: User,
+  id: string,
+  userId: string,
+  user?: User | null,
   puzzleDate: string,
   isHardMode: boolean,
   message?: string | null,
@@ -55,33 +52,11 @@ export type Post = {
   colors: Array< Array< Color | null > >,
   guesses?: Array< string > | null,
 };
-
-export type User = {
-  __typename: "User",
-  userId: string,
-  firstName: string,
-  lastName: string,
-};
-
-export enum FriendStatus {
-  ACCEPTED = "ACCEPTED",
-  SENT = "SENT",
-  RECEIVED = "RECEIVED",
-}
-
 
 export type PaginatedFriends = {
   __typename: "PaginatedFriends",
   friends:  Array<Friend >,
   nextToken?: string | null,
-};
-
-export type Friend = {
-  __typename: "Friend",
-  userId: string,
-  status: FriendStatus,
-  firstName: string,
-  lastName: string,
 };
 
 export type PaginatedPosts = {
@@ -96,9 +71,17 @@ export type AcceptFriendRequestMutationVariables = {
 
 export type AcceptFriendRequestMutation = {
   acceptFriendRequest:  {
-    __typename: "FriendKey",
+    __typename: "Friend",
+    id: string,
     userId: string,
     friendId: string,
+    status: FriendStatus,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      firstName: string,
+      lastName: string,
+    } | null,
   },
 };
 
@@ -107,11 +90,7 @@ export type DeleteFriendMutationVariables = {
 };
 
 export type DeleteFriendMutation = {
-  deleteFriend:  {
-    __typename: "FriendKey",
-    userId: string,
-    friendId: string,
-  },
+  deleteFriend?: boolean | null,
 };
 
 export type SendFriendRequestMutationVariables = {
@@ -120,9 +99,17 @@ export type SendFriendRequestMutationVariables = {
 
 export type SendFriendRequestMutation = {
   sendFriendRequest:  {
-    __typename: "FriendKey",
+    __typename: "Friend",
+    id: string,
     userId: string,
     friendId: string,
+    status: FriendStatus,
+    friend?:  {
+      __typename: "User",
+      id: string,
+      firstName: string,
+      lastName: string,
+    } | null,
   },
 };
 
@@ -132,7 +119,15 @@ export type CreatePostMutationVariables = {
 
 export type CreatePostMutation = {
   createPost:  {
-    __typename: "CurrentUserPost",
+    __typename: "Post",
+    id: string,
+    userId: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      firstName: string,
+      lastName: string,
+    } | null,
     puzzleDate: string,
     isHardMode: boolean,
     message?: string | null,
@@ -154,10 +149,16 @@ export type ListFriendsQuery = {
     __typename: "PaginatedFriends",
     friends:  Array< {
       __typename: "Friend",
+      id: string,
       userId: string,
+      friendId: string,
       status: FriendStatus,
-      firstName: string,
-      lastName: string,
+      friend?:  {
+        __typename: "User",
+        id: string,
+        firstName: string,
+        lastName: string,
+      } | null,
     } >,
     nextToken?: string | null,
   },
@@ -169,7 +170,15 @@ export type GetCurrentUserPostQueryVariables = {
 
 export type GetCurrentUserPostQuery = {
   getCurrentUserPost?:  {
-    __typename: "CurrentUserPost",
+    __typename: "Post",
+    id: string,
+    userId: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      firstName: string,
+      lastName: string,
+    } | null,
     puzzleDate: string,
     isHardMode: boolean,
     message?: string | null,
@@ -191,12 +200,14 @@ export type ListFriendPostsQuery = {
     __typename: "PaginatedPosts",
     posts:  Array< {
       __typename: "Post",
-      user:  {
+      id: string,
+      userId: string,
+      user?:  {
         __typename: "User",
-        userId: string,
+        id: string,
         firstName: string,
         lastName: string,
-      },
+      } | null,
       puzzleDate: string,
       isHardMode: boolean,
       message?: string | null,

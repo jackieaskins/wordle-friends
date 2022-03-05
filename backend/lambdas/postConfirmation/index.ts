@@ -10,20 +10,16 @@ export async function handler(
 ): Promise<void> {
   const {
     request: {
-      userAttributes: {
-        sub: userId,
-        given_name: firstName,
-        family_name: lastName,
-      },
+      userAttributes: { sub: id, given_name: firstName, family_name: lastName },
     },
   } = event;
 
   try {
     await dynamo.send(
       new PutItemCommand({
-        TableName: process.env.USER_ATTRIBUTES_TABLE,
+        TableName: process.env.USERS_TABLE,
         Item: {
-          userId: { S: userId },
+          id: { S: id },
           firstName: { S: firstName },
           lastName: { S: lastName },
         },

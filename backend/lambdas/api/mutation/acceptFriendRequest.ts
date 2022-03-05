@@ -1,7 +1,7 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import {
   AcceptFriendRequestMutationVariables,
-  FriendKey,
+  Friend,
   FriendStatus,
 } from "wordle-friends-graphql";
 import { FRIENDS_TABLE } from "../constants";
@@ -12,7 +12,7 @@ export async function acceptFriendRequestHandler(
   {
     arguments: { friendId },
   }: AppSyncResolverEvent<AcceptFriendRequestMutationVariables>
-): Promise<FriendKey> {
+): Promise<Friend> {
   if (friendId === "" || friendId === userId) {
     throw new Error("Invalid friendId");
   }
@@ -42,5 +42,11 @@ export async function acceptFriendRequestHandler(
     ],
   });
 
-  return { __typename: "FriendKey", userId, friendId };
+  return {
+    __typename: "Friend",
+    id: `${userId}:${friendId}`,
+    userId,
+    friendId,
+    status: FriendStatus.ACCEPTED,
+  };
 }

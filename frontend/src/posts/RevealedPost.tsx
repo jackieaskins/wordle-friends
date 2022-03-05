@@ -16,14 +16,7 @@ type RevealedPostProps = {
 };
 
 export default function RevealedPost({
-  post: {
-    user: { firstName, lastName },
-    colors,
-    isHardMode,
-    message,
-    guesses,
-    createdAt,
-  },
+  post: { user, userId, colors, isHardMode, message, guesses, createdAt },
 }: RevealedPostProps): JSX.Element {
   const bgColor = useColorModeValue("gray.200", "gray.900");
 
@@ -54,7 +47,7 @@ export default function RevealedPost({
     >
       <Flex direction="column">
         <Text as="strong">
-          {firstName} {lastName}
+          {user ? `${user.firstName} ${user.lastName}` : userId}
         </Text>
         <Text fontSize="xs" color="gray.500">
           {dayjs().to(createdAt)} {isHardMode && <span> - Hard mode</span>}

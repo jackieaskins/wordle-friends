@@ -49,12 +49,14 @@ export default function FriendsTable({
           </Tr>
         )}
         {!isLoading &&
-          friends?.map(({ userId: friendId, firstName, lastName }) => (
+          friends?.map(({ friendId, friend }) => (
             <Tr key={friendId}>
               <Td>
                 <Flex alignItems="center" justifyContent="space-between">
                   <Text>
-                    {firstName} {lastName}
+                    {friend
+                      ? `${friend.firstName} ${friend.lastName}`
+                      : friendId}
                   </Text>
                   {actions(friendId)}
                 </Flex>

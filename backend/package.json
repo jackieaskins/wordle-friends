@@ -10,6 +10,7 @@
     "lint:fix": "npm run lint -- --fix",
     "pack:api": "npm --prefix ./lambdas/api install && rm -f ./lambdas/api.zip && cd ./lambdas/api && zip -r -X ../api.zip .",
     "pack:postconfirmation": "npm --prefix ./lambdas/postConfirmation install && rm -f ./lambdas/postConfirmation.zip && cd ./lambdas/postConfirmation && zip -r -X ../postConfirmation.zip .",
+    "check-types": "tsc --noEmit",
     "watch": "tsc -w"
   },
   "keywords": [],

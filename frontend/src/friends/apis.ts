@@ -13,7 +13,6 @@ import {
   DeleteFriendMutation,
   DeleteFriendMutationVariables,
   Friend,
-  FriendKey,
   FriendStatus,
   listFriends,
   ListFriendsQuery,
@@ -30,7 +29,7 @@ type FriendsQueryKey =
   | "friends";
 
 export function useSendFriendRequest(): UseMutationResult<
-  FriendKey | undefined,
+  Friend | undefined,
   Error,
   SendFriendRequestMutationVariables
 > {
@@ -53,7 +52,7 @@ export function useSendFriendRequest(): UseMutationResult<
 }
 
 export function useAcceptFriendRequest(): UseMutationResult<
-  FriendKey | undefined,
+  Friend | undefined,
   Error,
   AcceptFriendRequestMutationVariables
 > {
@@ -77,20 +76,19 @@ export function useAcceptFriendRequest(): UseMutationResult<
 }
 
 export function useDeleteFriend(): UseMutationResult<
-  FriendKey | undefined,
+  void,
   Error,
   DeleteFriendMutationVariables
 > {
   const queryClient = useQueryClient();
 
   return useMutation(
-    async (input) =>
-      (
-        await callGraphql<DeleteFriendMutationVariables, DeleteFriendMutation>(
-          deleteFriend,
-          input
-        )
-      ).data?.deleteFriend,
+    async (input) => {
+      await callGraphql<DeleteFriendMutationVariables, DeleteFriendMutation>(
+        deleteFriend,
+        input
+      );
+    },
     {
       onSuccess: () => {
         queryClient.invalidateQueries("sentFriendRequests");
