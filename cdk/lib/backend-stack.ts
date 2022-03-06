@@ -1,8 +1,10 @@
 import {
   AuthorizationType,
+  DynamoDbDataSource,
   FieldLogLevel,
   GraphqlApi,
   LambdaDataSource,
+  MappingTemplate,
   Schema,
 } from "@aws-cdk/aws-appsync-alpha";
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
@@ -13,6 +15,7 @@ import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
 import { FriendsTableIndex, Stage } from "./types";
 import { getCloudWatchAlarmTopic } from "./utils";
+import { getUserRequest } from "./vtl";
 
 interface BackendStackProps extends StackProps {
   stage: Stage;
@@ -26,8 +29,6 @@ const RESOLVERS = {
     "sendFriendRequest",
     "createPost",
   ],
-  Post: ["user"],
-  Friend: ["friend"],
 };
 
 export class BackendStack extends Stack {
@@ -83,6 +84,26 @@ export class BackendStack extends Stack {
     friendsTable.grantReadWriteData(apiHandler);
     postsTable.grantReadWriteData(apiHandler);
 
+    const usersTableDS = new DynamoDbDataSource(this, "UsersDynamoDataSource", {
+      api,
+      table: usersTable,
+    });
+    usersTableDS.createResolver({
+      typeName: "Post",
+      fieldName: "user",
+      requestMappingTemplate: MappingTemplate.fromString(
+        getUserRequest("userId")
+      ),
+      responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
+    });
+    usersTableDS.createResolver({
+      typeName: "Friend",
+      fieldName: "friend",
+      requestMappingTemplate: MappingTemplate.fromString(
+        getUserRequest("friendId")
+      ),
+      responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
+    });
     const apiLambdaDS = new LambdaDataSource(this, "ApiLambdaDataSource", {
       api,
       lambdaFunction: apiHandler,

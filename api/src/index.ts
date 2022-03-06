@@ -4,12 +4,10 @@ import {
   Callback,
   Context,
 } from "aws-lambda";
-import { friendHandler } from "./friend/friend";
 import { acceptFriendRequestHandler } from "./mutation/acceptFriendRequest";
 import { createPostHandler } from "./mutation/createPost";
 import { deleteFriendHandler } from "./mutation/deleteFriend";
 import { sendFriendRequestHandler } from "./mutation/sendFriendRequest";
-import { userHandler } from "./post/user";
 import { getCurrentUserPostHandler } from "./query/getCurrentUserPost";
 import { listFriendPostsHandler } from "./query/listFriendPosts";
 import { listFriendsHandler } from "./query/listFriends";
@@ -42,10 +40,6 @@ async function handleField(
       return await getCurrentUserPostHandler(userId, event);
     case "listFriendPosts":
       return await listFriendPostsHandler(userId, event);
-    case "user":
-      return await userHandler(userId, event);
-    case "friend":
-      return await friendHandler(userId, event);
   }
 
   throw new Error("Unsupported operation");

@@ -95,7 +95,7 @@ export default function ShareResultsForm({
               try {
                 const { details, guesses } = parseWordleResult(value);
 
-                if (!details.match(/^Wordle \d+ \d\/6\*?$/)) {
+                if (!details.match(/^Wordle \d+ (\d|X)\/6\*?$/)) {
                   return "Invalid Wordle details line";
                 }
 

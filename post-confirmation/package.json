@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prebuild": "npm install --no-workspaces --production",
+    "prebuild": "npm install --no-workspaces --production --no-package-lock",
     "build": "tsc",
     "postbuild": "rm -f post-confirmation.zip && zip -r ./post-confirmation.zip node_modules dist",
     "format": "prettier --write .",
