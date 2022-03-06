@@ -5,7 +5,7 @@ import {
   Table,
 } from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
-import { FriendsTableIndex, Stage } from "../types";
+import { CommentsTableIndex, FriendsTableIndex, Stage } from "../types";
 
 export interface DynamoConstructProps {
   stage: Stage;
@@ -15,6 +15,7 @@ export class DynamoConstruct extends Construct {
   friendsTable: Table;
   postsTable: Table;
   usersTable: Table;
+  commentsTable: Table;
 
   constructor(scope: Construct, id: string, { stage }: DynamoConstructProps) {
     super(scope, id);
@@ -43,6 +44,18 @@ export class DynamoConstruct extends Construct {
       partitionKey: { name: "userId", type: AttributeType.STRING },
       sortKey: { name: "puzzleDate", type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
+    });
+
+    this.commentsTable = new Table(this, "CommentsTable", {
+      tableName: `wordle-friends-comments-${stage}`,
+      partitionKey: { name: "id", type: AttributeType.STRING },
+      billingMode: BillingMode.PAY_PER_REQUEST,
+    });
+    this.commentsTable.addGlobalSecondaryIndex({
+      indexName: CommentsTableIndex.PostIdCreatedAt,
+      partitionKey: { name: "postId", type: AttributeType.STRING },
+      sortKey: { name: "createdAt", type: AttributeType.STRING },
+      projectionType: ProjectionType.ALL,
     });
   }
 }

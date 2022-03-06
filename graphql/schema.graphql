@@ -51,6 +51,21 @@ type PaginatedPosts {
   nextToken: String
 }
 
+type Comment {
+  id: ID!
+  postId: String!
+  userId: String!
+  user: User
+  text: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type PaginatedComments {
+  comments: [Comment!]!
+  nextToken: String
+}
+
 input PostInput {
   puzzleDate: AWSDate!
   isHardMode: Boolean!
@@ -59,10 +74,16 @@ input PostInput {
   guesses: [String!]
 }
 
+input CommentInput {
+  postId: String!
+  text: String!
+}
+
 type Query {
   listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends!
   getCurrentUserPost(puzzleDate: AWSDate!): Post
   listFriendPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
+  listPostComments(postId: String!, limit: Int, nextToken: String): PaginatedComments!
 }
 
 type Mutation {
@@ -70,4 +91,5 @@ type Mutation {
   deleteFriend(friendId: String!): Boolean
   sendFriendRequest(friendId: String!): Friend!
   createPost(input: PostInput!): Post!
+  createComment(input: CommentInput!): Comment!
 }

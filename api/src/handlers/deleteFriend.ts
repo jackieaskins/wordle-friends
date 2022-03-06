@@ -1,7 +1,6 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { DeleteFriendMutationVariables } from "wordle-friends-graphql";
-import { FRIENDS_TABLE } from "../constants";
-import { transactWrite } from "../dynamo";
+import { deleteFriend } from "../tables/friends";
 
 export async function deleteFriendHandler(
   userId: string,
@@ -13,15 +12,5 @@ export async function deleteFriendHandler(
     throw new Error("Invalid friendId");
   }
 
-  await transactWrite({
-    TransactItems: [
-      { Delete: { TableName: FRIENDS_TABLE, Key: { userId, friendId } } },
-      {
-        Delete: {
-          TableName: FRIENDS_TABLE,
-          Key: { userId: friendId, friendId: userId },
-        },
-      },
-    ],
-  });
+  await deleteFriend({ userId, friendId });
 }

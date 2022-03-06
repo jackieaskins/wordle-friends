@@ -53,6 +53,22 @@ export type Post = {
   guesses?: Array< string > | null,
 };
 
+export type CommentInput = {
+  postId: string,
+  text: string,
+};
+
+export type Comment = {
+  __typename: "Comment",
+  id: string,
+  postId: string,
+  userId: string,
+  user?: User | null,
+  text: string,
+  createdAt: string,
+  updatedAt: string,
+};
+
 export type PaginatedFriends = {
   __typename: "PaginatedFriends",
   friends:  Array<Friend >,
@@ -62,6 +78,12 @@ export type PaginatedFriends = {
 export type PaginatedPosts = {
   __typename: "PaginatedPosts",
   posts:  Array<Post >,
+  nextToken?: string | null,
+};
+
+export type PaginatedComments = {
+  __typename: "PaginatedComments",
+  comments:  Array<Comment >,
   nextToken?: string | null,
 };
 
@@ -135,6 +157,28 @@ export type CreatePostMutation = {
     updatedAt: string,
     colors: Array< Array< Color | null > >,
     guesses?: Array< string > | null,
+  },
+};
+
+export type CreateCommentMutationVariables = {
+  input: CommentInput,
+};
+
+export type CreateCommentMutation = {
+  createComment:  {
+    __typename: "Comment",
+    id: string,
+    postId: string,
+    userId: string,
+    user?:  {
+      __typename: "User",
+      id: string,
+      firstName: string,
+      lastName: string,
+    } | null,
+    text: string,
+    createdAt: string,
+    updatedAt: string,
   },
 };
 
@@ -215,6 +259,34 @@ export type ListFriendPostsQuery = {
       updatedAt: string,
       colors: Array< Array< Color | null > >,
       guesses?: Array< string > | null,
+    } >,
+    nextToken?: string | null,
+  },
+};
+
+export type ListPostCommentsQueryVariables = {
+  postId: string,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPostCommentsQuery = {
+  listPostComments:  {
+    __typename: "PaginatedComments",
+    comments:  Array< {
+      __typename: "Comment",
+      id: string,
+      postId: string,
+      userId: string,
+      user?:  {
+        __typename: "User",
+        id: string,
+        firstName: string,
+        lastName: string,
+      } | null,
+      text: string,
+      createdAt: string,
+      updatedAt: string,
     } >,
     nextToken?: string | null,
   },

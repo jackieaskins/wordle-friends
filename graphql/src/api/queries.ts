@@ -71,3 +71,23 @@ export const listFriendPosts = /* GraphQL */ `
     }
   }
 `;
+export const listPostComments = /* GraphQL */ `
+  query ListPostComments($postId: String!, $limit: Int, $nextToken: String) {
+    listPostComments(postId: $postId, limit: $limit, nextToken: $nextToken) {
+      comments {
+        id
+        postId
+        userId
+        user {
+          id
+          firstName
+          lastName
+        }
+        text
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

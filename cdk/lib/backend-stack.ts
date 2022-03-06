@@ -13,7 +13,7 @@ import { Construct } from "constructs";
 import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
-import { FriendsTableIndex, Stage } from "./types";
+import { CommentsTableIndex, FriendsTableIndex, Stage } from "./types";
 import { getCloudWatchAlarmTopic } from "./utils";
 import { getUserRequest } from "./vtl";
 
@@ -30,6 +30,11 @@ const RESOLVERS = {
     "createPost",
   ],
 };
+const USER_MAPPINGS = [
+  { typeName: "Post", fieldName: "user", sourceKey: "userId" },
+  { typeName: "Friend", fieldName: "friend", sourceKey: "friendId" },
+  { typeName: "Comment", fieldName: "user", sourceKey: "userId" },
+];
 
 export class BackendStack extends Stack {
   constructor(scope: Construct, id: string, props: BackendStackProps) {
@@ -42,11 +47,8 @@ export class BackendStack extends Stack {
       "CloudWatchAlarmTopic"
     );
 
-    const { friendsTable, postsTable, usersTable } = new DynamoConstruct(
-      this,
-      "Dynamo",
-      { stage }
-    );
+    const { commentsTable, friendsTable, postsTable, usersTable } =
+      new DynamoConstruct(this, "Dynamo", { stage });
     const { userPool } = new CognitoConstruct(this, "Cognito", {
       cloudWatchAlarmTopic,
       usersTable,
@@ -74,13 +76,14 @@ export class BackendStack extends Stack {
       runtime: Runtime.NODEJS_14_X,
       timeout: Duration.seconds(10),
       environment: {
-        USERS_TABLE: usersTable.tableName,
+        COMMENTS_TABLE: commentsTable.tableName,
+        POST_ID_CREATED_AT_INDEX: CommentsTableIndex.PostIdCreatedAt,
         FRIENDS_TABLE: friendsTable.tableName,
         USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
         POSTS_TABLE: postsTable.tableName,
       },
     });
-    usersTable.grantReadWriteData(apiHandler);
+    commentsTable.grantReadWriteData(apiHandler);
     friendsTable.grantReadWriteData(apiHandler);
     postsTable.grantReadWriteData(apiHandler);
 
@@ -88,27 +91,21 @@ export class BackendStack extends Stack {
       api,
       table: usersTable,
     });
-    usersTableDS.createResolver({
-      typeName: "Post",
-      fieldName: "user",
-      requestMappingTemplate: MappingTemplate.fromString(
-        getUserRequest("userId")
-      ),
-      responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
+    USER_MAPPINGS.map(({ typeName, fieldName, sourceKey }) => {
+      usersTableDS.createResolver({
+        typeName,
+        fieldName,
+        requestMappingTemplate: MappingTemplate.fromString(
+          getUserRequest(sourceKey)
+        ),
+        responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
+      });
     });
-    usersTableDS.createResolver({
-      typeName: "Friend",
-      fieldName: "friend",
-      requestMappingTemplate: MappingTemplate.fromString(
-        getUserRequest("friendId")
-      ),
-      responseMappingTemplate: MappingTemplate.dynamoDbResultItem(),
-    });
+
     const apiLambdaDS = new LambdaDataSource(this, "ApiLambdaDataSource", {
       api,
       lambdaFunction: apiHandler,
     });
-
     Object.entries(RESOLVERS).forEach(([typeName, fieldNames]) => {
       fieldNames.forEach((fieldName) => {
         apiLambdaDS.createResolver({ typeName, fieldName });

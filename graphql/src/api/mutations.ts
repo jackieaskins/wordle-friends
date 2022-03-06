@@ -57,3 +57,20 @@ export const createPost = /* GraphQL */ `
     }
   }
 `;
+export const createComment = /* GraphQL */ `
+  mutation CreateComment($input: CommentInput!) {
+    createComment(input: $input) {
+      id
+      postId
+      userId
+      user {
+        id
+        firstName
+        lastName
+      }
+      text
+      createdAt
+      updatedAt
+    }
+  }
+`;
