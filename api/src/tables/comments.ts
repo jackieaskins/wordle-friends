@@ -7,8 +7,8 @@ import {
   ListPostCommentsQueryVariables,
   PaginatedComments,
 } from "wordle-friends-graphql";
+import { put, query } from "../clients/dynamo";
 import { COMMENTS_TABLE, POST_ID_CREATED_AT_INDEX } from "../constants";
-import { put, query } from "../dynamo";
 
 export type SimpleComment = Omit<Comment, "__typename" | "user">;
 export type SimplePaginatedComments = Omit<

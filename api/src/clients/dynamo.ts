@@ -13,7 +13,7 @@ import {
   TransactWriteCommandInput,
   TransactWriteCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
-import { REGION } from "./constants";
+import { REGION } from "../constants";
 
 const MAX_LIMIT = 100;
 

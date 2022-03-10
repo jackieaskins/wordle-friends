@@ -4,8 +4,8 @@ import {
   ListFriendsQueryVariables,
   PaginatedFriends,
 } from "wordle-friends-graphql";
+import { query, transactWrite } from "../clients/dynamo";
 import { FRIENDS_TABLE, USER_ID_STATUS_INDEX } from "../constants";
-import { query, transactWrite } from "../dynamo";
 
 export type FriendKey = {
   userId: string;

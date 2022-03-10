@@ -12,6 +12,7 @@ import { ReactNode } from "react";
 import { UseQueryResult } from "react-query";
 import { Friend } from "wordle-friends-graphql";
 import LoadingIndicator from "../common/LoadingIndicator";
+import UserName from "../common/UserName";
 
 type FriendsTableProps = {
   useFriendsQuery: () => UseQueryResult<Friend[]>;
@@ -54,9 +55,7 @@ export default function FriendsTable({
               <Td>
                 <Flex alignItems="center" justifyContent="space-between">
                   <Text>
-                    {friend
-                      ? `${friend.firstName} ${friend.lastName}`
-                      : friendId}
+                    <UserName user={friend} userId={friendId} />
                   </Text>
                   {actions(friendId)}
                 </Flex>

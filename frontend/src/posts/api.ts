@@ -7,6 +7,10 @@ import {
   UseQueryResult,
 } from "react-query";
 import {
+  Comment,
+  createComment,
+  CreateCommentMutation,
+  CreateCommentMutationVariables,
   createPost,
   CreatePostMutation,
   CreatePostMutationVariables,
@@ -16,11 +20,11 @@ import {
   listFriendPosts,
   ListFriendPostsQuery,
   ListFriendPostsQueryVariables,
+  listPostComments,
+  ListPostCommentsQuery,
+  ListPostCommentsQueryVariables,
   Post,
-  User,
 } from "wordle-friends-graphql";
-import { UserInfo } from "../auth/AuthContext";
-import { useCurrentUser } from "../auth/CurrentUserContext";
 import { callGraphql } from "../graphql";
 import { formatDateString } from "../utils/dates";
 
@@ -29,8 +33,52 @@ enum PostsQueryKey {
   ListFriendPosts = "listFriendPosts",
 }
 
-function generateUser({ id, firstName, lastName }: UserInfo): User {
-  return { __typename: "User", id, firstName, lastName };
+function getCommentsKey(postId: string): [string, string] {
+  return ["coments", postId];
+}
+
+export function usePostComments(postId: string): UseQueryResult<Comment[]> {
+  return useQuery<Comment[]>(
+    getCommentsKey(postId),
+    async () =>
+      (
+        await callGraphql<
+          ListPostCommentsQueryVariables,
+          ListPostCommentsQuery
+        >(listPostComments, { postId })
+      ).data?.listPostComments?.comments ?? []
+  );
+}
+
+export function useCreateComment(): UseMutationResult<
+  Comment,
+  Error,
+  CreateCommentMutationVariables
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (input) => {
+      const { data } = await callGraphql<
+        CreateCommentMutationVariables,
+        CreateCommentMutation
+      >(createComment, input);
+
+      if (data?.createComment) {
+        return data?.createComment;
+      }
+
+      throw new Error("No comment returned");
+    },
+    {
+      onSuccess: (comment: Comment) => {
+        queryClient.setQueryData<Comment[]>(
+          getCommentsKey(comment.postId),
+          (comments) => [...(comments ?? []), comment]
+        );
+      },
+    }
+  );
 }
 
 export function useCreatePost(): UseMutationResult<
@@ -39,7 +87,6 @@ export function useCreatePost(): UseMutationResult<
   CreatePostMutationVariables
 > {
   const queryClient = useQueryClient();
-  const currentUser = useCurrentUser();
 
   return useMutation(
     async (input) => {
@@ -48,15 +95,11 @@ export function useCreatePost(): UseMutationResult<
         CreatePostMutation
       >(createPost, input);
 
-      if (data) {
-        return {
-          ...data.createPost,
-          __typename: "Post",
-          user: generateUser(currentUser),
-        };
+      if (data?.createPost) {
+        return data?.createPost;
       }
 
-      throw new Error("No data returned");
+      throw new Error("No post returned");
     },
     {
       onSuccess: (data) => {
@@ -70,8 +113,6 @@ export function useCreatePost(): UseMutationResult<
 }
 
 export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
-  const currentUser = useCurrentUser();
-
   return useQuery<Post | null>(PostsQueryKey.CurrentUserPost, async () => {
     const currentUserPost = (
       await callGraphql<
@@ -84,13 +125,7 @@ export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
       return null;
     }
 
-    const post: Post = {
-      ...currentUserPost,
-      __typename: "Post",
-      user: generateUser(currentUser),
-    };
-
-    return post;
+    return currentUserPost;
   });
 }
 

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { PaginatedPosts, Post, PostInput } from "wordle-friends-graphql";
+import { batchGet, get, put } from "../clients/dynamo";
 import { POSTS_TABLE } from "../constants";
-import { batchGet, get, put } from "../dynamo";
 
 export type PostKey = {
   userId: string;

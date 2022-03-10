@@ -1,19 +1,24 @@
 import { useState } from "react";
-import LoadingIndicator from "../common/LoadingIndicator";
-import { useGetCurrentUserPost } from "./api";
+import { Post } from "wordle-friends-graphql";
 import EnterGuessesForm from "./EnterGuessesForm";
 import RevealedPost from "./RevealedPost";
 import ShareResultsForm, { ParsedWordleResult } from "./ShareResultsForm";
 
-export default function UserPostSection(): JSX.Element {
+export type UserPostSectionProps = {
+  currentUserPost: Post | null | undefined;
+};
+
+export default function UserPostSection({
+  currentUserPost,
+}: UserPostSectionProps): JSX.Element {
   const [parsedResult, setParsedResult] = useState<ParsedWordleResult | null>(
     null
   );
-  const { isLoading, data: post } = useGetCurrentUserPost();
 
-  if (isLoading)
-    return <LoadingIndicator>{"Loading today's result"}</LoadingIndicator>;
-  if (post) return <RevealedPost post={post} />;
+  if (currentUserPost)
+    return (
+      <RevealedPost currentUserPost={currentUserPost} post={currentUserPost} />
+    );
   if (parsedResult) return <EnterGuessesForm parsedResult={parsedResult} />;
   return <ShareResultsForm setParsedResult={setParsedResult} />;
 }

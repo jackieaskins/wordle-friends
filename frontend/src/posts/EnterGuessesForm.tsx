@@ -23,8 +23,7 @@ type EnterGuessesFormProps = {
 export default function EnterGuessesForm({
   parsedResult: { date, guessColors, guessSquares, isHardMode },
 }: EnterGuessesFormProps): JSX.Element {
-  const { mutate: createPost } = useCreatePost();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: createPost, isLoading } = useCreatePost();
   const [guesses, setGuesses] = useState<string[]>(guessColors.map(() => ""));
   const [message, setMessage] = useState("");
 
@@ -48,24 +47,15 @@ export default function EnterGuessesForm({
     (event) => {
       event.preventDefault();
 
-      setIsSubmitting(true);
-
-      createPost(
-        {
-          input: {
-            colors: guessColors,
-            isHardMode,
-            puzzleDate: formatDateString(date),
-            message: message || undefined,
-            guesses,
-          },
+      createPost({
+        input: {
+          colors: guessColors,
+          isHardMode,
+          puzzleDate: formatDateString(date),
+          message: message || undefined,
+          guesses,
         },
-        {
-          onSettled: () => {
-            setIsSubmitting(false);
-          },
-        }
-      );
+      });
     },
     [createPost, date, guessColors, guesses, isHardMode, message]
   );
@@ -108,7 +98,7 @@ export default function EnterGuessesForm({
       <Button
         type="submit"
         isDisabled={guesses.some((guess) => guess.length !== 5)}
-        isLoading={isSubmitting}
+        isLoading={isLoading}
         loadingText="Sharing"
       >
         Share

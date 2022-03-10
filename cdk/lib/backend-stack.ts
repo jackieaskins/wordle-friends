@@ -22,11 +22,17 @@ interface BackendStackProps extends StackProps {
 }
 
 const RESOLVERS = {
-  Query: ["listFriends", "getCurrentUserPost", "listFriendPosts"],
+  Query: [
+    "listPostComments",
+    "listFriends",
+    "getCurrentUserPost",
+    "listFriendPosts",
+  ],
   Mutation: [
     "acceptFriendRequest",
     "deleteFriend",
     "sendFriendRequest",
+    "createComment",
     "createPost",
   ],
 };
