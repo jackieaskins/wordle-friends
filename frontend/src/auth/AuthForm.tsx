@@ -45,7 +45,7 @@ export default function AuthForm({
   );
 
   return (
-    <Container maxW="xl" centerContent minH="100vh" justifyContent="center">
+    <Container width="90%" centerContent minH="100vh" justifyContent="center">
       <FormProvider {...formProps}>
         <Stack
           display="flex"
@@ -66,7 +66,12 @@ export default function AuthForm({
             </Alert>
           )}
 
-          <Button isLoading={isSubmitting} isFullWidth type="submit">
+          <Button
+            loadingText="Submitting"
+            isLoading={isSubmitting}
+            isFullWidth
+            type="submit"
+          >
             {buttonText}
           </Button>
 

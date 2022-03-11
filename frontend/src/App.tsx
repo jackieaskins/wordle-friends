@@ -3,7 +3,6 @@ import {
   extendTheme,
   withDefaultColorScheme,
 } from "@chakra-ui/react";
-import { mode, StyleFunctionProps } from "@chakra-ui/theme-tools";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
@@ -12,14 +11,7 @@ import AppRoutes from "./routes/AppRoutes";
 const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 
 const theme = extendTheme(
-  {
-    config: { useSystemColorMode: true },
-    styles: {
-      global: (props: StyleFunctionProps) => ({
-        body: { bg: mode("gray.100", "gray.800")(props) },
-      }),
-    },
-  },
+  { config: { useSystemColorMode: true } },
   withDefaultColorScheme({ colorScheme: "blue" }),
   withDefaultColorScheme({ colorScheme: "gray", components: ["Table"] })
 );

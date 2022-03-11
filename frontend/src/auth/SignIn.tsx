@@ -20,7 +20,12 @@ export default function SignIn(): JSX.Element {
     <AuthForm
       buttonText="Sign in"
       footer={
-        <Flex justifyContent="space-between" width="100%">
+        <Flex
+          direction={["column-reverse", "row"]}
+          alignItems={["center"]}
+          justifyContent="space-between"
+          width="100%"
+        >
           <Link as={RouterLink} to="/forgot">
             Forgot password?
           </Link>
