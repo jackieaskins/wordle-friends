@@ -24,7 +24,7 @@ export default function RevealedPost({
   currentUserPost,
   post: { user, userId, colors, id, isHardMode, message, guesses, createdAt },
 }: RevealedPostProps): JSX.Element {
-  const bgColor = useColorModeValue("gray.200", "gray.900");
+  const bgColor = useColorModeValue("gray.50", "gray.900");
 
   const normalFg = useColorModeValue("gray.600", "white");
   const normalBg = useColorModeValue("gray.300", "gray.600");
@@ -45,7 +45,7 @@ export default function RevealedPost({
 
   return (
     <Box width="100%" bg={bgColor} borderRadius="lg" px={3}>
-      <Flex m={4} justifyContent="space-between">
+      <Flex m={4} justifyContent="space-between" direction={["column", "row"]}>
         <Flex direction="column">
           <Text as="strong">
             <UserName user={user} userId={userId} />
@@ -56,7 +56,7 @@ export default function RevealedPost({
           <Text mt={2}>{message}</Text>
         </Flex>
 
-        <Center>
+        <Center mt={[4, 0]}>
           <Stack spacing={1}>
             {colors.map((row, rowIndex) => (
               <HStack key={rowIndex} spacing={1}>

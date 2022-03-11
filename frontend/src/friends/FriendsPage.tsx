@@ -1,6 +1,7 @@
 import { CopyIcon } from "@chakra-ui/icons";
 import {
   Button,
+  Center,
   Container,
   Flex,
   Heading,
@@ -89,30 +90,37 @@ export default function FriendsPage(): JSX.Element {
   );
 
   return (
-    <Container maxW="xl" centerContent mt={6}>
-      <Stack spacing={8} width="100%">
-        <Flex alignItems="center" justifyContent="space-between" width="100%">
-          <Heading textAlign="center">Friends</Heading>
-          <Button rightIcon={<CopyIcon />} onClick={onCopy} variant="ghost">
-            Copy your friend code
-          </Button>
-        </Flex>
+    <Center>
+      <Container>
+        <Stack display="flex" alignItems="center" spacing={4} mt={2}>
+          <Flex
+            alignItems="center"
+            justifyContent="space-between"
+            width="100%"
+            direction={["column", "row"]}
+          >
+            <Heading textAlign="center">Friends</Heading>
+            <Button rightIcon={<CopyIcon />} onClick={onCopy} variant="ghost">
+              Copy your friend code
+            </Button>
+          </Flex>
 
-        <FriendRequestForm />
+          <FriendRequestForm />
 
-        <Tabs width="100%" isFitted>
-          <TabList>
-            {tabs.map(({ id, title }) => (
-              <Tab key={id}>{title}</Tab>
-            ))}
-          </TabList>
-          <TabPanels>
-            {tabs.map(({ id, content }) => (
-              <TabPanel key={id}>{content}</TabPanel>
-            ))}
-          </TabPanels>
-        </Tabs>
-      </Stack>
-    </Container>
+          <Tabs width="100%" isFitted>
+            <TabList>
+              {tabs.map(({ id, title }) => (
+                <Tab key={id}>{title}</Tab>
+              ))}
+            </TabList>
+            <TabPanels>
+              {tabs.map(({ id, content }) => (
+                <TabPanel key={id}>{content}</TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
+        </Stack>
+      </Container>
+    </Center>
   );
 }
