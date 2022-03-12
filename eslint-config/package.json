@@ -10,15 +10,15 @@
   "author": "",
   "license": "ISC",
   "peerDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "eslint": "^8.9.0",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "eslint": "^8.11.0",
     "eslint-plugin-import": "^2.25.4",
     "prettier": "^2.5.1"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^5.12.0",
-    "eslint-config-prettier": "^8.3.0",
-    "typescript": "^4.5.5"
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "typescript": "^4.6.2"
   },
   "devDependencies": {
     "prettier": "^2.5.1"

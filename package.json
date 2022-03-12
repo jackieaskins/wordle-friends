@@ -28,8 +28,9 @@
     "frontend": "npm run start -w frontend",
     "lint": "npm run lint -ws --if-present",
     "lint:fix": "npm run lint:fix -ws --if-present",
-    "precommit": "lint-staged",
+    "precommit": "lint-staged && npm test",
     "prepare": "husky install",
+    "test": "npm test -ws --if-present",
     "watch": "npm run watch -ws --if-present"
   },
   "keywords": [],
@@ -49,6 +50,7 @@
   ],
   "devDependencies": {
     "husky": "^7.0.4",
-    "lint-staged": "^12.3.4"
+    "jest": "^27.5.1",
+    "lint-staged": "^12.3.5"
   }
 }
