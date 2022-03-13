@@ -17,10 +17,12 @@ import { REGION } from "../constants";
 
 const MAX_LIMIT = 100;
 
-const client = new DynamoDBClient({ region: REGION });
-const docClient = DynamoDBDocumentClient.from(client, {
-  marshallOptions: { removeUndefinedValues: true },
-});
+const docClient = DynamoDBDocumentClient.from(
+  new DynamoDBClient({ region: REGION }),
+  {
+    marshallOptions: { removeUndefinedValues: true },
+  }
+);
 
 type PaginatedResults<T> = {
   items: T[];
@@ -30,14 +32,14 @@ type PaginatedResults<T> = {
 export async function get<I, O extends { [key: string]: any }>(
   input: Omit<GetCommandInput, "Key"> & { Key: I }
 ): Promise<O | undefined> {
-  const { Item: item } = await client.send(new GetCommand(input));
+  const { Item: item } = await docClient.send(new GetCommand(input));
   return item as O | undefined;
 }
 
 export async function batchGet<T>(
   input: BatchGetCommandInput
 ): Promise<Record<string, T[]>> {
-  const { Responses: responses } = await client.send(
+  const { Responses: responses } = await docClient.send(
     new BatchGetCommand(input)
   );
   return (responses ?? {}) as Record<string, T[]>;
@@ -53,7 +55,7 @@ export async function query<T>(
   }
 
   const { Items: items, LastEvaluatedKey: lastEvaluatedKey } =
-    await client.send(
+    await docClient.send(
       new QueryCommand({
         ...input,
         Limit: limit ?? MAX_LIMIT,
@@ -70,7 +72,7 @@ export async function query<T>(
 export async function transactWrite(
   input: TransactWriteCommandInput
 ): Promise<TransactWriteCommandOutput> {
-  return await client.send(new TransactWriteCommand(input));
+  return await docClient.send(new TransactWriteCommand(input));
 }
 
 export async function put<T>(

@@ -8,6 +8,7 @@
     "cdk": "npm run cdk -w cdk",
     "check-types": "npm run check-types -ws --if-present",
     "deploy": "npm run build -ws --if-present && npm run synth -w cdk && npm run deploy -w cdk",
+    "deploy:alpha": "npm run deploy:api:alpha",
     "deploy:api": "npm run build -w graphql -w api -w cdk && npm run synth:backend -w cdk && npm run deploy:backend -w cdk",
     "deploy:api:alpha": "npm run build -w graphql -w api -w cdk && npm run synth:backend:alpha -w cdk && npm run deploy:backend:alpha -w cdk",
     "deploy:api:prod": "npm run build -w graphql -w api -w cdk && npm run synth:backend:prod -w cdk && npm run deploy:backend:prod -w cdk",

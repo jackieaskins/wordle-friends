@@ -8,5 +8,4 @@ module.exports = {
   },
   preset: "ts-jest",
   roots: ["<rootDir>/src"],
-  setupFiles: ["<rootDir>/jest/setEnvVars.js"],
 };

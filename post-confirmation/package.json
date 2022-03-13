@@ -9,8 +9,8 @@
     "format": "prettier --write .",
     "lint": "eslint --ext ts src",
     "lint:fix": "npm run lint -- --fix",
-    "postbuild": "rm -f post-confirmation.zip && zip -r ./post-confirmation.zip node_modules dist",
-    "prebuild": "npm install --no-workspaces --production --no-package-lock",
+    "postbuild": "rm -f dist/*.test.js dist/**/*.test.js post-confirmation.zip && zip -r ./post-confirmation.zip node_modules dist",
+    "prebuild": "rm -rf dist && npm install --no-workspaces --production --no-package-lock",
     "test": "jest"
   },
   "keywords": [],

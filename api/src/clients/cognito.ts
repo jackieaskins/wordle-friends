@@ -3,7 +3,7 @@ import {
   GetUserCommand,
   GetUserCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
-import { REGION } from "./constants";
+import { REGION } from "../constants";
 
 const client = new CognitoIdentityProviderClient({ region: REGION });
 

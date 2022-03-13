@@ -3,7 +3,7 @@ import {
   FriendStatus,
   ListFriendPostsQueryVariables,
 } from "wordle-friends-graphql";
-import { getUser } from "../cognito";
+import { getUser } from "../clients/cognito";
 import { listFriends } from "../tables/friends";
 import { getPost, listPosts, SimplePaginatedPosts } from "../tables/posts";
 

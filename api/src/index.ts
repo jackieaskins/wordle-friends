@@ -18,18 +18,17 @@ export async function handler(
 
   const userId = (identity as AppSyncIdentityCognito)?.sub;
   if (!userId) {
-    throw new Error("Must be logged in to access API");
+    callback(new Error("Must be logged in to access API"), null);
   }
 
   const handler = handlers[`${fieldName}Handler`];
 
-  try {
-    if (handler) {
-      callback(null, await handler(userId, event));
-    } else {
-      throw new Error(`Unsupported operation: ${parentTypeName} ${fieldName}`);
-    }
-  } catch (e: any) {
-    callback(e, null);
+  if (handler) {
+    callback(null, await handler(userId, event));
+  } else {
+    callback(
+      new Error(`Unsupported operation: ${parentTypeName} ${fieldName}`),
+      null
+    );
   }
 }
