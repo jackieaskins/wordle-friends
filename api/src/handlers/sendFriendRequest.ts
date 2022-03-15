@@ -8,8 +8,8 @@ export async function sendFriendRequestHandler(
     arguments: { friendId },
   }: AppSyncResolverEvent<SendFriendRequestMutationVariables>
 ): Promise<SimpleFriend> {
-  if (friendId === "" || friendId === userId) {
-    throw new Error("Invalid friendId");
+  if (friendId === userId) {
+    throw new Error("You cannot add yourself as a friend");
   }
   return await sendFriendRequest({ userId, friendId });
 }

@@ -5,7 +5,7 @@ import {
 } from "wordle-friends-graphql";
 import { getUser } from "../clients/cognito";
 import { listFriends } from "../tables/friends";
-import { getPost, listPosts, SimplePaginatedPosts } from "../tables/posts";
+import { getPost, batchGetPosts, SimplePaginatedPosts } from "../tables/posts";
 
 export async function listFriendPostsHandler(
   userId: string,
@@ -26,7 +26,7 @@ export async function listFriendPostsHandler(
     getUser(authorization),
   ]);
 
-  const posts = await listPosts({
+  const posts = await batchGetPosts({
     userIds: friends.map(({ friendId }) => friendId),
     puzzleDate,
   });

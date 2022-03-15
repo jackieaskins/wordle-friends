@@ -39,7 +39,7 @@ export async function getPost(key: PostKey): Promise<Post | undefined> {
   return await get<PostKey, Post>({ TableName: POSTS_TABLE, Key: key });
 }
 
-export async function listPosts({
+export async function batchGetPosts({
   userIds,
   puzzleDate,
 }: {

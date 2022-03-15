@@ -20,19 +20,25 @@ function generateId(): string {
   return nanoid();
 }
 
-export async function createComment(
-  input: CommentInput & { userId: string }
-): Promise<SimpleComment> {
-  const createdAt = dayjs().toISOString();
-  const comment: SimpleComment = {
+function generateComment(
+  input: CommentInput & { userId: string },
+  createdAt: string
+): SimpleComment {
+  return {
     ...input,
     createdAt,
     updatedAt: createdAt,
     id: generateId(),
   };
+}
 
+export async function createComment(
+  input: CommentInput & { userId: string }
+): Promise<SimpleComment> {
+  const createdAt = dayjs().toISOString();
   let hasCollision = false;
 
+  let comment = generateComment(input, createdAt);
   do {
     try {
       return await put<SimpleComment>({
@@ -42,7 +48,7 @@ export async function createComment(
       });
     } catch (e) {
       if (e instanceof ConditionalCheckFailedException) {
-        comment.id = generateId();
+        comment = generateComment(input, createdAt);
         hasCollision = true;
       } else {
         throw e;

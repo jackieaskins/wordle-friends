@@ -8,8 +8,8 @@ export async function deleteFriendHandler(
     arguments: { friendId },
   }: AppSyncResolverEvent<DeleteFriendMutationVariables>
 ): Promise<void> {
-  if (friendId === "" || friendId === userId) {
-    throw new Error("Invalid friendId");
+  if (friendId === userId) {
+    throw new Error("Cannot delete yourself as a friend");
   }
 
   await deleteFriend({ userId, friendId });
