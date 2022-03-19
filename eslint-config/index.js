@@ -16,6 +16,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "off",
     "arrow-body-style": ["error", "as-needed"],
     "no-debugger": "error",
+    "object-shorthand": "error",
     "require-await": "error",
   },
 };

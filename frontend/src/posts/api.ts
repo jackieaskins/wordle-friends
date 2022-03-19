@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import {
   useMutation,
   UseMutationResult,
@@ -26,13 +25,13 @@ import {
   Post,
 } from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
-import { formatDateString } from "../utils/dates";
 
-enum PostsQueryKey {
-  CurrentUserPost = "currentUserPost",
-  ListFriendPosts = "listFriendPosts",
+function getCurrentUserPostKey(puzzleDate: string): [string, string] {
+  return ["currentUserPost", puzzleDate];
 }
-
+function getListFriendPostsKey(puzzleDate: string): [string, string] {
+  return ["listFriendPosts", puzzleDate];
+}
 function getCommentsKey(postId: string): [string, string] {
   return ["coments", postId];
 }
@@ -103,22 +102,22 @@ export function useCreatePost(): UseMutationResult<
     },
     {
       onSuccess: (data) => {
-        if (data.puzzleDate === formatDateString(dayjs())) {
-          queryClient.setQueryData(PostsQueryKey.CurrentUserPost, data);
-          queryClient.invalidateQueries(PostsQueryKey.ListFriendPosts);
-        }
+        queryClient.setQueryData(getCurrentUserPostKey(data.puzzleDate), data);
+        queryClient.invalidateQueries(getListFriendPostsKey(data.puzzleDate));
       },
     }
   );
 }
 
-export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
-  return useQuery<Post | null>(PostsQueryKey.CurrentUserPost, async () => {
+export function useGetCurrentUserPost(
+  puzzleDate: string
+): UseQueryResult<Post | null> {
+  return useQuery<Post | null>(getCurrentUserPostKey(puzzleDate), async () => {
     const currentUserPost = (
       await callGraphql<
         GetCurrentUserPostQueryVariables,
         GetCurrentUserPostQuery
-      >(getCurrentUserPost, { puzzleDate: formatDateString(dayjs()) })
+      >(getCurrentUserPost, { puzzleDate })
     ).data?.getCurrentUserPost;
 
     if (!currentUserPost) {
@@ -129,14 +128,14 @@ export function useGetCurrentUserPost(): UseQueryResult<Post | null> {
   });
 }
 
-export function useListFriendPosts(): UseQueryResult<Post[]> {
+export function useListFriendPosts(puzzleDate: string): UseQueryResult<Post[]> {
   return useQuery<Post[]>(
-    PostsQueryKey.ListFriendPosts,
+    getListFriendPostsKey(puzzleDate),
     async () =>
       (
         await callGraphql<ListFriendPostsQueryVariables, ListFriendPostsQuery>(
           listFriendPosts,
-          { puzzleDate: formatDateString(dayjs()) }
+          { puzzleDate }
         )
       ).data?.listFriendPosts.posts ?? []
   );

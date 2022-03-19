@@ -10,6 +10,7 @@ import { parseInt } from "lodash";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { Color } from "wordle-friends-graphql";
+import { useSelectedDate } from "../SelectedDateContext";
 import { formatDateString } from "../utils/dates";
 
 export type ParsedWordleResult = {
@@ -43,6 +44,8 @@ function getPuzzleDate(details: string): Dayjs {
 export default function ShareResultsForm({
   setParsedResult,
 }: ShareResultsFormProps): JSX.Element {
+  const { puzzleDate } = useSelectedDate();
+
   const {
     register,
     handleSubmit,
@@ -105,11 +108,8 @@ export default function ShareResultsForm({
                   return "Invalid guesses";
                 }
 
-                if (
-                  formatDateString(dayjs()) !==
-                  formatDateString(getPuzzleDate(details))
-                ) {
-                  return "Puzzle is not from today";
+                if (puzzleDate !== formatDateString(getPuzzleDate(details))) {
+                  return `Puzzle is not from ${puzzleDate}`;
                 }
 
                 return true;
