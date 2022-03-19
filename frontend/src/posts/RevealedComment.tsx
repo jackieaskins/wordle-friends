@@ -1,6 +1,7 @@
 import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { Comment } from "wordle-friends-graphql";
+import NewLineText from "../common/NewLineText";
 import UserName from "../common/UserName";
 
 type RevealedCommentProps = {
@@ -24,7 +25,7 @@ export default function RevealedComment({
           </Text>
         </HStack>
 
-        <Text fontSize="xs">{text}</Text>
+        <NewLineText fontSize="xs">{text}</NewLineText>
       </Stack>
 
       {divider && <Divider />}

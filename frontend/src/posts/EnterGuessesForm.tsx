@@ -9,9 +9,9 @@ import {
   InputLeftAddon,
   Stack,
   Text,
-  Textarea,
 } from "@chakra-ui/react";
 import { ChangeEventHandler, useCallback, useState } from "react";
+import AutoResizeTextArea from "../form/AutoResizeTextArea";
 import { useCreatePost } from "../posts/api";
 import { formatDateString } from "../utils/dates";
 import { ParsedWordleResult } from "./ShareResultsForm";
@@ -69,7 +69,7 @@ export default function EnterGuessesForm({
 
       <FormControl>
         <FormLabel>Comment</FormLabel>
-        <Textarea
+        <AutoResizeTextArea
           rows={1}
           onChange={onMessageChange}
           value={message}

@@ -1,4 +1,4 @@
-import { Divider, Skeleton, Stack } from "@chakra-ui/react";
+import { Skeleton, Stack } from "@chakra-ui/react";
 import { usePostComments } from "./api";
 import CommentForm from "./CommentForm";
 import RevealedComment from "./RevealedComment";

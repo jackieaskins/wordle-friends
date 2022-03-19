@@ -12,6 +12,7 @@ import {
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import { Color, Post } from "wordle-friends-graphql";
+import NewLineText from "../common/NewLineText";
 import UserName from "../common/UserName";
 import CommentSection from "./CommentSection";
 
@@ -53,7 +54,7 @@ export default function RevealedPost({
           <Text fontSize="xs" color="gray.500">
             {dayjs().to(createdAt)} {isHardMode && <span> - Hard mode</span>}
           </Text>
-          <Text mt={2}>{message}</Text>
+          <NewLineText mt={2}>{message}</NewLineText>
         </Flex>
 
         <Center mt={[4, 0]}>

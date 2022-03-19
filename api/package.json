@@ -26,6 +26,7 @@
     "wordle-friends-graphql": "file:../graphql"
   },
   "devDependencies": {
+    "@aws-sdk/types": "^3.54.0",
     "@types/aws-lambda": "^8.10.93",
     "@types/jest": "^27.4.1",
     "@typescript-eslint/eslint-plugin": "^5.14.0",

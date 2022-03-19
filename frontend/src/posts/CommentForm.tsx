@@ -1,5 +1,12 @@
-import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  Stack,
+  useBoolean,
+} from "@chakra-ui/react";
 import { useCallback, useState } from "react";
+import AutoResizeTextArea from "../form/AutoResizeTextArea";
 import { useCreateComment } from "./api";
 
 type CommentFormProps = {
@@ -8,18 +15,17 @@ type CommentFormProps = {
 
 export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
   const { mutate: createComment, error, isLoading } = useCreateComment();
+  const [focused, setFocused] = useBoolean(false);
   const [text, setText] = useState("");
 
-  const handleKeyPress = useCallback(
+  const handleSubmit = useCallback(
     (e) => {
-      if (e.key === "Enter" && text) {
-        createComment(
-          { input: { text, postId } },
-          {
-            onSuccess: () => setText(""),
-          }
-        );
-      }
+      e.preventDefault();
+
+      createComment(
+        { input: { text, postId } },
+        { onSuccess: () => setText("") }
+      );
     },
     [createComment, postId, text]
   );
@@ -29,15 +35,25 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
   }, []);
 
   return (
-    <FormControl isDisabled={isLoading} isInvalid={!!error}>
-      <Input
-        placeholder="Add comment"
-        onKeyPress={handleKeyPress}
-        size="sm"
-        onChange={handleChange}
-        value={text}
-      />
-      <FormErrorMessage>{error?.message}</FormErrorMessage>
-    </FormControl>
+    <Stack as="form" onSubmit={handleSubmit} spacing={2}>
+      <FormControl isDisabled={isLoading} isInvalid={!!error}>
+        <AutoResizeTextArea
+          placeholder="Add comment"
+          onFocus={setFocused.on}
+          onBlur={setFocused.off}
+          size="sm"
+          onChange={handleChange}
+          value={text}
+        />
+
+        <FormErrorMessage>{error?.message}</FormErrorMessage>
+      </FormControl>
+
+      {(focused || text) && (
+        <Button type="submit" isFullWidth size="sm" disabled={!text}>
+          Comment
+        </Button>
+      )}
+    </Stack>
   );
 }
