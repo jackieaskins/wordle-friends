@@ -28,7 +28,7 @@ export default function Home(): JSX.Element {
   }, [navigate]);
 
   return (
-    <Center>
+    <Center mb={12}>
       <Container>
         <Stack spacing={4} mt={4}>
           <Box>

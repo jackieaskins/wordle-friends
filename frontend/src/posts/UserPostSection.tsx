@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Post } from "wordle-friends-graphql";
+import { PostWithComments } from "./api";
 import EnterGuessesForm from "./EnterGuessesForm";
 import RevealedPost from "./RevealedPost";
 import ShareResultsForm, { ParsedWordleResult } from "./ShareResultsForm";
 
 export type UserPostSectionProps = {
-  currentUserPost: Post | null | undefined;
+  currentUserPost: PostWithComments | null | undefined;
 };
 
 export default function UserPostSection({

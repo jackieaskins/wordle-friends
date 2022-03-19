@@ -1,30 +1,26 @@
-import { Skeleton, Stack } from "@chakra-ui/react";
-import { usePostComments } from "./api";
+import { Stack } from "@chakra-ui/react";
+import { PostWithComments } from "./api";
 import CommentForm from "./CommentForm";
 import RevealedComment from "./RevealedComment";
 
 type CommentSectionProps = {
-  postId: string;
+  post: PostWithComments;
 };
 
 export default function CommentSection({
-  postId,
+  post,
 }: CommentSectionProps): JSX.Element {
-  const { data: comments, isLoading } = usePostComments(postId);
-
   return (
-    <Skeleton isLoaded={!isLoading}>
-      <Stack mx={2} my={4} spacing={3}>
-        {comments?.map((comment, index) => (
-          <RevealedComment
-            key={comment.id}
-            comment={comment}
-            divider={index !== comments.length - 1}
-          />
-        ))}
+    <Stack mx={2} my={4} spacing={3}>
+      {post.comments.map((comment, index) => (
+        <RevealedComment
+          key={comment.id}
+          comment={comment}
+          divider={index !== post.comments.length - 1}
+        />
+      ))}
 
-        <CommentForm postId={postId} />
-      </Stack>
-    </Skeleton>
+      <CommentForm post={post} />
+    </Stack>
   );
 }

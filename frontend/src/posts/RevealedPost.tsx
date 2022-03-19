@@ -14,17 +14,21 @@ import { useCallback } from "react";
 import { Color, Post } from "wordle-friends-graphql";
 import NewLineText from "../common/NewLineText";
 import UserName from "../common/UserName";
+import { PostWithComments } from "./api";
 import CommentSection from "./CommentSection";
 
 type RevealedPostProps = {
   currentUserPost: Post | null | undefined;
-  post: Post;
+  post: PostWithComments;
 };
 
 export default function RevealedPost({
   currentUserPost,
-  post: { user, userId, colors, id, isHardMode, message, guesses, createdAt },
+  post,
 }: RevealedPostProps): JSX.Element {
+  const { user, userId, colors, isHardMode, message, guesses, createdAt } =
+    post;
+
   const bgColor = useColorModeValue("gray.50", "gray.900");
 
   const normalFg = useColorModeValue("gray.600", "white");
@@ -80,7 +84,7 @@ export default function RevealedPost({
       {currentUserPost && (
         <>
           <Divider />
-          <CommentSection postId={id} />
+          <CommentSection post={post} />
         </>
       )}
     </Box>

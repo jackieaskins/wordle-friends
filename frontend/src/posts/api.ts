@@ -24,7 +24,10 @@ import {
   ListPostCommentsQueryVariables,
   Post,
 } from "wordle-friends-graphql";
+import { useCurrentUser } from "../auth/CurrentUserContext";
 import { callGraphql } from "../graphql";
+
+export type PostWithComments = Post & { comments: Comment[] };
 
 function getCurrentUserPostKey(puzzleDate: string): [string, string] {
   return ["currentUserPost", puzzleDate];
@@ -32,29 +35,18 @@ function getCurrentUserPostKey(puzzleDate: string): [string, string] {
 function getListFriendPostsKey(puzzleDate: string): [string, string] {
   return ["listFriendPosts", puzzleDate];
 }
-function getCommentsKey(postId: string): [string, string] {
-  return ["coments", postId];
-}
 
-export function usePostComments(postId: string): UseQueryResult<Comment[]> {
-  return useQuery<Comment[]>(
-    getCommentsKey(postId),
-    async () =>
-      (
-        await callGraphql<
-          ListPostCommentsQueryVariables,
-          ListPostCommentsQuery
-        >(listPostComments, { postId })
-      ).data?.listPostComments?.comments ?? []
-  );
-}
-
-export function useCreateComment(): UseMutationResult<
+export function useCreateComment({
+  id: postId,
+  userId,
+  puzzleDate,
+}: PostWithComments): UseMutationResult<
   Comment,
   Error,
   CreateCommentMutationVariables
 > {
   const queryClient = useQueryClient();
+  const { id: currentUserId } = useCurrentUser();
 
   return useMutation(
     async (input) => {
@@ -71,10 +63,36 @@ export function useCreateComment(): UseMutationResult<
     },
     {
       onSuccess: (comment: Comment) => {
-        queryClient.setQueryData<Comment[]>(
-          getCommentsKey(comment.postId),
-          (comments) => [...(comments ?? []), comment]
-        );
+        if (userId === currentUserId) {
+          queryClient.setQueryData<PostWithComments | null | undefined>(
+            getCurrentUserPostKey(puzzleDate),
+            (post) =>
+              post ? { ...post, comments: [...post.comments, comment] } : post
+          );
+        } else {
+          queryClient.setQueryData<PostWithComments[] | undefined>(
+            getListFriendPostsKey(puzzleDate),
+            (posts) => {
+              if (!posts) {
+                return posts;
+              }
+
+              const index = posts.findIndex(({ id }) => id === postId);
+              if (index === -1) {
+                return posts;
+              }
+
+              return [
+                ...posts.slice(0, index),
+                {
+                  ...posts[index],
+                  comments: [...posts[index].comments, comment],
+                },
+                ...posts.slice(index + 1),
+              ];
+            }
+          );
+        }
       },
     }
   );
@@ -102,41 +120,70 @@ export function useCreatePost(): UseMutationResult<
     },
     {
       onSuccess: (data) => {
-        queryClient.setQueryData(getCurrentUserPostKey(data.puzzleDate), data);
+        queryClient.invalidateQueries(getCurrentUserPostKey(data.puzzleDate));
         queryClient.invalidateQueries(getListFriendPostsKey(data.puzzleDate));
       },
     }
   );
 }
 
-export function useGetCurrentUserPost(
-  puzzleDate: string
-): UseQueryResult<Post | null> {
-  return useQuery<Post | null>(getCurrentUserPostKey(puzzleDate), async () => {
-    const currentUserPost = (
-      await callGraphql<
-        GetCurrentUserPostQueryVariables,
-        GetCurrentUserPostQuery
-      >(getCurrentUserPost, { puzzleDate })
-    ).data?.getCurrentUserPost;
-
-    if (!currentUserPost) {
-      return null;
-    }
-
-    return currentUserPost;
-  });
+async function listComments(postId: string): Promise<Comment[]> {
+  return (
+    (
+      await callGraphql<ListPostCommentsQueryVariables, ListPostCommentsQuery>(
+        listPostComments,
+        { postId }
+      )
+    ).data?.listPostComments?.comments ?? []
+  );
 }
 
-export function useListFriendPosts(puzzleDate: string): UseQueryResult<Post[]> {
-  return useQuery<Post[]>(
+export function useGetCurrentUserPost(
+  puzzleDate: string
+): UseQueryResult<PostWithComments | null> {
+  return useQuery<PostWithComments | null>(
+    getCurrentUserPostKey(puzzleDate),
+    async () => {
+      const currentUserPost = (
+        await callGraphql<
+          GetCurrentUserPostQueryVariables,
+          GetCurrentUserPostQuery
+        >(getCurrentUserPost, { puzzleDate })
+      ).data?.getCurrentUserPost;
+
+      if (!currentUserPost) {
+        return null;
+      }
+
+      const comments = await listComments(currentUserPost.id);
+
+      return { ...currentUserPost, comments };
+    }
+  );
+}
+
+export function useListFriendPosts(
+  puzzleDate: string
+): UseQueryResult<PostWithComments[]> {
+  return useQuery<PostWithComments[]>(
     getListFriendPostsKey(puzzleDate),
-    async () =>
-      (
-        await callGraphql<ListFriendPostsQueryVariables, ListFriendPostsQuery>(
-          listFriendPosts,
-          { puzzleDate }
-        )
-      ).data?.listFriendPosts.posts ?? []
+    async () => {
+      const posts =
+        (
+          await callGraphql<
+            ListFriendPostsQueryVariables,
+            ListFriendPostsQuery
+          >(listFriendPosts, { puzzleDate })
+        ).data?.listFriendPosts.posts ?? [];
+
+      const allComments = await Promise.all(
+        posts.map(({ id }) => listComments(id))
+      );
+
+      return posts.map((post, index) => ({
+        ...post,
+        comments: allComments[index],
+      }));
+    }
   );
 }

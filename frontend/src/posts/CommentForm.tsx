@@ -7,14 +7,14 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import AutoResizeTextArea from "../form/AutoResizeTextArea";
-import { useCreateComment } from "./api";
+import { PostWithComments, useCreateComment } from "./api";
 
 type CommentFormProps = {
-  postId: string;
+  post: PostWithComments;
 };
 
-export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
-  const { mutate: createComment, error, isLoading } = useCreateComment();
+export default function CommentForm({ post }: CommentFormProps): JSX.Element {
+  const { mutate: createComment, error, isLoading } = useCreateComment(post);
   const [focused, setFocused] = useBoolean(false);
   const [text, setText] = useState("");
 
@@ -23,11 +23,11 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
       e.preventDefault();
 
       createComment(
-        { input: { text, postId } },
+        { input: { text, postId: post.id } },
         { onSuccess: () => setText("") }
       );
     },
-    [createComment, postId, text]
+    [createComment, post.id, text]
   );
 
   const handleChange = useCallback(({ target: { value } }) => {
@@ -50,7 +50,14 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
       </FormControl>
 
       {(focused || text) && (
-        <Button type="submit" isFullWidth size="sm" disabled={!text}>
+        <Button
+          type="submit"
+          isFullWidth
+          size="sm"
+          disabled={!text || isLoading}
+          loadingText="Creating comment"
+          isLoading={isLoading}
+        >
           Comment
         </Button>
       )}
