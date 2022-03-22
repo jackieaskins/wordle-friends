@@ -9,7 +9,6 @@
     "isolatedModules": true,
     "lib": ["es2018"],
     "module": "commonjs",
-    "outDir": "dist",
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2018"

@@ -56,15 +56,12 @@ export class CognitoConstruct extends Construct {
       "PostConfirmationHandler",
       {
         code: Code.fromAsset(
-          path.join(
-            __dirname,
-            "../../../post-confirmation/post-confirmation.zip"
-          )
+          path.join(__dirname, "../../../lambdas/dist/postConfirmation")
         ),
         deadLetterQueueEnabled: true,
         deadLetterQueue: postConfirmationDLQ,
         functionName: `wordle-friends-post-confirmation-${stage}`,
-        handler: "dist/index.handler",
+        handler: "index.handler",
         runtime: Runtime.NODEJS_14_X,
         timeout: Duration.seconds(30),
         environment: {

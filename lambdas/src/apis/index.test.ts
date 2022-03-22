@@ -1,4 +1,4 @@
-import handlers from ".";
+import apis from ".";
 import { acceptFriendRequestHandler } from "./acceptFriendRequest";
 import { createCommentHandler } from "./createComment";
 import { createPostHandler } from "./createPost";
@@ -9,7 +9,7 @@ import { listFriendsHandler } from "./listFriends";
 import { listPostCommentsHandler } from "./listPostComments";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
 
-describe("handlers", () => {
+describe("apis", () => {
   it.each([
     ["acceptFriendRequest", acceptFriendRequestHandler],
     ["createComment", createCommentHandler],
@@ -21,6 +21,6 @@ describe("handlers", () => {
     ["listPostComments", listPostCommentsHandler],
     ["sendFriendRequest", sendFriendRequestHandler],
   ])("returns the proper handler for %s", (key, handler) => {
-    expect(handlers[`${key}Handler`]).toEqual(handler);
+    expect(apis[`${key}Handler`]).toEqual(handler);
   });
 });

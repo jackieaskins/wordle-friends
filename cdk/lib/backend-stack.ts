@@ -76,11 +76,11 @@ export class BackendStack extends Stack {
     });
 
     const apiHandler = new Function(this, "ApiLambda", {
-      code: Code.fromAsset(path.join(__dirname, "../../api/api.zip")),
+      code: Code.fromAsset(path.join(__dirname, "../../lambdas/dist/api")),
       functionName: `wordle-friends-api-${stage}`,
-      handler: "dist/index.handler",
+      handler: "index.handler",
       runtime: Runtime.NODEJS_14_X,
-      timeout: Duration.seconds(10),
+      timeout: Duration.seconds(15),
       environment: {
         COMMENTS_TABLE: commentsTable.tableName,
         POST_ID_CREATED_AT_INDEX: CommentsTableIndex.PostIdCreatedAt,

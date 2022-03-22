@@ -9,7 +9,7 @@ import { listFriendsHandler } from "./listFriends";
 import { listPostCommentsHandler } from "./listPostComments";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
 
-const handlers: Record<
+const apis: Record<
   string,
   (userId: string, event: AppSyncResolverEvent<any>) => any
 > = {
@@ -24,4 +24,4 @@ const handlers: Record<
   sendFriendRequestHandler,
 };
 
-export default handlers;
+export default apis;

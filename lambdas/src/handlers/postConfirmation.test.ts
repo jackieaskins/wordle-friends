@@ -1,10 +1,9 @@
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { Context, PostConfirmationTriggerEvent } from "aws-lambda";
+import { PostConfirmationTriggerEvent } from "aws-lambda";
 import { mockClient } from "aws-sdk-client-mock";
-import { handler } from ".";
+import { handler } from "./postConfirmation";
 
 const ddbMock = mockClient(DynamoDBClient);
-const mockCallback = jest.fn();
 
 const USER_ID = "userId";
 const FIRST_NAME = "firstName";
@@ -21,7 +20,7 @@ const EVENT = {
 } as unknown as PostConfirmationTriggerEvent;
 
 async function callHandler() {
-  await handler(EVENT, {} as Context, mockCallback);
+  return await handler(EVENT);
 }
 
 describe("handler", () => {
@@ -46,15 +45,13 @@ describe("handler", () => {
     ).toHaveLength(1);
   });
 
-  it("calls callback with event on success", async () => {
+  it("returns event on success", async () => {
     expect.assertions(1);
 
-    await callHandler();
-
-    expect(mockCallback).toHaveBeenCalledWith(null, EVENT);
+    await expect(callHandler()).resolves.toEqual(EVENT);
   });
 
-  it("calls callback with error and event on error", async () => {
+  it("throws error on error", async () => {
     expect.assertions(1);
 
     const error = new Error("error!");
