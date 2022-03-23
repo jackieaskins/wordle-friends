@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, useToast } from "@chakra-ui/react";
 import { useCallback } from "react";
-import { useAcceptFriendRequest, useDeleteFriend } from "./apis";
+import { useAcceptFriendRequest, useDeleteFriend } from "./api";
 
 type ReceivedFriendRequestsActionsProps = {
   friendId: string;

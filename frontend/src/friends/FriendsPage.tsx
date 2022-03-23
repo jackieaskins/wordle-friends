@@ -21,7 +21,7 @@ import {
   useFriends,
   useReceivedFriendRequests,
   useSentFriendRequests,
-} from "./apis";
+} from "./api";
 import FriendRequestForm from "./FriendRequestForm";
 import FriendsTable from "./FriendsTable";
 import ReceivedFriendRequestsActions from "./ReceivedFriendRequestsActions";

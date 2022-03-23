@@ -1,30 +1,28 @@
 import { Box, Button, Center, Container, Stack, Text } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import DateChanger from "./DateChanger";
 import Timeline from "./posts/Timeline";
-import { useSelectedDate } from "./SelectedDateContext";
-import { formatDateString } from "./utils/dates";
+import { useDate } from "./DateContext";
 
 export default function Home(): JSX.Element {
-  const { date, puzzleDate } = useSelectedDate();
+  const { currentDateTime, selectedDate, selectedPuzzleDate } = useDate();
   const navigate = useNavigate();
 
   const displayText = useMemo(() => {
-    if (!date.isValid()) {
+    if (!selectedDate.isValid()) {
       return "How'd you even get here? Let's return to safety.";
     }
 
-    if (date.isAfter(dayjs(), "day")) {
+    if (selectedDate.isAfter(currentDateTime, "day")) {
       return "What are you doing in the future? It's far too dangerous, please go back.";
     }
 
     return null;
-  }, [date]);
+  }, [currentDateTime, selectedDate]);
 
   const goToToday = useCallback(() => {
-    navigate(`?date=${formatDateString(dayjs())}`);
+    navigate("/");
   }, [navigate]);
 
   return (
@@ -32,7 +30,7 @@ export default function Home(): JSX.Element {
       <Container>
         <Stack spacing={4} mt={4}>
           <Box>
-            <DateChanger date={date} />
+            <DateChanger />
           </Box>
 
           {displayText ? (
@@ -43,7 +41,7 @@ export default function Home(): JSX.Element {
               </Button>
             </Stack>
           ) : (
-            <Timeline key={puzzleDate} />
+            <Timeline key={selectedPuzzleDate} />
           )}
         </Stack>
       </Container>

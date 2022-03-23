@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { useReceivedFriendRequests } from "../friends/apis";
+import { useReceivedFriendRequests } from "../friends/api";
 
 export default function Navbar(): JSX.Element {
   const [expanded, setExpanded] = useBoolean();

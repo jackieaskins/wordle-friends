@@ -1,7 +1,7 @@
 import { Divider, HStack, Stack, Text } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { Comment } from "wordle-friends-graphql";
 import NewLineText from "../common/NewLineText";
+import RelativeTime from "../common/RelativeTime";
 import UserName from "../common/UserName";
 
 type RevealedCommentProps = {
@@ -21,7 +21,7 @@ export default function RevealedComment({
             <UserName user={user} userId={userId} />
           </Text>
           <Text fontSize="xs" color="gray.500">
-            {dayjs().to(createdAt)}
+            <RelativeTime timestamp={createdAt} />
           </Text>
         </HStack>
 

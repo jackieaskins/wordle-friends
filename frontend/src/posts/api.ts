@@ -119,9 +119,12 @@ export function useCreatePost(): UseMutationResult<
       throw new Error("No post returned");
     },
     {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(getCurrentUserPostKey(data.puzzleDate));
-        queryClient.invalidateQueries(getListFriendPostsKey(data.puzzleDate));
+      onSuccess: (post) => {
+        queryClient.setQueryData<PostWithComments | null | undefined>(
+          getCurrentUserPostKey(post.puzzleDate),
+          { ...post, comments: [] }
+        );
+        queryClient.invalidateQueries(getListFriendPostsKey(post.puzzleDate));
       },
     }
   );

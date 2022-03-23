@@ -9,10 +9,10 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import dayjs from "dayjs";
 import { useCallback } from "react";
 import { Color, Post } from "wordle-friends-graphql";
 import NewLineText from "../common/NewLineText";
+import RelativeTime from "../common/RelativeTime";
 import UserName from "../common/UserName";
 import { PostWithComments } from "./api";
 import CommentSection from "./CommentSection";
@@ -56,7 +56,8 @@ export default function RevealedPost({
             <UserName user={user} userId={userId} />
           </Text>
           <Text fontSize="xs" color="gray.500">
-            {dayjs().to(createdAt)} {isHardMode && <span> - Hard mode</span>}
+            <RelativeTime timestamp={createdAt} />{" "}
+            {isHardMode && <span> - Hard mode</span>}
           </Text>
           <NewLineText mt={2}>{message}</NewLineText>
         </Flex>

@@ -4,42 +4,42 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { ButtonGroup, Flex, IconButton, Text } from "@chakra-ui/react";
-import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDate } from "./DateContext";
 import { formatDateString } from "./utils/dates";
 
-type DateChangerProps = {
-  date: Dayjs;
-};
-
-export default function DateChanger({ date }: DateChangerProps): JSX.Element {
+export default function DateChanger(): JSX.Element {
+  const { selectedDate, currentDateTime } = useDate();
   const navigate = useNavigate();
 
   const goToPreviousDay = useCallback(() => {
-    navigate(`?date=${formatDateString(date.subtract(1, "day"))}`);
-  }, [date, navigate]);
+    navigate(`?date=${formatDateString(selectedDate.subtract(1, "day"))}`);
+  }, [selectedDate, navigate]);
 
   const goToNextDay = useCallback(() => {
-    navigate(`?date=${formatDateString(date.add(1, "day"))}`);
-  }, [date, navigate]);
+    navigate(`?date=${formatDateString(selectedDate.add(1, "day"))}`);
+  }, [selectedDate, navigate]);
 
   const goToToday = useCallback(() => {
-    navigate(`?date=${formatDateString(dayjs())}`);
+    navigate("/");
   }, [navigate]);
 
   const isTodayOrAfter = useMemo(
-    () => !date.isValid() || date.isAfter(dayjs().subtract(1, "day"), "day"),
-    [date]
+    () =>
+      !selectedDate.isValid() ||
+      selectedDate.isAfter(currentDateTime.subtract(1, "day"), "day"),
+    [currentDateTime, selectedDate]
   );
   const isAfterToday = useMemo(
-    () => !date.isValid() || date.isAfter(dayjs(), "day"),
-    [date]
+    () =>
+      !selectedDate.isValid() || selectedDate.isAfter(currentDateTime, "day"),
+    [currentDateTime, selectedDate]
   );
 
   return (
     <Flex justifyContent="space-between" alignItems="center" direction="row">
-      <Text as="strong">{date.format("MMMM D, YYYY")}</Text>
+      <Text as="strong">{selectedDate.format("MMMM D, YYYY")}</Text>
 
       <ButtonGroup spacing={1} size="sm" variant="outline">
         <IconButton

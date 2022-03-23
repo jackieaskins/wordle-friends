@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import FriendsPage from "../friends/FriendsPage";
 import Home from "../Home";
 import Navbar from "../nav/Navbar";
-import { SelectedDateProvider } from "../SelectedDateContext";
+import { DateProvider } from "../DateContext";
 
 export default function AuthRoutes(): JSX.Element {
   return (
@@ -15,9 +15,9 @@ export default function AuthRoutes(): JSX.Element {
           <Route
             path="/"
             element={
-              <SelectedDateProvider>
+              <DateProvider>
                 <Home />
-              </SelectedDateProvider>
+              </DateProvider>
             }
           />
           <Route path="/friends" element={<FriendsPage />} />

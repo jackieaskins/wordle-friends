@@ -1,6 +1,6 @@
 import { Button, Input, Stack, useToast } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
-import { useSendFriendRequest } from "./apis";
+import { useSendFriendRequest } from "./api";
 
 export default function FriendRequestForm(): JSX.Element {
   const toast = useToast();
