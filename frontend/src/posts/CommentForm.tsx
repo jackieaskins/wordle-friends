@@ -44,6 +44,8 @@ export default function CommentForm({ post }: CommentFormProps): JSX.Element {
           size="sm"
           onChange={handleChange}
           value={text}
+          // Prevents iPhone zooming on comment box
+          fontSize="16px"
         />
 
         <FormErrorMessage>{error?.message}</FormErrorMessage>

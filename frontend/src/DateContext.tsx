@@ -50,7 +50,7 @@ export function DateProvider({
 
   useEffect(() => {
     if (search && dateStr === undefined) {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [dateStr, navigate, search]);
 

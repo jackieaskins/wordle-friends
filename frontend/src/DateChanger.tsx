@@ -4,6 +4,7 @@ import {
   ChevronRightIcon,
 } from "@chakra-ui/icons";
 import { ButtonGroup, Flex, IconButton, Text } from "@chakra-ui/react";
+import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDate } from "./DateContext";
@@ -22,7 +23,7 @@ export default function DateChanger(): JSX.Element {
   }, [selectedDate, navigate]);
 
   const goToToday = useCallback(() => {
-    navigate("/");
+    navigate(`?date=${formatDateString(dayjs())}`);
   }, [navigate]);
 
   const isTodayOrAfter = useMemo(
