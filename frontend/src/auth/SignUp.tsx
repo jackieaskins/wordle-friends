@@ -1,8 +1,10 @@
-import { Checkbox, Link, Stack } from "@chakra-ui/react";
+import { Link, Stack } from "@chakra-ui/react";
 import { useCallback } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import InputField from "../form/InputField";
 import { setPendingEmail } from "../localStorage";
+import NotificationFields from "../user/fields/NotificationFields";
+import ShowSquaresField from "../user/fields/ShowSquaresField";
 import { useAuth } from "./AuthContext";
 import AuthForm from "./AuthForm";
 
@@ -11,9 +13,9 @@ export default function SignUp(): JSX.Element {
   const navigate = useNavigate();
 
   const onSubmit = useCallback(
-    async (values) => {
+    async ({ passwordConfirmation, ...values }) => {
       await signUp(values);
-      setPendingEmail(values.email);
+      setPendingEmail(values.username);
       navigate("/verify");
     },
     [navigate, signUp]
@@ -30,24 +32,24 @@ export default function SignUp(): JSX.Element {
       headerText="Sign up"
       onSubmit={onSubmit}
     >
-      {({ getValues, register }) => (
-        <Stack width="100%">
+      {({ getValues }) => (
+        <Stack width="100%" spacing={4}>
           <InputField
             autoComplete="given-name"
             label="First name"
-            name="firstName"
+            name="attributes.given_name"
             required
           />
           <InputField
             autoComplete="family-name"
             label="Last name"
-            name="lastName"
+            name="attributes.family_name"
             required
           />
           <InputField
             autoComplete="email"
             label="Email address"
-            name="email"
+            name="username"
             required
             type="email"
           />
@@ -93,9 +95,8 @@ export default function SignUp(): JSX.Element {
             type="password"
           />
 
-          <Checkbox {...register("showSquares")}>
-            {"Show friends' guess colors before you've entered your results"}
-          </Checkbox>
+          <ShowSquaresField namePrefix="attributes." />
+          <NotificationFields namePrefix="attributes." />
         </Stack>
       )}
     </AuthForm>

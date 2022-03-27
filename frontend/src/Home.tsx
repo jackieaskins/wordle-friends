@@ -1,11 +1,22 @@
 import { Box, Button, Center, Container, Stack, Text } from "@chakra-ui/react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DateChanger from "./DateChanger";
 import Timeline from "./posts/Timeline";
 import { useDate } from "./DateContext";
+import NotificationsAlert from "./NotificationsAlert";
+import { useCurrentUser } from "./auth/CurrentUserContext";
 
 export default function Home(): JSX.Element {
+  const { notifyOnFriendPost, notifyOnPostComment, notifyOnCommentReply } =
+    useCurrentUser();
+
+  const [showNotificationsAlert] = useState(
+    [notifyOnPostComment, notifyOnFriendPost, notifyOnCommentReply].every(
+      (val) => val == undefined
+    )
+  );
+
   const { currentDateTime, selectedDate, selectedPuzzleDate } = useDate();
   const navigate = useNavigate();
 
@@ -32,6 +43,8 @@ export default function Home(): JSX.Element {
           <Box>
             <DateChanger />
           </Box>
+
+          {showNotificationsAlert && <NotificationsAlert />}
 
           {displayText ? (
             <Stack alignItems="center">

@@ -13,6 +13,7 @@ import {
   useBoolean,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useMemo } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useReceivedFriendRequests } from "../friends/api";
@@ -21,6 +22,17 @@ export default function Navbar(): JSX.Element {
   const [expanded, setExpanded] = useBoolean();
   const { signOut } = useAuth();
   const { data: friendRequests } = useReceivedFriendRequests();
+
+  const commonButtonProps = useMemo(
+    () => ({
+      variant: "ghost",
+      width: "100%",
+      height: "100%",
+      p: 1,
+      onClick: setExpanded.off,
+    }),
+    [setExpanded.off]
+  );
 
   return (
     <Stack spacing={0} bg={useColorModeValue("gray.50", "gray.900")}>
@@ -38,6 +50,9 @@ export default function Navbar(): JSX.Element {
 
         <Show above="sm">
           <Flex alignItems="center">
+            <Link as={RouterLink} to="/preferences" ml={6}>
+              Preferences
+            </Link>
             <Link as={RouterLink} to="/friends" ml={6}>
               Friends
             </Link>
@@ -69,20 +84,18 @@ export default function Navbar(): JSX.Element {
         {expanded && (
           <Stack width="100%" alignItems="center">
             <Divider />
-            <Button
-              variant="link"
-              as={RouterLink}
-              to="/friends"
-              p={1}
-              onClick={setExpanded.off}
-            >
+            <Button {...commonButtonProps} as={RouterLink} to="/preferences">
+              Preferences
+            </Button>
+            <Divider />
+            <Button {...commonButtonProps} as={RouterLink} to="/friends">
               Friends
               {(friendRequests?.length ?? 0) > 0 && (
                 <Badge ml={2}>{friendRequests?.length}</Badge>
               )}
             </Button>
             <Divider />
-            <Button variant="link" onClick={signOut} p={1}>
+            <Button {...commonButtonProps} onClick={signOut}>
               Sign out
             </Button>
             <Divider />

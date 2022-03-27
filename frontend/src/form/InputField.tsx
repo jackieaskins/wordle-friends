@@ -1,53 +1,25 @@
-import {
-  FormControl,
-  FormErrorMessage,
-  FormHelperText,
-  FormLabel,
-  Input,
-  InputProps,
-} from "@chakra-ui/react";
-import { ReactNode } from "react";
-import { RegisterOptions, useFormContext } from "react-hook-form";
+import { Input, InputProps } from "@chakra-ui/react";
+import { useFormContext } from "react-hook-form";
+import FormField, { FormFieldProps } from "./FormField";
 
-interface InputFieldProps extends InputProps {
-  helperText?: ReactNode;
-  label?: string;
-  name: string;
-  registerOptions?: RegisterOptions;
-  required: boolean;
-}
+type InputFieldProps = InputProps & FormFieldProps;
 
-export default function InputField({
-  helperText,
-  label,
-  name,
-  registerOptions,
-  required,
-  ...inputProps
-}: InputFieldProps): JSX.Element {
-  const {
-    formState: { errors },
-    register,
-  } = useFormContext();
+export default function InputField(props: InputFieldProps): JSX.Element {
+  const { helperText, label, name, registerOptions, required, ...inputProps } =
+    props;
+  const { register } = useFormContext();
 
   return (
-    <FormControl isRequired={required} isInvalid={!!errors[name]} label={label}>
-      {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
+    <FormField {...props}>
       <Input
         width="100%"
         id={name}
         {...inputProps}
         {...register(name, {
           ...(registerOptions ?? {}),
-          required: required && `${label || name} is required`,
+          required,
         })}
       />
-      {helperText && !errors[name] && (
-        <FormHelperText>{helperText}</FormHelperText>
-      )}
-      {errors[name] && (
-        <FormErrorMessage>{errors[name].message}</FormErrorMessage>
-      )}
-    </FormControl>
+    </FormField>
   );
 }

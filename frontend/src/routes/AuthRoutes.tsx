@@ -4,6 +4,7 @@ import FriendsPage from "../friends/FriendsPage";
 import Home from "../Home";
 import Navbar from "../nav/Navbar";
 import { DateProvider } from "../DateContext";
+import Preferences from "../user/Preferences";
 
 export default function AuthRoutes(): JSX.Element {
   return (
@@ -20,6 +21,7 @@ export default function AuthRoutes(): JSX.Element {
               </DateProvider>
             }
           />
+          <Route path="/preferences" element={<Preferences />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>

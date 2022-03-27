@@ -9,19 +9,43 @@ import {
 } from "react";
 import { useQueryClient } from "react-query";
 
+export type ModifiableUserAttributes = {
+  ["custom:showSquares"]?: string;
+  ["custom:notifyOnFriendPost"]?: string;
+  ["custom:notifyOnPostComment"]?: string;
+  ["custom:notifyOnCommentReply"]?: string;
+};
+type UserAttributes = ModifiableUserAttributes & {
+  email: string;
+  family_name: string;
+  given_name: string;
+  sub: string;
+};
 export type UserInfo = {
   email: string;
   firstName: string;
   id: string;
   lastName: string;
+  showSquares?: boolean;
+  notifyOnFriendPost?: boolean;
+  notifyOnPostComment?: boolean;
+  notifyOnCommentReply?: boolean;
+  rawAttributes: UserAttributes;
+};
+type UserInfoState = {
+  isLoading: boolean;
+  currentUserInfo?: UserInfo;
+};
+
+type UserInfoAction = {
+  type: "set";
+  userAttributes?: UserAttributes;
 };
 
 export type SignUpProps = {
-  email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
   password: string;
-  shareSquares: boolean;
+  attributes: UserAttributes;
 };
 
 type AuthContextState = {
@@ -29,27 +53,20 @@ type AuthContextState = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   signUp: (props: SignUpProps) => Promise<void>;
+  updateUserAttributes: (
+    newAttributes: Partial<ModifiableUserAttributes>
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextState>({} as AuthContextState);
-type UserInfoState = {
-  isLoading: boolean;
-  currentUserInfo?: UserInfo;
-};
-type UserInfoAction = {
-  type: "set";
-  userAttributes?: {
-    email: string;
-    family_name: string;
-    given_name: string;
-    sub: string;
-  };
-};
 
 function userInfoReducer(
   _state: UserInfoState,
   { type, userAttributes }: UserInfoAction
 ) {
+  const convertBoolString = (value: string | undefined) =>
+    value == undefined ? value : value === "true";
+
   switch (type) {
     case "set": {
       if (userAttributes) {
@@ -58,6 +75,10 @@ function userInfoReducer(
           family_name: lastName,
           given_name: firstName,
           sub: id,
+          ["custom:showSquares"]: showSquares,
+          ["custom:notifyOnFriendPost"]: notifyOnFriendPost,
+          ["custom:notifyOnPostComment"]: notifyOnPostComment,
+          ["custom:notifyOnCommentReply"]: notifyOnCommentReply,
         } = userAttributes;
         return {
           isLoading: false,
@@ -66,6 +87,11 @@ function userInfoReducer(
             firstName,
             id,
             lastName,
+            showSquares: convertBoolString(showSquares),
+            notifyOnFriendPost: convertBoolString(notifyOnFriendPost),
+            notifyOnPostComment: convertBoolString(notifyOnPostComment),
+            notifyOnCommentReply: convertBoolString(notifyOnCommentReply),
+            rawAttributes: userAttributes,
           },
         };
       }
@@ -92,25 +118,21 @@ export function AuthProvider({
     })();
   }, []);
 
+  const updateUserAttributes = useCallback(async (newAttributes) => {
+    const user = await Auth.currentAuthenticatedUser();
+    await Auth.updateUserAttributes(user, newAttributes);
+    const userInfo = await Auth.currentUserInfo();
+    dispatchUserInfo({ type: "set", userAttributes: userInfo?.attributes });
+  }, []);
+
   const signIn = useCallback(async (email, password) => {
     const { attributes } = await Auth.signIn(email, password);
     dispatchUserInfo({ type: "set", userAttributes: attributes });
   }, []);
 
-  const signUp = useCallback(
-    async ({ email, password, firstName, lastName, showSquares }) => {
-      await Auth.signUp({
-        username: email,
-        password,
-        attributes: {
-          given_name: firstName,
-          family_name: lastName,
-          "custom:showSquares": showSquares ? "true" : "false",
-        },
-      });
-    },
-    []
-  );
+  const signUp = useCallback(async (signUpProps: SignUpProps) => {
+    await Auth.signUp(signUpProps);
+  }, []);
 
   const signOut = useCallback(async () => {
     await Auth.signOut();
@@ -129,6 +151,7 @@ export function AuthProvider({
         signIn,
         signOut,
         signUp,
+        updateUserAttributes,
       }}
     >
       {children}
