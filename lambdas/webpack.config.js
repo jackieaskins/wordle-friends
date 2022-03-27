@@ -3,6 +3,7 @@ const path = require("path");
 module.exports = {
   entry: {
     api: "./src/handlers/api.ts",
+    notifications: "./src/handlers/notifications.ts",
     postConfirmation: "./src/handlers/postConfirmation.ts",
   },
   module: { rules: [{ test: /\.ts$/, loader: "ts-loader" }] },

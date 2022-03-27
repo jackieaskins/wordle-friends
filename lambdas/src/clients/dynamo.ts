@@ -45,6 +45,14 @@ export async function batchGet<T>(
   return (responses ?? {}) as Record<string, T[]>;
 }
 
+export async function queryAll<T>(
+  input: Omit<QueryCommandInput, "Limit" | "ExclusiveStartKey">
+): Promise<T[]> {
+  const { Items: items = [] } = await docClient.send(new QueryCommand(input));
+
+  return items as T[];
+}
+
 export async function query<T>(
   input: Omit<QueryCommandInput, "Limit" | "ExclusiveStartKey">,
   limit: number | null | undefined,
@@ -54,7 +62,7 @@ export async function query<T>(
     throw new Error("limit must be > 0 and <= 100");
   }
 
-  const { Items: items, LastEvaluatedKey: lastEvaluatedKey } =
+  const { Items: items = [], LastEvaluatedKey: lastEvaluatedKey } =
     await docClient.send(
       new QueryCommand({
         ...input,
@@ -64,7 +72,7 @@ export async function query<T>(
     );
 
   return {
-    items: (items ?? []) as T[],
+    items: items as T[],
     nextToken: lastEvaluatedKey ? JSON.stringify(lastEvaluatedKey) : null,
   };
 }

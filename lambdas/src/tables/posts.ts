@@ -16,6 +16,10 @@ export type SimplePaginatedPosts = Omit<
 function generateId(userId: string, puzzleDate: string): string {
   return `${userId}:${puzzleDate}`;
 }
+function parsePostId(id: string): PostKey {
+  const [userId, puzzleDate] = id.split(":");
+  return { userId, puzzleDate };
+}
 
 export async function createPost(
   input: PostInput & { userId: string }
@@ -35,8 +39,12 @@ export async function createPost(
   });
 }
 
-export async function getPost(key: PostKey): Promise<Post | undefined> {
+export async function getPost(key: PostKey): Promise<SimplePost | undefined> {
   return await get<PostKey, Post>({ TableName: POSTS_TABLE, Key: key });
+}
+
+export async function getPostById(id: string): Promise<SimplePost | undefined> {
+  return await getPost(parsePostId(id));
 }
 
 export async function batchGetPosts({

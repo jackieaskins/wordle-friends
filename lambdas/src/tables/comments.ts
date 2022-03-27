@@ -7,7 +7,7 @@ import {
   ListPostCommentsQueryVariables,
   PaginatedComments,
 } from "wordle-friends-graphql";
-import { put, query } from "../clients/dynamo";
+import { put, query, queryAll } from "../clients/dynamo";
 import { COMMENTS_TABLE, POST_ID_CREATED_AT_INDEX } from "../constants";
 
 export type SimpleComment = Omit<Comment, "__typename" | "user">;
@@ -59,6 +59,23 @@ export async function createComment(
   return comment;
 }
 
+function generateListCommentsInput(postId: string) {
+  return {
+    TableName: COMMENTS_TABLE,
+    IndexName: POST_ID_CREATED_AT_INDEX,
+    KeyConditionExpression: "postId = :postId",
+    ExpressionAttributeValues: { ":postId": postId },
+  };
+}
+
+export async function listAllComments({
+  postId,
+}: {
+  postId: string;
+}): Promise<SimpleComment[]> {
+  return await queryAll<SimpleComment>(generateListCommentsInput(postId));
+}
+
 export async function listComments({
   postId,
   limit,
@@ -66,12 +83,7 @@ export async function listComments({
 }: ListPostCommentsQueryVariables): Promise<SimplePaginatedComments> {
   const { items: comments, nextToken: newNextToken } =
     await query<SimpleComment>(
-      {
-        TableName: COMMENTS_TABLE,
-        IndexName: POST_ID_CREATED_AT_INDEX,
-        KeyConditionExpression: "postId = :postId",
-        ExpressionAttributeValues: { ":postId": postId },
-      },
+      generateListCommentsInput(postId),
       limit,
       nextToken
     );

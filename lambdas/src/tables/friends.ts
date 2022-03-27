@@ -1,10 +1,11 @@
+import { QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import {
   Friend,
   FriendStatus,
   ListFriendsQueryVariables,
   PaginatedFriends,
 } from "wordle-friends-graphql";
-import { query, transactWrite } from "../clients/dynamo";
+import { query, queryAll, transactWrite } from "../clients/dynamo";
 import { FRIENDS_TABLE, USER_ID_STATUS_INDEX } from "../constants";
 
 export type FriendKey = {
@@ -99,6 +100,34 @@ export async function deleteFriend({
   });
 }
 
+function generateListFriendsInput(
+  userId: string,
+  status: FriendStatus | null | undefined
+): QueryCommandInput {
+  return {
+    TableName: FRIENDS_TABLE,
+    IndexName: USER_ID_STATUS_INDEX,
+    KeyConditionExpression: status
+      ? "userId = :userId and #status = :status"
+      : "userId = :userId",
+    ExpressionAttributeNames: status ? { "#status": "status" } : undefined,
+    ExpressionAttributeValues: {
+      ":userId": userId,
+      ...(status ? { ":status": status } : {}),
+    },
+  };
+}
+
+export async function listAllFriends({
+  userId,
+  status,
+}: {
+  userId: string;
+  status?: FriendStatus;
+}): Promise<SimpleFriend[]> {
+  return await queryAll<SimpleFriend>(generateListFriendsInput(userId, status));
+}
+
 export async function listFriends({
   userId,
   limit,
@@ -108,18 +137,7 @@ export async function listFriends({
   userId: string;
 }): Promise<SimplePaginatedFriends> {
   const { items: friends, nextToken: newNextToken } = await query<SimpleFriend>(
-    {
-      TableName: FRIENDS_TABLE,
-      IndexName: USER_ID_STATUS_INDEX,
-      KeyConditionExpression: status
-        ? "userId = :userId and #status = :status"
-        : "userId = :userId",
-      ExpressionAttributeNames: status ? { "#status": "status" } : undefined,
-      ExpressionAttributeValues: {
-        ":userId": userId,
-        ...(status ? { ":status": status } : {}),
-      },
-    },
+    generateListFriendsInput(userId, status),
     limit,
     nextToken
   );

@@ -13,6 +13,7 @@ import { Construct } from "constructs";
 import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
+import { NotificationsConstruct } from "./constructs/notifications-construct";
 import { CommentsTableIndex, FriendsTableIndex, Stage } from "./types";
 import { getCloudWatchAlarmTopic } from "./utils";
 import { getUserRequest } from "./vtl";
@@ -59,6 +60,15 @@ export class BackendStack extends Stack {
       cloudWatchAlarmTopic,
       usersTable,
       stage,
+    });
+    new NotificationsConstruct(this, "Notifications", {
+      cloudWatchAlarmTopic,
+      commentsTable,
+      friendsTable,
+      postsTable,
+      stage,
+      userPool,
+      usersTable,
     });
 
     const api = new GraphqlApi(this, "GraphqlApi", {

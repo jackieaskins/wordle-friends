@@ -7,7 +7,7 @@ import {
   TransactWriteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
-import { batchGet, get, put, query, transactWrite } from "./dynamo";
+import { batchGet, get, put, query, queryAll, transactWrite } from "./dynamo";
 
 const docClient = mockClient(DynamoDBDocumentClient);
 
@@ -68,6 +68,31 @@ describe("dynamo", () => {
       docClient.on(BatchGetCommand).resolves({});
 
       await expect(batchGet(input)).resolves.toEqual({});
+    });
+  });
+
+  describe("queryAll", () => {
+    const input = { TableName: "Table" };
+    const outputItems = [{ hello: "world" }];
+
+    beforeEach(() => {
+      docClient.on(QueryCommand).resolves({
+        Items: outputItems,
+      });
+    });
+
+    it("sends dynamo query command request", async () => {
+      expect.assertions(1);
+
+      await queryAll(input);
+
+      expect(docClient.commandCalls(QueryCommand, input)).toHaveLength(1);
+    });
+
+    it("returns items from query command", async () => {
+      expect.assertions(1);
+
+      await expect(queryAll(input)).resolves.toEqual(outputItems);
     });
   });
 

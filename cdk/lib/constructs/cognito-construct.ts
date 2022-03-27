@@ -94,8 +94,12 @@ export class CognitoConstruct extends Construct {
         },
       },
       lambdaTriggers: { postConfirmation: postConfirmationHandler },
+      // Custom attribute names must be <= 20 characters
       customAttributes: {
         showSquares: new BooleanAttribute({ mutable: true }),
+        notifyOnFriendPost: new BooleanAttribute({ mutable: true }),
+        notifyOnPostComment: new BooleanAttribute({ mutable: true }),
+        notifyOnCommentReply: new BooleanAttribute({ mutable: true }),
       },
     });
 

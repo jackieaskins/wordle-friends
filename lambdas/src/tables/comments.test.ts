@@ -1,8 +1,8 @@
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { nanoid } from "nanoid";
-import { put, query } from "../clients/dynamo";
+import { put, query, queryAll } from "../clients/dynamo";
 import { ISO_STRING, TIMESTAMPS } from "../testUtils";
-import { createComment, listComments } from "./comments";
+import { createComment, listAllComments, listComments } from "./comments";
 
 jest.mock("dayjs", () => ({
   __esModule: true,
@@ -20,6 +20,7 @@ jest.mock("nanoid", () => ({
 jest.mock("../clients/dynamo", () => ({
   put: jest.fn(),
   query: jest.fn(),
+  queryAll: jest.fn().mockResolvedValue([]),
 }));
 
 jest.mock("../constants", () => ({
@@ -91,6 +92,27 @@ describe("commentsTable", () => {
         createdAt: ISO_STRING,
         updatedAt: ISO_STRING,
       });
+    });
+  });
+
+  describe("listAllComments", () => {
+    it("queries the table index", async () => {
+      expect.assertions(1);
+
+      await listAllComments({ postId: "1" });
+
+      expect(queryAll).toHaveBeenCalledWith({
+        TableName: "COMMENTS_TABLE",
+        IndexName: "POST_ID_CREATED_AT_INDEX",
+        KeyConditionExpression: "postId = :postId",
+        ExpressionAttributeValues: { ":postId": "1" },
+      });
+    });
+
+    it("returns comments and nextToken", async () => {
+      expect.assertions(1);
+
+      await expect(listAllComments({ postId: "1" })).resolves.toEqual([]);
     });
   });
 

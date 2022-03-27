@@ -2,6 +2,7 @@ import {
   AttributeType,
   BillingMode,
   ProjectionType,
+  StreamViewType,
   Table,
 } from "aws-cdk-lib/aws-dynamodb";
 import { Construct } from "constructs";
@@ -44,12 +45,14 @@ export class DynamoConstruct extends Construct {
       partitionKey: { name: "userId", type: AttributeType.STRING },
       sortKey: { name: "puzzleDate", type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
+      stream: StreamViewType.NEW_IMAGE,
     });
 
     this.commentsTable = new Table(this, "CommentsTable", {
       tableName: `wordle-friends-comments-${stage}`,
       partitionKey: { name: "id", type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
+      stream: StreamViewType.NEW_IMAGE,
     });
     this.commentsTable.addGlobalSecondaryIndex({
       indexName: CommentsTableIndex.PostIdCreatedAt,

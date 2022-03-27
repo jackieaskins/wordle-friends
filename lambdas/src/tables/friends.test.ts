@@ -1,8 +1,9 @@
 import { FriendStatus } from "wordle-friends-graphql";
-import { query, transactWrite } from "../clients/dynamo";
+import { query, queryAll, transactWrite } from "../clients/dynamo";
 import {
   acceptFriendRequest,
   deleteFriend,
+  listAllFriends,
   listFriends,
   sendFriendRequest,
 } from "./friends";
@@ -18,7 +19,8 @@ jest.mock("../constants", () => ({
 }));
 
 jest.mock("../clients/dynamo", () => ({
-  query: jest.fn().mockReturnValue({ items: [], nextToken: "nextToken" }),
+  query: jest.fn().mockResolvedValue({ items: [], nextToken: "nextToken" }),
+  queryAll: jest.fn().mockResolvedValue([]),
   transactWrite: jest.fn(),
 }));
 
@@ -180,6 +182,39 @@ describe("friendsTable", () => {
       await expect(listFriends({ ...USER_KEY })).resolves.toEqual({
         friends: [],
         nextToken: "nextToken",
+      });
+    });
+  });
+
+  describe("listAllFriends", () => {
+    it("queries friends table with provided status", async () => {
+      expect.assertions(1);
+
+      await listAllFriends({ ...USER_KEY, status: FriendStatus.ACCEPTED });
+
+      expect(queryAll).toHaveBeenCalledWith({
+        TableName: "FRIENDS_TABLE",
+        IndexName: "USER_ID_STATUS_INDEX",
+        KeyConditionExpression: "userId = :userId and #status = :status",
+        ExpressionAttributeNames: { "#status": "status" },
+        ExpressionAttributeValues: {
+          ":userId": USER_ID,
+          ":status": FriendStatus.ACCEPTED,
+        },
+      });
+    });
+
+    it("queries friends table if no status", async () => {
+      expect.assertions(1);
+
+      await listAllFriends({ userId: USER_ID });
+
+      expect(queryAll).toHaveBeenCalledWith({
+        TableName: "FRIENDS_TABLE",
+        IndexName: "USER_ID_STATUS_INDEX",
+        KeyConditionExpression: "userId = :userId",
+        ExpressionAttributeNames: undefined,
+        ExpressionAttributeValues: { ":userId": USER_ID },
       });
     });
   });

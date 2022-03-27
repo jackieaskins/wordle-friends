@@ -1,7 +1,13 @@
 import { Color } from "wordle-friends-graphql";
 import { batchGet, get, put } from "../clients/dynamo";
 import { ISO_STRING, PUZZLE_DATE, TIMESTAMPS } from "../testUtils";
-import { batchGetPosts, createPost, getPost, SimplePost } from "./posts";
+import {
+  batchGetPosts,
+  createPost,
+  getPost,
+  getPostById,
+  SimplePost,
+} from "./posts";
 
 jest.mock("../constants", () => ({
   POSTS_TABLE: "POSTS_TABLE",
@@ -53,6 +59,32 @@ describe("postsTable", () => {
       expect.assertions(1);
 
       await expect(createPost(POST_INPUT)).resolves.toEqual(POST);
+    });
+  });
+
+  describe("getPostById", () => {
+    const postKey = { userId: "userId", puzzleDate: PUZZLE_DATE };
+    const postId = `userId:${PUZZLE_DATE}`;
+
+    beforeEach(() => {
+      (get as jest.Mock).mockResolvedValue(POST);
+    });
+
+    it("gets the post from the table", async () => {
+      expect.assertions(1);
+
+      await getPostById(postId);
+
+      expect(get).toHaveBeenCalledWith({
+        TableName: "POSTS_TABLE",
+        Key: postKey,
+      });
+    });
+
+    it("returns the element returned from the table", async () => {
+      expect.assertions(1);
+
+      await expect(getPostById(postId)).resolves.toEqual(POST);
     });
   });
 
