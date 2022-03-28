@@ -37,7 +37,7 @@ export default function Home(): JSX.Element {
   }, [navigate]);
 
   return (
-    <Center mb={12}>
+    <Center mb={12} key={selectedPuzzleDate}>
       <Container>
         <Stack spacing={4} mt={4}>
           <Box>
@@ -54,7 +54,7 @@ export default function Home(): JSX.Element {
               </Button>
             </Stack>
           ) : (
-            <Timeline key={selectedPuzzleDate} />
+            <Timeline />
           )}
         </Stack>
       </Container>
