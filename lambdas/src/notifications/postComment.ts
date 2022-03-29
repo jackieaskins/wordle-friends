@@ -48,7 +48,10 @@ export async function handlePostComment(event: DynamoDBRecord): Promise<void> {
     ...otherCommenterIds.map(adminGetUser),
   ]);
 
-  if (originalPoster["custom:notifyOnPostComment"] === "true") {
+  if (
+    originalPoster["custom:notifyOnPostComment"] === "true" &&
+    postUserId !== userId
+  ) {
     await sendBulkEmail(
       POST_COMMENT_TEMPLATE_NAME,
       {
