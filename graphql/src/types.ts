@@ -208,6 +208,37 @@ export type ListFriendsQuery = {
   },
 };
 
+export type ListPostsQueryVariables = {
+  puzzleDate: string,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListPostsQuery = {
+  listPosts:  {
+    __typename: "PaginatedPosts",
+    posts:  Array< {
+      __typename: "Post",
+      id: string,
+      userId: string,
+      user?:  {
+        __typename: "User",
+        id: string,
+        firstName: string,
+        lastName: string,
+      } | null,
+      puzzleDate: string,
+      isHardMode: boolean,
+      message?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      colors: Array< Array< Color | null > >,
+      guesses?: Array< string > | null,
+    } >,
+    nextToken?: string | null,
+  },
+};
+
 export type GetCurrentUserPostQueryVariables = {
   puzzleDate: string,
 };

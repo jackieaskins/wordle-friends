@@ -3,7 +3,7 @@ import {
   ListFriendsQueryVariables,
 } from "wordle-friends-graphql";
 import { listFriends } from "../tables/friends";
-import { generateEvent } from "../testUtils";
+import { generateEvent } from "../tests/fixtures/events";
 import { listFriendsHandler } from "./listFriends";
 
 jest.mock("../tables/friends", () => ({

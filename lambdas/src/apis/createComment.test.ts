@@ -1,6 +1,7 @@
 import { CommentInput } from "wordle-friends-graphql";
 import { createComment, SimpleComment } from "../tables/comments";
-import { generateEvent, PUZZLE_DATE, TIMESTAMPS } from "../testUtils";
+import { PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
+import { generateEvent } from "../tests/fixtures/events";
 import { createCommentHandler } from "./createComment";
 
 const USER_ID = "123";

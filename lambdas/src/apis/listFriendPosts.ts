@@ -19,7 +19,7 @@ export async function listFriendPostsHandler(
   const [
     currentUserPost,
     { friends, nextToken: newNextToken },
-    { UserAttributes: userAttributes },
+    userAttributes,
   ] = await Promise.all([
     getPost({ userId, puzzleDate }),
     listFriends({ userId, limit, nextToken, status: FriendStatus.ACCEPTED }),
@@ -32,9 +32,7 @@ export async function listFriendPostsHandler(
   });
 
   const hasAlreadyPosted = !!currentUserPost;
-  const showSquares =
-    userAttributes?.find(({ Name: name }) => name === "custom:showSquares")
-      ?.Value === "true";
+  const showSquares = userAttributes["custom:showSquares"] === "true";
 
   return {
     nextToken: newNextToken,

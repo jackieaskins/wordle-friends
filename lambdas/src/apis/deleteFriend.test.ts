@@ -1,5 +1,5 @@
 import { deleteFriend } from "../tables/friends";
-import { generateEvent } from "../testUtils";
+import { generateEvent } from "../tests/fixtures/events";
 import { deleteFriendHandler } from "./deleteFriend";
 
 const USER_ID = "123";

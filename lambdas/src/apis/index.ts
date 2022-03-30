@@ -7,6 +7,7 @@ import { getCurrentUserPostHandler } from "./getCurrentUserPost";
 import { listFriendPostsHandler } from "./listFriendPosts";
 import { listFriendsHandler } from "./listFriends";
 import { listPostCommentsHandler } from "./listPostComments";
+import { listPostsHandler } from "./listPosts";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
 
 const apis: Record<
@@ -21,6 +22,7 @@ const apis: Record<
   listFriendPostsHandler,
   listFriendsHandler,
   listPostCommentsHandler,
+  listPostsHandler,
   sendFriendRequestHandler,
 };
 

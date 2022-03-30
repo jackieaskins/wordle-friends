@@ -1,7 +1,7 @@
 import { ConditionalCheckFailedException } from "@aws-sdk/client-dynamodb";
 import { nanoid } from "nanoid";
 import { put, query, queryAll } from "../clients/dynamo";
-import { ISO_STRING, TIMESTAMPS } from "../testUtils";
+import { ISO_STRING, TIMESTAMPS } from "../tests/constants";
 import { createComment, listAllComments, listComments } from "./comments";
 
 jest.mock("dayjs", () => ({

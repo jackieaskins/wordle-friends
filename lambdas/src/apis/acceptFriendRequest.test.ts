@@ -1,6 +1,6 @@
 import { FriendStatus } from "wordle-friends-graphql";
 import { acceptFriendRequest } from "../tables/friends";
-import { generateEvent } from "../testUtils";
+import { generateEvent } from "../tests/fixtures/events";
 import { acceptFriendRequestHandler } from "./acceptFriendRequest";
 
 const USER_ID = "123";

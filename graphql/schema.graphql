@@ -81,6 +81,7 @@ input CommentInput {
 
 type Query {
   listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends!
+  listPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
   getCurrentUserPost(puzzleDate: AWSDate!): Post
   listFriendPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
   listPostComments(postId: String!, limit: Int, nextToken: String): PaginatedComments!

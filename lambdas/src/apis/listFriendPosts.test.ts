@@ -2,12 +2,8 @@ import { Color, FriendStatus } from "wordle-friends-graphql";
 import { getUser } from "../clients/cognito";
 import { listFriends, SimpleFriend } from "../tables/friends";
 import { batchGetPosts, getPost, SimplePost } from "../tables/posts";
-import {
-  AUTHORIZATION,
-  generateEvent,
-  PUZZLE_DATE,
-  TIMESTAMPS,
-} from "../testUtils";
+import { AUTHORIZATION, PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
+import { generateEvent } from "../tests/fixtures/events";
 import { listFriendPostsHandler } from "./listFriendPosts";
 
 jest.mock("../clients/cognito", () => ({
@@ -62,7 +58,7 @@ async function assertFieldsMatch(fields: Record<string, any>) {
 
 describe("listFriendPostsHandler", () => {
   beforeEach(() => {
-    (getUser as jest.Mock).mockResolvedValue({ UserAttributes: [] });
+    (getUser as jest.Mock).mockResolvedValue({});
     (listFriends as jest.Mock).mockResolvedValue({
       friends: FRIENDS,
       nextToken: NEXT_TOKEN,
@@ -136,7 +132,7 @@ describe("listFriendPostsHandler", () => {
 
       (getPost as jest.Mock).mockResolvedValue(undefined);
       (getUser as jest.Mock).mockResolvedValue({
-        UserAttributes: [{ Name: "custom:showSquares", Value: "false" }],
+        "custom:showSquares": "false",
       });
 
       await assertFieldsMatch({
@@ -152,7 +148,7 @@ describe("listFriendPostsHandler", () => {
 
       (getPost as jest.Mock).mockResolvedValue(undefined);
       (getUser as jest.Mock).mockResolvedValue({
-        UserAttributes: [{ Name: "custom:showSquares", Value: "true" }],
+        "custom:showSquares": "true",
       });
 
       await assertFieldsMatch({ colors: POST.colors });

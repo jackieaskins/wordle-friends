@@ -2,7 +2,7 @@ module.exports = {
   clearMocks: true,
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.ts"],
-  coveragePathIgnorePatterns: ["<rootDir>/src/testUtils.ts"],
+  coveragePathIgnorePatterns: ["<rootDir>/src/tests"],
   globals: {
     "ts-jest": {
       diagnostics: false,

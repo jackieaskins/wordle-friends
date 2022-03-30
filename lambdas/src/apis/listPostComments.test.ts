@@ -1,5 +1,6 @@
 import { listComments } from "../tables/comments";
-import { generateEvent, PUZZLE_DATE } from "../testUtils";
+import { PUZZLE_DATE } from "../tests/constants";
+import { generateEvent } from "../tests/fixtures/events";
 import { listPostCommentsHandler } from "./listPostComments";
 
 jest.mock("../tables/comments", () => ({

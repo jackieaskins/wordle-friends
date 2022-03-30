@@ -1,6 +1,7 @@
 import { Color, PostInput } from "wordle-friends-graphql";
 import { createPost, SimplePost } from "../tables/posts";
-import { generateEvent, PUZZLE_DATE, TIMESTAMPS } from "../testUtils";
+import { PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
+import { generateEvent } from "../tests/fixtures/events";
 import { createPostHandler } from "./createPost";
 
 const USER_ID = "123";

@@ -1,6 +1,6 @@
 import { Color } from "wordle-friends-graphql";
 import { batchGet, get, put } from "../clients/dynamo";
-import { ISO_STRING, PUZZLE_DATE, TIMESTAMPS } from "../testUtils";
+import { ISO_STRING, PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
 import {
   batchGetPosts,
   createPost,

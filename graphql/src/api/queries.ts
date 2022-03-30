@@ -20,6 +20,29 @@ export const listFriends = /* GraphQL */ `
     }
   }
 `;
+export const listPosts = /* GraphQL */ `
+  query ListPosts($puzzleDate: AWSDate!, $limit: Int, $nextToken: String) {
+    listPosts(puzzleDate: $puzzleDate, limit: $limit, nextToken: $nextToken) {
+      posts {
+        id
+        userId
+        user {
+          id
+          firstName
+          lastName
+        }
+        puzzleDate
+        isHardMode
+        message
+        createdAt
+        updatedAt
+        colors
+        guesses
+      }
+      nextToken
+    }
+  }
+`;
 export const getCurrentUserPost = /* GraphQL */ `
   query GetCurrentUserPost($puzzleDate: AWSDate!) {
     getCurrentUserPost(puzzleDate: $puzzleDate) {

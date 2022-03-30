@@ -17,6 +17,7 @@ describe("cognito", () => {
   beforeEach(() => {
     cognitoClient.reset();
 
+    cognitoClient.on(GetUserCommand).resolves({ UserAttributes: [] });
     cognitoClient.on(AdminGetUserCommand).resolves({ UserAttributes: [] });
   });
 
@@ -31,6 +32,24 @@ describe("cognito", () => {
           AccessToken: "accessToken",
         })
       ).toHaveLength(1);
+    });
+
+    it("returns a map with user values", async () => {
+      expect.assertions(1);
+
+      cognitoClient.on(GetUserCommand).resolves({
+        UserAttributes: [{ Name: "key", Value: "value" }],
+      });
+
+      await expect(getUser("")).resolves.toEqual({ key: "value" });
+    });
+
+    it("returns an empty object if no userAttributes", async () => {
+      expect.assertions(1);
+
+      cognitoClient.on(GetUserCommand).resolves({});
+
+      await expect(getUser("")).resolves.toEqual({});
     });
   });
 

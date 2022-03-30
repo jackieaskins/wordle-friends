@@ -15,7 +15,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { REGION } from "../constants";
 
-const MAX_LIMIT = 100;
+export const MAX_LIMIT = 100;
 
 const docClient = DynamoDBDocumentClient.from(
   new DynamoDBClient({ region: REGION }),

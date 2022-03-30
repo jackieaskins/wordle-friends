@@ -1,5 +1,6 @@
 import { getPost, SimplePost } from "../tables/posts";
-import { generateEvent, PUZZLE_DATE, TIMESTAMPS } from "../testUtils";
+import { PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
+import { generateEvent } from "../tests/fixtures/events";
 import { getCurrentUserPostHandler } from "./getCurrentUserPost";
 
 const USER_ID = "123";
