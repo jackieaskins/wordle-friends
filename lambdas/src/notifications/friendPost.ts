@@ -21,17 +21,11 @@ export async function handleFriendPost({
     newImage as { [key: string]: AttributeValue }
   ) as SimplePost;
 
-  const [
-    friends,
-    {
-      given_name: firstName,
-      family_name: lastName,
-      ["custom:showSquares"]: showSquares,
-    },
-  ] = await Promise.all([
-    listAllFriends({ userId, status: FriendStatus.ACCEPTED }),
-    adminGetUser(userId),
-  ]);
+  const [friends, { given_name: firstName, family_name: lastName }] =
+    await Promise.all([
+      listAllFriends({ userId, status: FriendStatus.ACCEPTED }),
+      adminGetUser(userId),
+    ]);
 
   const targetUsers = (
     await Promise.all(friends.map(({ friendId }) => adminGetUser(friendId)))
@@ -53,16 +47,22 @@ export async function handleFriendPost({
       puzzleDate: "unknown",
       result: "Unable to load result",
     },
-    targetUsers.map(({ given_name: firstName, email }) => ({
-      email,
-      replacementData: {
-        firstName,
-        friendName,
-        puzzleDate,
-        result: convertColorsToSquares(colors, showSquares)
-          .map((row) => row.join(""))
-          .join("\r\n"),
-      },
-    }))
+    targetUsers.map(
+      ({
+        given_name: firstName,
+        email,
+        ["custom:showSquares"]: showSquares,
+      }) => ({
+        email,
+        replacementData: {
+          firstName,
+          friendName,
+          puzzleDate,
+          result: convertColorsToSquares(colors, showSquares)
+            .map((row) => row.join(""))
+            .join("\r\n"),
+        },
+      })
+    )
   );
 }

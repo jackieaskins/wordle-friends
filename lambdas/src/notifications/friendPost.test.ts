@@ -2,6 +2,7 @@ import { AttributeValue } from "aws-lambda";
 import { adminGetUser } from "../clients/cognito";
 import { sendBulkEmail } from "../clients/ses";
 import { listAllFriends } from "../tables/friends";
+import { convertColorsToSquares } from "../utils";
 import { handleFriendPost } from "./friendPost";
 
 jest.mock("../clients/cognito", () => ({
@@ -44,12 +45,12 @@ describe("handleFriendPost", () => {
       .mockResolvedValueOnce({
         given_name: "Friend",
         family_name: "Post",
-        ["custom:showSquares"]: "true",
       })
       .mockResolvedValueOnce({
         given_name: "Notify",
         email: "notify@email",
         ["custom:notifyOnFriendPost"]: "true",
+        ["custom:showSquares"]: "false",
       })
       .mockResolvedValue({
         ["custom:notifyOnFriendPost"]: "false",
@@ -81,6 +82,14 @@ describe("handleFriendPost", () => {
     await callHandler(NEW_IMAGE);
 
     expect(sendBulkEmail).not.toHaveBeenCalled();
+  });
+
+  it("properly hides or shows colors for friends", async () => {
+    expect.assertions(1);
+
+    await callHandler(NEW_IMAGE);
+
+    expect(convertColorsToSquares).toHaveBeenCalledWith([[null]], "false");
   });
 
   it("sends an email for each of the post's user's friends", async () => {
