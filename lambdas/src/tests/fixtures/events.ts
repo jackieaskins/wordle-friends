@@ -1,7 +1,10 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { AUTHORIZATION } from "../constants";
 
-export function generateEvent<T>(eventArgs: T): AppSyncResolverEvent<T> {
+export function generateEvent<T, S = Record<string, any> | null>(
+  eventArgs: T,
+  source: S = {} as S
+): AppSyncResolverEvent<T, S> {
   return {
     arguments: eventArgs,
     prev: null,
@@ -9,7 +12,7 @@ export function generateEvent<T>(eventArgs: T): AppSyncResolverEvent<T> {
     request: {
       headers: { authorization: AUTHORIZATION },
     },
-    source: null,
+    source,
     info: {
       fieldName: "fieldName",
       parentTypeName: "parentTypeName",

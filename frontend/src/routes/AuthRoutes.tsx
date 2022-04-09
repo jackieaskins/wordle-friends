@@ -5,6 +5,7 @@ import Home from "../Home";
 import Navbar from "../nav/Navbar";
 import { DateProvider } from "../DateContext";
 import Preferences from "../user/Preferences";
+import { CommentsProvider } from "../posts/CommentsContext";
 
 export default function AuthRoutes(): JSX.Element {
   return (
@@ -17,7 +18,9 @@ export default function AuthRoutes(): JSX.Element {
             path="/"
             element={
               <DateProvider>
-                <Home />
+                <CommentsProvider>
+                  <Home />
+                </CommentsProvider>
               </DateProvider>
             }
           />

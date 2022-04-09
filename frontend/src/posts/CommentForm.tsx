@@ -7,14 +7,14 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import AutoResizeTextArea from "../form/AutoResizeTextArea";
-import { PostWithComments, useCreateComment } from "./api";
+import { useCreateComment } from "./api";
 
 type CommentFormProps = {
-  post: PostWithComments;
+  postId: string;
 };
 
-export default function CommentForm({ post }: CommentFormProps): JSX.Element {
-  const { mutate: createComment, error, isLoading } = useCreateComment(post);
+export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
+  const { mutate: createComment, error, isLoading } = useCreateComment();
   const [focused, setFocused] = useBoolean(false);
   const [text, setText] = useState("");
 
@@ -23,11 +23,11 @@ export default function CommentForm({ post }: CommentFormProps): JSX.Element {
       e.preventDefault();
 
       createComment(
-        { input: { text, postId: post.id } },
+        { input: { text, postId } },
         { onSuccess: () => setText("") }
       );
     },
-    [createComment, post.id, text]
+    [createComment, postId, text]
   );
 
   const handleChange = useCallback(({ target: { value } }) => {

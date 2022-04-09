@@ -4,6 +4,7 @@ import {
   withDefaultColorScheme,
 } from "@chakra-ui/react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./auth/AuthContext";
 import AppRoutes from "./routes/AppRoutes";
@@ -34,6 +35,7 @@ export default function App(): JSX.Element {
             <AppRoutes />
           </AuthProvider>
         </ChakraProvider>
+        <ReactQueryDevtools />
       </QueryClientProvider>
     </BrowserRouter>
   );

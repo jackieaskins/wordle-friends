@@ -54,6 +54,22 @@ export const createPost = /* GraphQL */ `
       updatedAt
       colors
       guesses
+      commentData {
+        comments {
+          id
+          postId
+          userId
+          user {
+            id
+            firstName
+            lastName
+          }
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;

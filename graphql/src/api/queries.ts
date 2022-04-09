@@ -38,6 +38,22 @@ export const listPosts = /* GraphQL */ `
         updatedAt
         colors
         guesses
+        commentData {
+          comments {
+            id
+            postId
+            userId
+            user {
+              id
+              firstName
+              lastName
+            }
+            text
+            createdAt
+            updatedAt
+          }
+          nextToken
+        }
       }
       nextToken
     }
@@ -60,6 +76,22 @@ export const getCurrentUserPost = /* GraphQL */ `
       updatedAt
       colors
       guesses
+      commentData {
+        comments {
+          id
+          postId
+          userId
+          user {
+            id
+            firstName
+            lastName
+          }
+          text
+          createdAt
+          updatedAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -89,6 +121,22 @@ export const listFriendPosts = /* GraphQL */ `
         updatedAt
         colors
         guesses
+        commentData {
+          comments {
+            id
+            postId
+            userId
+            user {
+              id
+              firstName
+              lastName
+            }
+            text
+            createdAt
+            updatedAt
+          }
+          nextToken
+        }
       }
       nextToken
     }

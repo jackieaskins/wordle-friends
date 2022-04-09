@@ -1,5 +1,6 @@
 import { AppSyncResolverEvent } from "aws-lambda";
 import { acceptFriendRequestHandler } from "./acceptFriendRequest";
+import { commentDataHandler } from "./commentData";
 import { createCommentHandler } from "./createComment";
 import { createPostHandler } from "./createPost";
 import { deleteFriendHandler } from "./deleteFriend";
@@ -12,9 +13,10 @@ import { sendFriendRequestHandler } from "./sendFriendRequest";
 
 const apis: Record<
   string,
-  (userId: string, event: AppSyncResolverEvent<any>) => any
+  (userId: string, event: AppSyncResolverEvent<any, any>) => any
 > = {
   acceptFriendRequestHandler,
+  commentDataHandler,
   createCommentHandler,
   createPostHandler,
   deleteFriendHandler,

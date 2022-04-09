@@ -51,11 +51,13 @@ export type Post = {
   updatedAt: string,
   colors: Array< Array< Color | null > >,
   guesses?: Array< string > | null,
+  commentData: PaginatedComments,
 };
 
-export type CommentInput = {
-  postId: string,
-  text: string,
+export type PaginatedComments = {
+  __typename: "PaginatedComments",
+  comments:  Array<Comment >,
+  nextToken?: string | null,
 };
 
 export type Comment = {
@@ -69,6 +71,11 @@ export type Comment = {
   updatedAt: string,
 };
 
+export type CommentInput = {
+  postId: string,
+  text: string,
+};
+
 export type PaginatedFriends = {
   __typename: "PaginatedFriends",
   friends:  Array<Friend >,
@@ -78,12 +85,6 @@ export type PaginatedFriends = {
 export type PaginatedPosts = {
   __typename: "PaginatedPosts",
   posts:  Array<Post >,
-  nextToken?: string | null,
-};
-
-export type PaginatedComments = {
-  __typename: "PaginatedComments",
-  comments:  Array<Comment >,
   nextToken?: string | null,
 };
 
@@ -157,6 +158,25 @@ export type CreatePostMutation = {
     updatedAt: string,
     colors: Array< Array< Color | null > >,
     guesses?: Array< string > | null,
+    commentData:  {
+      __typename: "PaginatedComments",
+      comments:  Array< {
+        __typename: "Comment",
+        id: string,
+        postId: string,
+        userId: string,
+        user?:  {
+          __typename: "User",
+          id: string,
+          firstName: string,
+          lastName: string,
+        } | null,
+        text: string,
+        createdAt: string,
+        updatedAt: string,
+      } >,
+      nextToken?: string | null,
+    },
   },
 };
 
@@ -234,6 +254,25 @@ export type ListPostsQuery = {
       updatedAt: string,
       colors: Array< Array< Color | null > >,
       guesses?: Array< string > | null,
+      commentData:  {
+        __typename: "PaginatedComments",
+        comments:  Array< {
+          __typename: "Comment",
+          id: string,
+          postId: string,
+          userId: string,
+          user?:  {
+            __typename: "User",
+            id: string,
+            firstName: string,
+            lastName: string,
+          } | null,
+          text: string,
+          createdAt: string,
+          updatedAt: string,
+        } >,
+        nextToken?: string | null,
+      },
     } >,
     nextToken?: string | null,
   },
@@ -261,6 +300,25 @@ export type GetCurrentUserPostQuery = {
     updatedAt: string,
     colors: Array< Array< Color | null > >,
     guesses?: Array< string > | null,
+    commentData:  {
+      __typename: "PaginatedComments",
+      comments:  Array< {
+        __typename: "Comment",
+        id: string,
+        postId: string,
+        userId: string,
+        user?:  {
+          __typename: "User",
+          id: string,
+          firstName: string,
+          lastName: string,
+        } | null,
+        text: string,
+        createdAt: string,
+        updatedAt: string,
+      } >,
+      nextToken?: string | null,
+    },
   } | null,
 };
 
@@ -290,6 +348,25 @@ export type ListFriendPostsQuery = {
       updatedAt: string,
       colors: Array< Array< Color | null > >,
       guesses?: Array< string > | null,
+      commentData:  {
+        __typename: "PaginatedComments",
+        comments:  Array< {
+          __typename: "Comment",
+          id: string,
+          postId: string,
+          userId: string,
+          user?:  {
+            __typename: "User",
+            id: string,
+            firstName: string,
+            lastName: string,
+          } | null,
+          text: string,
+          createdAt: string,
+          updatedAt: string,
+        } >,
+        nextToken?: string | null,
+      },
     } >,
     nextToken?: string | null,
   },

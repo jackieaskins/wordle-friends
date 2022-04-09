@@ -37,6 +37,7 @@ const RESOLVERS = {
     "createComment",
     "createPost",
   ],
+  Post: ["commentData"],
 };
 const USER_MAPPINGS = [
   { typeName: "Post", fieldName: "user", sourceKey: "userId" },

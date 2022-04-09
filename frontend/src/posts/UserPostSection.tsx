@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { PostWithComments } from "./api";
+import { SimplePost } from "./api";
 import EnterGuessesForm from "./EnterGuessesForm";
 import RevealedPost from "./RevealedPost";
 import ShareResultsForm, { ParsedWordleResult } from "./ShareResultsForm";
 
 export type UserPostSectionProps = {
-  currentUserPost: PostWithComments | null | undefined;
+  currentUserPost: SimplePost | null | undefined;
 };
 
 export default function UserPostSection({

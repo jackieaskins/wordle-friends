@@ -7,7 +7,7 @@ export type PostKey = {
   userId: string;
   puzzleDate: string;
 };
-export type SimplePost = Omit<Post, "__typename" | "user">;
+export type SimplePost = Omit<Post, "__typename" | "user" | "commentData">;
 export type SimplePaginatedPosts = Omit<
   PaginatedPosts,
   "__typename" | "posts"

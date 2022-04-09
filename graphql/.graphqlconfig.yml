@@ -12,7 +12,7 @@ projects:
         apiId: null
         frontend: javascript
         framework: react
-        maxDepth: 3
+        maxDepth: 5
 extensions:
   amplify:
     version: 3

@@ -1,5 +1,6 @@
 import apis from ".";
 import { acceptFriendRequestHandler } from "./acceptFriendRequest";
+import { commentDataHandler } from "./commentData";
 import { createCommentHandler } from "./createComment";
 import { createPostHandler } from "./createPost";
 import { deleteFriendHandler } from "./deleteFriend";
@@ -12,6 +13,7 @@ import { sendFriendRequestHandler } from "./sendFriendRequest";
 
 const apiHandlers: [string, any][] = [
   ["acceptFriendRequest", acceptFriendRequestHandler],
+  ["commentData", commentDataHandler],
   ["createComment", createCommentHandler],
   ["createPost", createPostHandler],
   ["deleteFriend", deleteFriendHandler],

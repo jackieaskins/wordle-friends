@@ -1,26 +1,30 @@
 import { Stack } from "@chakra-ui/react";
-import { PostWithComments } from "./api";
 import CommentForm from "./CommentForm";
+import { useComments } from "./CommentsContext";
 import RevealedComment from "./RevealedComment";
 
 type CommentSectionProps = {
-  post: PostWithComments;
+  postId: string;
 };
 
 export default function CommentSection({
-  post,
+  postId,
 }: CommentSectionProps): JSX.Element {
+  const { getComments } = useComments();
+
+  const comments = getComments(postId);
+
   return (
     <Stack mx={2} my={4} spacing={3}>
-      {post.comments.map((comment, index) => (
+      {comments.map((comment, index) => (
         <RevealedComment
           key={comment.id}
           comment={comment}
-          divider={index !== post.comments.length - 1}
+          divider={index !== comments.length - 1}
         />
       ))}
 
-      <CommentForm post={post} />
+      <CommentForm postId={postId} />
     </Stack>
   );
 }

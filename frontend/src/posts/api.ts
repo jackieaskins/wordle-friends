@@ -13,31 +13,45 @@ import {
   createPost,
   CreatePostMutation,
   CreatePostMutationVariables,
-  listPostComments,
-  ListPostCommentsQuery,
-  ListPostCommentsQueryVariables,
   listPosts,
   ListPostsQuery,
   ListPostsQueryVariables,
   Post,
 } from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
+import { useComments } from "./CommentsContext";
 
-export type PostWithComments = Post & { comments: Comment[] };
+export type SimplePost = Omit<Post, "commentData">;
 
-function getListPostsKey(puzzleDate: string): [string, string] {
-  return ["listPosts", puzzleDate];
+function getPostsKey(puzzleDate: string): [string, string] {
+  return ["posts", puzzleDate];
 }
 
-export function useCreateComment({
-  id: postId,
-  puzzleDate,
-}: PostWithComments): UseMutationResult<
+export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
+  const { setComments } = useComments();
+
+  return useQuery<SimplePost[]>(getPostsKey(puzzleDate), async () => {
+    const posts =
+      (
+        await callGraphql<ListPostsQueryVariables, ListPostsQuery>(listPosts, {
+          puzzleDate,
+        })
+      ).data?.listPosts.posts ?? [];
+
+    posts.forEach(({ id: postId, commentData: { comments } }) =>
+      setComments(postId, comments)
+    );
+
+    return posts.map(({ commentData, ...post }) => post);
+  });
+}
+
+export function useCreateComment(): UseMutationResult<
   Comment,
   Error,
   CreateCommentMutationVariables
 > {
-  const queryClient = useQueryClient();
+  const { setComments } = useComments();
 
   return useMutation(
     async (input) => {
@@ -53,29 +67,8 @@ export function useCreateComment({
       throw new Error("No comment returned");
     },
     {
-      onSuccess: (comment: Comment) => {
-        queryClient.setQueryData<PostWithComments[] | undefined>(
-          getListPostsKey(puzzleDate),
-          (posts) => {
-            if (!posts) {
-              return posts;
-            }
-
-            const index = posts.findIndex(({ id }) => id === postId);
-            if (index === -1) {
-              return posts;
-            }
-
-            return [
-              ...posts.slice(0, index),
-              {
-                ...posts[index],
-                comments: [...posts[index].comments, comment],
-              },
-              ...posts.slice(index + 1),
-            ];
-          }
-        );
+      onSuccess: (comment: Comment, { input: { postId } }) => {
+        setComments(postId, (currComments) => [...currComments, comment]);
       },
     }
   );
@@ -102,45 +95,14 @@ export function useCreatePost(): UseMutationResult<
       throw new Error("No post returned");
     },
     {
-      onSuccess: (post) => {
-        queryClient.setQueryData<PostWithComments[] | null | undefined>(
-          getListPostsKey(post.puzzleDate),
-          (posts) => (posts ? [{ ...post, comments: [] }, ...posts] : posts)
+      onSuccess: ({ commentData, ...post }) => {
+        const { puzzleDate } = post;
+        queryClient.setQueryData<SimplePost[] | null | undefined>(
+          getPostsKey(puzzleDate),
+          (posts) => (posts ? [post, ...posts] : posts)
         );
-        queryClient.invalidateQueries(getListPostsKey(post.puzzleDate));
+        queryClient.invalidateQueries(getPostsKey(puzzleDate));
       },
     }
   );
-}
-
-async function listComments(postId: string): Promise<Comment[]> {
-  return (
-    (
-      await callGraphql<ListPostCommentsQueryVariables, ListPostCommentsQuery>(
-        listPostComments,
-        { postId }
-      )
-    ).data?.listPostComments?.comments ?? []
-  );
-}
-export function usePosts(
-  puzzleDate: string
-): UseQueryResult<PostWithComments[]> {
-  return useQuery<PostWithComments[]>(getListPostsKey(puzzleDate), async () => {
-    const posts =
-      (
-        await callGraphql<ListPostsQueryVariables, ListPostsQuery>(listPosts, {
-          puzzleDate,
-        })
-      ).data?.listPosts.posts ?? [];
-
-    const allComments = await Promise.all(
-      posts.map(({ id }) => listComments(id))
-    );
-
-    return posts.map((post, index) => ({
-      ...post,
-      comments: allComments[index],
-    }));
-  });
 }
