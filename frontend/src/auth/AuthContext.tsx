@@ -8,6 +8,7 @@ import {
   useReducer,
 } from "react";
 import { useQueryClient } from "react-query";
+import { clearCognitoLocalStorage } from "../localStorage";
 
 export type ModifiableUserAttributes = {
   ["custom:showSquares"]?: string;
@@ -126,6 +127,9 @@ export function AuthProvider({
   }, []);
 
   const signIn = useCallback(async (email, password) => {
+    // Try to prevent "The quota has been exceeded" error when signing in on Apple devices
+    clearCognitoLocalStorage();
+
     const { attributes } = await Auth.signIn(email, password);
     dispatchUserInfo({ type: "set", userAttributes: attributes });
   }, []);
