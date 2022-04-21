@@ -33,14 +33,16 @@ export default function RevealedPost({
     <Box width="100%" bg={bgColor} borderRadius="lg" px={3}>
       <Flex m={4} justifyContent="space-between" direction={["column", "row"]}>
         <Flex direction="column">
-          <Text as="strong">
+          <Text fontSize="sm" as="strong">
             <UserName user={user} userId={userId} />
           </Text>
           <Text fontSize="xs" color="gray.500">
             <RelativeTime timestamp={createdAt} />{" "}
             {isHardMode && <span> - Hard mode</span>}
           </Text>
-          <NewLineText mt={2}>{message}</NewLineText>
+          <NewLineText mt={2} fontSize="sm">
+            {message}
+          </NewLineText>
         </Flex>
 
         <Center mt={[4, 0]}>
