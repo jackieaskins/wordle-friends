@@ -7,7 +7,10 @@ export type PostKey = {
   userId: string;
   puzzleDate: string;
 };
-export type SimplePost = Omit<Post, "__typename" | "user" | "commentData">;
+export type SimplePost = Omit<
+  Post,
+  "__typename" | "user" | "commentData" | "reactions"
+>;
 export type SimplePaginatedPosts = Omit<
   PaginatedPosts,
   "__typename" | "posts"
@@ -40,7 +43,7 @@ export async function createPost(
 }
 
 export async function getPost(key: PostKey): Promise<SimplePost | undefined> {
-  return await get<PostKey, Post>({ TableName: POSTS_TABLE, Key: key });
+  return await get<PostKey, SimplePost>({ TableName: POSTS_TABLE, Key: key });
 }
 
 export async function getPostById(id: string): Promise<SimplePost | undefined> {

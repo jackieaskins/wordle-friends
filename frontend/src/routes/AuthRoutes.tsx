@@ -1,11 +1,12 @@
 import { SkipNavContent, SkipNavLink } from "@chakra-ui/skip-nav";
 import { Navigate, Route, Routes } from "react-router-dom";
+import { DateProvider } from "../DateContext";
 import FriendsPage from "../friends/FriendsPage";
 import Home from "../Home";
 import Navbar from "../nav/Navbar";
-import { DateProvider } from "../DateContext";
-import Preferences from "../user/Preferences";
 import { CommentsProvider } from "../posts/CommentsContext";
+import { ReactionsProvider } from "../posts/ReactionsContext";
+import Preferences from "../user/Preferences";
 
 export default function AuthRoutes(): JSX.Element {
   return (
@@ -18,9 +19,11 @@ export default function AuthRoutes(): JSX.Element {
             path="/"
             element={
               <DateProvider>
-                <CommentsProvider>
-                  <Home />
-                </CommentsProvider>
+                <ReactionsProvider>
+                  <CommentsProvider>
+                    <Home />
+                  </CommentsProvider>
+                </ReactionsProvider>
               </DateProvider>
             }
           />

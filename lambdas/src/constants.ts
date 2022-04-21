@@ -6,6 +6,7 @@ export const POST_ID_CREATED_AT_INDEX = process.env
 export const POSTS_TABLE = process.env.POSTS_TABLE as string;
 export const FRIENDS_TABLE = process.env.FRIENDS_TABLE as string;
 export const USER_ID_STATUS_INDEX = process.env.USER_ID_STATUS_INDEX as string;
+export const REACTIONS_TABLE = process.env.REACTIONS_TABLE as string;
 
 export const POSTS_TABLE_STREAM_ARN = process.env
   .POSTS_TABLE_STREAM_ARN as string;

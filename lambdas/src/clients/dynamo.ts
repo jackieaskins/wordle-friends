@@ -12,6 +12,8 @@ import {
   TransactWriteCommand,
   TransactWriteCommandInput,
   TransactWriteCommandOutput,
+  UpdateCommand,
+  UpdateCommandInput,
 } from "@aws-sdk/lib-dynamodb";
 import { REGION } from "../constants";
 
@@ -88,4 +90,13 @@ export async function put<T>(
 ): Promise<T> {
   await docClient.send(new PutCommand(input));
   return input.Item;
+}
+
+export async function update(
+  input: UpdateCommandInput
+): Promise<{ [key: string]: any }> {
+  const { Attributes: attributes } = await docClient.send(
+    new UpdateCommand(input)
+  );
+  return attributes ?? {};
 }

@@ -5,9 +5,18 @@ import {
   PutCommand,
   QueryCommand,
   TransactWriteCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from "aws-sdk-client-mock";
-import { batchGet, get, put, query, queryAll, transactWrite } from "./dynamo";
+import {
+  batchGet,
+  get,
+  put,
+  query,
+  queryAll,
+  transactWrite,
+  update,
+} from "./dynamo";
 
 const docClient = mockClient(DynamoDBDocumentClient);
 
@@ -236,6 +245,37 @@ describe("dynamo", () => {
       expect.assertions(1);
 
       await expect(put(input)).resolves.toEqual(item);
+    });
+  });
+
+  describe("update", () => {
+    const input = { Key: { key: "value" }, TableName: "table" };
+    const updateOutput = { Attributes: { key: "value" } };
+
+    beforeEach(() => {
+      docClient.on(UpdateCommand).resolves(updateOutput);
+    });
+
+    it("sends update command to dynamo with input", async () => {
+      expect.assertions(1);
+
+      await update(input);
+
+      expect(docClient.commandCalls(UpdateCommand, input)).toHaveLength(1);
+    });
+
+    it("returns the returned attributs if present", async () => {
+      expect.assertions(1);
+
+      await expect(update(input)).resolves.toEqual(updateOutput.Attributes);
+    });
+
+    it("returns an empty object if no attributes are returned", async () => {
+      expect.assertions(1);
+
+      docClient.on(UpdateCommand).resolves({ Attributes: undefined });
+
+      await expect(update(input)).resolves.toEqual({});
     });
   });
 });

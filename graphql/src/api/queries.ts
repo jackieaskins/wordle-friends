@@ -54,6 +54,10 @@ export const listPosts = /* GraphQL */ `
           }
           nextToken
         }
+        reactions {
+          react
+          userIds
+        }
       }
       nextToken
     }
@@ -91,6 +95,10 @@ export const getCurrentUserPost = /* GraphQL */ `
           updatedAt
         }
         nextToken
+      }
+      reactions {
+        react
+        userIds
       }
     }
   }
@@ -136,6 +144,10 @@ export const listFriendPosts = /* GraphQL */ `
             updatedAt
           }
           nextToken
+        }
+        reactions {
+          react
+          userIds
         }
       }
       nextToken

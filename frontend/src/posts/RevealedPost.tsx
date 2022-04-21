@@ -6,12 +6,14 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { RefType } from "wordle-friends-graphql";
 import NewLineText from "../common/NewLineText";
 import RelativeTime from "../common/RelativeTime";
 import Squares from "../common/Squares";
 import UserName from "../common/UserName";
 import { SimplePost } from "./api";
 import CommentSection from "./CommentSection";
+import ReactionSection from "./ReactionSection";
 
 type RevealedPostProps = {
   currentUserPost: SimplePost | null | undefined;
@@ -48,6 +50,8 @@ export default function RevealedPost({
 
       {currentUserPost && (
         <>
+          <Divider />
+          <ReactionSection refId={id} refType={RefType.Post} />
           <Divider />
           <CommentSection postId={id} />
         </>

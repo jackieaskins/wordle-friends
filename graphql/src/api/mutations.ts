@@ -70,6 +70,10 @@ export const createPost = /* GraphQL */ `
         }
         nextToken
       }
+      reactions {
+        react
+        userIds
+      }
     }
   }
 `;
@@ -87,6 +91,22 @@ export const createComment = /* GraphQL */ `
       text
       createdAt
       updatedAt
+    }
+  }
+`;
+export const createReaction = /* GraphQL */ `
+  mutation CreateReaction($input: ReactionInput!) {
+    createReaction(input: $input) {
+      react
+      userIds
+    }
+  }
+`;
+export const deleteReaction = /* GraphQL */ `
+  mutation DeleteReaction($input: ReactionInput!) {
+    deleteReaction(input: $input) {
+      react
+      userIds
     }
   }
 `;

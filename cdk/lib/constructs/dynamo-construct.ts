@@ -17,6 +17,7 @@ export class DynamoConstruct extends Construct {
   postsTable: Table;
   usersTable: Table;
   commentsTable: Table;
+  reactionsTable: Table;
 
   constructor(scope: Construct, id: string, { stage }: DynamoConstructProps) {
     super(scope, id);
@@ -59,6 +60,12 @@ export class DynamoConstruct extends Construct {
       partitionKey: { name: "postId", type: AttributeType.STRING },
       sortKey: { name: "createdAt", type: AttributeType.STRING },
       projectionType: ProjectionType.ALL,
+    });
+
+    this.reactionsTable = new Table(this, "ReactionsTable", {
+      tableName: `wordle-friends-reactions-${stage}`,
+      partitionKey: { name: "id", type: AttributeType.STRING },
+      billingMode: BillingMode.PAY_PER_REQUEST,
     });
   }
 }

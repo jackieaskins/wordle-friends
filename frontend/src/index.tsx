@@ -1,6 +1,7 @@
 import { Amplify } from "aws-amplify";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 
@@ -18,4 +19,9 @@ Amplify.configure({
   aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS",
 });
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  document.getElementById("root")
+);

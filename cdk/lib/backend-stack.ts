@@ -36,8 +36,10 @@ const RESOLVERS = {
     "sendFriendRequest",
     "createComment",
     "createPost",
+    "createReaction",
+    "deleteReaction",
   ],
-  Post: ["commentData"],
+  Post: ["commentData", "reactions"],
 };
 const USER_MAPPINGS = [
   { typeName: "Post", fieldName: "user", sourceKey: "userId" },
@@ -56,8 +58,13 @@ export class BackendStack extends Stack {
       "CloudWatchAlarmTopic"
     );
 
-    const { commentsTable, friendsTable, postsTable, usersTable } =
-      new DynamoConstruct(this, "Dynamo", { stage });
+    const {
+      commentsTable,
+      friendsTable,
+      postsTable,
+      reactionsTable,
+      usersTable,
+    } = new DynamoConstruct(this, "Dynamo", { stage });
     const { userPool } = new CognitoConstruct(this, "Cognito", {
       cloudWatchAlarmTopic,
       usersTable,
@@ -99,11 +106,13 @@ export class BackendStack extends Stack {
         FRIENDS_TABLE: friendsTable.tableName,
         USER_ID_STATUS_INDEX: FriendsTableIndex.UserIdStatus,
         POSTS_TABLE: postsTable.tableName,
+        REACTIONS_TABLE: reactionsTable.tableName,
       },
     });
     commentsTable.grantReadWriteData(apiHandler);
     friendsTable.grantReadWriteData(apiHandler);
     postsTable.grantReadWriteData(apiHandler);
+    reactionsTable.grantReadWriteData(apiHandler);
 
     const usersTableDS = new DynamoDbDataSource(this, "UsersDynamoDataSource", {
       api,

@@ -13,15 +13,23 @@ import {
   createPost,
   CreatePostMutation,
   CreatePostMutationVariables,
+  createReaction,
+  CreateReactionMutation,
+  CreateReactionMutationVariables,
+  deleteReaction,
+  DeleteReactionMutation,
+  DeleteReactionMutationVariables,
   listPosts,
   ListPostsQuery,
   ListPostsQueryVariables,
   Post,
+  Reaction,
 } from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
 import { useComments } from "./CommentsContext";
+import { useReactions } from "./ReactionsContext";
 
-export type SimplePost = Omit<Post, "commentData">;
+export type SimplePost = Omit<Post, "commentData" | "reactions">;
 
 function getPostsKey(puzzleDate: string): [string, string] {
   return ["posts", puzzleDate];
@@ -29,6 +37,7 @@ function getPostsKey(puzzleDate: string): [string, string] {
 
 export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
   const { setComments } = useComments();
+  const { setReactions } = useReactions();
 
   return useQuery<SimplePost[]>(getPostsKey(puzzleDate), async () => {
     const posts =
@@ -38,40 +47,13 @@ export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
         })
       ).data?.listPosts.posts ?? [];
 
-    posts.forEach(({ id: postId, commentData: { comments } }) =>
-      setComments(postId, comments)
-    );
+    posts.forEach(({ id: postId, reactions, commentData: { comments } }) => {
+      setComments(postId, comments);
+      setReactions(postId, reactions);
+    });
 
     return posts.map(({ commentData, ...post }) => post);
   });
-}
-
-export function useCreateComment(): UseMutationResult<
-  Comment,
-  Error,
-  CreateCommentMutationVariables
-> {
-  const { setComments } = useComments();
-
-  return useMutation(
-    async (input) => {
-      const { data } = await callGraphql<
-        CreateCommentMutationVariables,
-        CreateCommentMutation
-      >(createComment, input);
-
-      if (data?.createComment) {
-        return data?.createComment;
-      }
-
-      throw new Error("No comment returned");
-    },
-    {
-      onSuccess: (comment: Comment, { input: { postId } }) => {
-        setComments(postId, (currComments) => [...currComments, comment]);
-      },
-    }
-  );
 }
 
 export function useCreatePost(): UseMutationResult<
@@ -102,6 +84,90 @@ export function useCreatePost(): UseMutationResult<
           (posts) => (posts ? [post, ...posts] : posts)
         );
         queryClient.invalidateQueries(getPostsKey(puzzleDate));
+      },
+    }
+  );
+}
+
+export function useCreateComment(): UseMutationResult<
+  Comment,
+  Error,
+  CreateCommentMutationVariables
+> {
+  const { addComment } = useComments();
+
+  return useMutation(
+    async (input) => {
+      const { data } = await callGraphql<
+        CreateCommentMutationVariables,
+        CreateCommentMutation
+      >(createComment, input);
+
+      if (data?.createComment) {
+        return data?.createComment;
+      }
+
+      throw new Error("No comment returned");
+    },
+    {
+      onSuccess: (comment: Comment, { input: { postId } }) => {
+        addComment(postId, comment);
+      },
+    }
+  );
+}
+
+export function useCreateReaction(): UseMutationResult<
+  Reaction,
+  Error,
+  CreateReactionMutationVariables
+> {
+  const { updateReaction } = useReactions();
+
+  return useMutation(
+    async (input) => {
+      const { data } = await callGraphql<
+        CreateReactionMutationVariables,
+        CreateReactionMutation
+      >(createReaction, input);
+
+      if (data?.createReaction) {
+        return data?.createReaction;
+      }
+
+      throw new Error("No reaction returned");
+    },
+    {
+      onSuccess: (reaction: Reaction, { input: { refId } }) => {
+        updateReaction(refId, reaction);
+      },
+    }
+  );
+}
+
+export function useDeleteReaction(): UseMutationResult<
+  Reaction,
+  Error,
+  DeleteReactionMutationVariables
+> {
+  const { updateReaction } = useReactions();
+
+  return useMutation(
+    async (input) => {
+      const { data } = await callGraphql<
+        DeleteReactionMutationVariables,
+        DeleteReactionMutation
+      >(deleteReaction, input);
+
+      if (data?.deleteReaction) {
+        return data?.deleteReaction;
+      }
+
+      throw new Error("No reaction returned");
+    },
+    {
+      onSuccess: (reaction: Reaction, { input: { refId } }) => {
+        updateReaction(refId, reaction);
       },
     }
   );

@@ -3,7 +3,8 @@ import { AUTHORIZATION } from "../constants";
 
 export function generateEvent<T, S = Record<string, any> | null>(
   eventArgs: T,
-  source: S = {} as S
+  source: S = {} as S,
+  info: Record<string, any> = {}
 ): AppSyncResolverEvent<T, S> {
   return {
     arguments: eventArgs,
@@ -19,6 +20,7 @@ export function generateEvent<T, S = Record<string, any> | null>(
       variables: {},
       selectionSetList: [],
       selectionSetGraphQL: "",
+      ...info,
     },
   };
 }

@@ -52,6 +52,7 @@ export type Post = {
   colors: Array< Array< Color | null > >,
   guesses?: Array< string > | null,
   commentData: PaginatedComments,
+  reactions:  Array<Reaction >,
 };
 
 export type PaginatedComments = {
@@ -71,10 +72,28 @@ export type Comment = {
   updatedAt: string,
 };
 
+export type Reaction = {
+  __typename: "Reaction",
+  react: string,
+  userIds: Array< string >,
+};
+
 export type CommentInput = {
   postId: string,
   text: string,
 };
+
+export type ReactionInput = {
+  refId: string,
+  refType: RefType,
+  react: string,
+};
+
+export enum RefType {
+  Comment = "Comment",
+  Post = "Post",
+}
+
 
 export type PaginatedFriends = {
   __typename: "PaginatedFriends",
@@ -177,6 +196,11 @@ export type CreatePostMutation = {
       } >,
       nextToken?: string | null,
     },
+    reactions:  Array< {
+      __typename: "Reaction",
+      react: string,
+      userIds: Array< string >,
+    } >,
   },
 };
 
@@ -199,6 +223,30 @@ export type CreateCommentMutation = {
     text: string,
     createdAt: string,
     updatedAt: string,
+  },
+};
+
+export type CreateReactionMutationVariables = {
+  input: ReactionInput,
+};
+
+export type CreateReactionMutation = {
+  createReaction:  {
+    __typename: "Reaction",
+    react: string,
+    userIds: Array< string >,
+  },
+};
+
+export type DeleteReactionMutationVariables = {
+  input: ReactionInput,
+};
+
+export type DeleteReactionMutation = {
+  deleteReaction:  {
+    __typename: "Reaction",
+    react: string,
+    userIds: Array< string >,
   },
 };
 
@@ -273,6 +321,11 @@ export type ListPostsQuery = {
         } >,
         nextToken?: string | null,
       },
+      reactions:  Array< {
+        __typename: "Reaction",
+        react: string,
+        userIds: Array< string >,
+      } >,
     } >,
     nextToken?: string | null,
   },
@@ -319,6 +372,11 @@ export type GetCurrentUserPostQuery = {
       } >,
       nextToken?: string | null,
     },
+    reactions:  Array< {
+      __typename: "Reaction",
+      react: string,
+      userIds: Array< string >,
+    } >,
   } | null,
 };
 
@@ -367,6 +425,11 @@ export type ListFriendPostsQuery = {
         } >,
         nextToken?: string | null,
       },
+      reactions:  Array< {
+        __typename: "Reaction",
+        react: string,
+        userIds: Array< string >,
+      } >,
     } >,
     nextToken?: string | null,
   },

@@ -3,12 +3,15 @@ import { acceptFriendRequestHandler } from "./acceptFriendRequest";
 import { commentDataHandler } from "./commentData";
 import { createCommentHandler } from "./createComment";
 import { createPostHandler } from "./createPost";
+import { createReactionHandler } from "./createReaction";
 import { deleteFriendHandler } from "./deleteFriend";
+import { deleteReactionHandler } from "./deleteReaction";
 import { getCurrentUserPostHandler } from "./getCurrentUserPost";
 import { listFriendPostsHandler } from "./listFriendPosts";
 import { listFriendsHandler } from "./listFriends";
 import { listPostCommentsHandler } from "./listPostComments";
 import { listPostsHandler } from "./listPosts";
+import { reactionsHandler } from "./reactions";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
 
 const apiHandlers: [string, any][] = [
@@ -16,12 +19,15 @@ const apiHandlers: [string, any][] = [
   ["commentData", commentDataHandler],
   ["createComment", createCommentHandler],
   ["createPost", createPostHandler],
+  ["createReaction", createReactionHandler],
   ["deleteFriend", deleteFriendHandler],
+  ["deleteReaction", deleteReactionHandler],
   ["getCurrentUserPost", getCurrentUserPostHandler],
   ["listFriendPosts", listFriendPostsHandler],
   ["listFriends", listFriendsHandler],
   ["listPostComments", listPostCommentsHandler],
   ["listPosts", listPostsHandler],
+  ["reactions", reactionsHandler],
   ["sendFriendRequest", sendFriendRequestHandler],
 ];
 
