@@ -24,20 +24,27 @@ import {
   ListPostsQueryVariables,
   Post,
   Reaction,
+  RefType,
 } from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
-import { useComments } from "./CommentsContext";
-import { useReactions } from "./ReactionsContext";
 
 export type SimplePost = Omit<Post, "commentData" | "reactions">;
 
 function getPostsKey(puzzleDate: string): [string, string] {
   return ["posts", puzzleDate];
 }
+function getCommentsKey(postId: string): [string, string] {
+  return ["comments", postId];
+}
+function getReactionsKey(
+  refType: RefType,
+  refId: string
+): [string, string, string] {
+  return ["reactions", refType, refId];
+}
 
 export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
-  const { setComments } = useComments();
-  const { setReactions } = useReactions();
+  const queryClient = useQueryClient();
 
   return useQuery<SimplePost[]>(getPostsKey(puzzleDate), async () => {
     const posts =
@@ -48,11 +55,29 @@ export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
       ).data?.listPosts.posts ?? [];
 
     posts.forEach(({ id: postId, reactions, commentData: { comments } }) => {
-      setComments(postId, comments);
-      setReactions(postId, reactions);
+      queryClient.setQueryData(getCommentsKey(postId), comments);
+      queryClient.setQueryData(
+        getReactionsKey(RefType.Post, postId),
+        Object.fromEntries(
+          reactions.map(({ react, userIds }) => [react, userIds])
+        )
+      );
     });
 
-    return posts.map(({ commentData, ...post }) => post);
+    return posts.map(({ commentData, reactions, ...post }) => post);
+  });
+}
+
+export function useComments(postId: string): UseQueryResult<Comment[]> {
+  return useQuery<Comment[]>(getCommentsKey(postId), { enabled: false });
+}
+
+export function useReactions(
+  refType: RefType,
+  refId: string
+): UseQueryResult<Record<string, string[]>> {
+  return useQuery<Record<string, string[]>>(getReactionsKey(refType, refId), {
+    enabled: false,
   });
 }
 
@@ -81,7 +106,7 @@ export function useCreatePost(): UseMutationResult<
         const { puzzleDate } = post;
         queryClient.setQueryData<SimplePost[] | null | undefined>(
           getPostsKey(puzzleDate),
-          (posts) => (posts ? [post, ...posts] : posts)
+          (posts) => [post, ...(posts ?? [])]
         );
         queryClient.invalidateQueries(getPostsKey(puzzleDate));
       },
@@ -94,7 +119,7 @@ export function useCreateComment(): UseMutationResult<
   Error,
   CreateCommentMutationVariables
 > {
-  const { addComment } = useComments();
+  const queryClient = useQueryClient();
 
   return useMutation(
     async (input) => {
@@ -111,7 +136,10 @@ export function useCreateComment(): UseMutationResult<
     },
     {
       onSuccess: (comment: Comment, { input: { postId } }) => {
-        addComment(postId, comment);
+        queryClient.setQueryData<Comment[]>(
+          getCommentsKey(postId),
+          (comments) => [...(comments ?? []), comment]
+        );
       },
     }
   );
@@ -122,7 +150,7 @@ export function useCreateReaction(): UseMutationResult<
   Error,
   CreateReactionMutationVariables
 > {
-  const { updateReaction } = useReactions();
+  const queryClient = useQueryClient();
 
   return useMutation(
     async (input) => {
@@ -138,8 +166,14 @@ export function useCreateReaction(): UseMutationResult<
       throw new Error("No reaction returned");
     },
     {
-      onSuccess: (reaction: Reaction, { input: { refId } }) => {
-        updateReaction(refId, reaction);
+      onSuccess: (
+        { react, userIds }: Reaction,
+        { input: { refType, refId } }
+      ) => {
+        queryClient.setQueryData<Record<string, string[]>>(
+          getReactionsKey(refType, refId),
+          (reactions) => ({ ...reactions, [react]: userIds })
+        );
       },
     }
   );
@@ -150,7 +184,7 @@ export function useDeleteReaction(): UseMutationResult<
   Error,
   DeleteReactionMutationVariables
 > {
-  const { updateReaction } = useReactions();
+  const queryClient = useQueryClient();
 
   return useMutation(
     async (input) => {
@@ -166,8 +200,14 @@ export function useDeleteReaction(): UseMutationResult<
       throw new Error("No reaction returned");
     },
     {
-      onSuccess: (reaction: Reaction, { input: { refId } }) => {
-        updateReaction(refId, reaction);
+      onSuccess: (
+        { react, userIds }: Reaction,
+        { input: { refType, refId } }
+      ) => {
+        queryClient.setQueryData<Record<string, string[]>>(
+          getReactionsKey(refType, refId),
+          (reactions) => ({ ...reactions, [react]: userIds })
+        );
       },
     }
   );

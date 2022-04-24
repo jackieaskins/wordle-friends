@@ -4,8 +4,6 @@ import { DateProvider } from "../DateContext";
 import FriendsPage from "../friends/FriendsPage";
 import Home from "../Home";
 import Navbar from "../nav/Navbar";
-import { CommentsProvider } from "../posts/CommentsContext";
-import { ReactionsProvider } from "../posts/ReactionsContext";
 import Preferences from "../user/Preferences";
 
 export default function AuthRoutes(): JSX.Element {
@@ -19,11 +17,7 @@ export default function AuthRoutes(): JSX.Element {
             path="/"
             element={
               <DateProvider>
-                <ReactionsProvider>
-                  <CommentsProvider>
-                    <Home />
-                  </CommentsProvider>
-                </ReactionsProvider>
+                <Home />
               </DateProvider>
             }
           />

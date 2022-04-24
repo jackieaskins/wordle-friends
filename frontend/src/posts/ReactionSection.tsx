@@ -1,8 +1,8 @@
 import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import { RefType } from "wordle-friends-graphql";
+import { useReactions } from "./api";
 import ReactionButton from "./ReactionButton";
-import { useReactions } from "./ReactionsContext";
 
 export type ReactionType =
   | ":heart:"
@@ -28,8 +28,7 @@ export default function ReactionSection({
   refType,
   refId,
 }: ReactionSectionProps): JSX.Element {
-  const { getReactions } = useReactions();
-  const userIdsByReact = getReactions(refId);
+  const { data: userIdsByReact = {} } = useReactions(refType, refId);
 
   const [sortedReactionTypes] = useState(
     [...reactionTypes].sort((a, b) => {

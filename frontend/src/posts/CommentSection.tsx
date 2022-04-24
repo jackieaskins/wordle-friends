@@ -1,6 +1,6 @@
 import { Stack } from "@chakra-ui/react";
+import { useComments } from "./api";
 import CommentForm from "./CommentForm";
-import { useComments } from "./CommentsContext";
 import RevealedComment from "./RevealedComment";
 
 type CommentSectionProps = {
@@ -10,9 +10,7 @@ type CommentSectionProps = {
 export default function CommentSection({
   postId,
 }: CommentSectionProps): JSX.Element {
-  const { getComments } = useComments();
-
-  const comments = getComments(postId);
+  const { data: comments = [] } = useComments(postId);
 
   return (
     <Stack mx={2} my={4} spacing={3}>
