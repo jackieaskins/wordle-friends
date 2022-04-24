@@ -1,4 +1,4 @@
-import { Stack } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import { RefType } from "wordle-friends-graphql";
 import ReactionButton from "./ReactionButton";
@@ -48,7 +48,7 @@ export default function ReactionSection({
   );
 
   return (
-    <Stack direction="row" m={2} spacing={4}>
+    <Flex justifyContent="space-around" my={2}>
       {sortedReactionTypes.map((react) => (
         <ReactionButton
           key={react}
@@ -58,6 +58,6 @@ export default function ReactionSection({
           userIds={userIdsByReact[react] ?? []}
         />
       ))}
-    </Stack>
+    </Flex>
   );
 }

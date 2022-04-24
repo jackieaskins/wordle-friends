@@ -2,39 +2,25 @@ import { Icon, Spinner, Stack, Text } from "@chakra-ui/react";
 import { useCallback, useMemo } from "react";
 import { IconType } from "react-icons";
 import {
-  FaFrown,
-  FaHeart,
-  FaLaughSquint,
-  FaRegFrown,
-  FaRegHeart,
-  FaRegLaughSquint,
-  FaRegSurprise,
-  FaRegThumbsDown,
-  FaRegThumbsUp,
-  FaSurprise,
-  FaThumbsDown,
-  FaThumbsUp,
-} from "react-icons/fa";
+  BiDislike,
+  BiHeart,
+  BiLaugh,
+  BiLike,
+  BiSad,
+  BiShocked,
+} from "react-icons/bi";
 import { RefType } from "wordle-friends-graphql";
 import { useCurrentUser } from "../auth/CurrentUserContext";
 import { useCreateReaction, useDeleteReaction } from "./api";
 import { ReactionType } from "./ReactionSection";
 
-const emptyIcons: Record<ReactionType, IconType> = {
-  ":-1:": FaRegThumbsDown,
-  ":+1:": FaRegThumbsUp,
-  ":cry:": FaRegFrown,
-  ":joy:": FaRegLaughSquint,
-  ":flush:": FaRegSurprise,
-  ":heart:": FaRegHeart,
-};
-const filledIcons: Record<ReactionType, IconType> = {
-  ":-1:": FaThumbsDown,
-  ":+1:": FaThumbsUp,
-  ":cry:": FaFrown,
-  ":joy:": FaLaughSquint,
-  ":flush:": FaSurprise,
-  ":heart:": FaHeart,
+const icons: Record<ReactionType, IconType> = {
+  ":-1:": BiDislike,
+  ":+1:": BiLike,
+  ":cry:": BiSad,
+  ":joy:": BiLaugh,
+  ":flush:": BiShocked,
+  ":heart:": BiHeart,
 };
 
 type ReactionButtonProps = {
@@ -69,10 +55,6 @@ export default function ReactionButton({
     const variables = { input: { refId, refType, react } };
     selected ? deleteReaction(variables) : createReaction(variables);
   }, [createReaction, deleteReaction, react, refId, refType, selected]);
-  const ReactionIcon = useMemo(
-    () => (selected ? filledIcons[react] : emptyIcons[react]),
-    [react, selected]
-  );
 
   return (
     <Stack
@@ -86,7 +68,7 @@ export default function ReactionButton({
       {isLoading ? (
         <Spinner size="sm" />
       ) : (
-        <Icon as={ReactionIcon} boxSize={5} />
+        <Icon as={icons[react]} boxSize={6} />
       )}
       {userIds.length > 0 && <Text fontSize="sm">{userIds.length}</Text>}
     </Stack>
