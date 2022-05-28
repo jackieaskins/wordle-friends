@@ -51,10 +51,10 @@ export default function ShareResultsForm({
     handleSubmit,
     formState: { errors, isSubmitting, isDirty, isValidating },
     watch,
-  } = useForm();
+  } = useForm<{ wordleResult: string }>();
 
   const parse = useCallback(
-    ({ wordleResult }) => {
+    ({ wordleResult }: { wordleResult: string }) => {
       const { details, guesses } = parseWordleResult(wordleResult);
 
       setParsedResult({
@@ -126,7 +126,7 @@ export default function ShareResultsForm({
       </FormControl>
 
       <Button
-        isFullWidth
+        width="full"
         loadingText="Validating results"
         type="submit"
         isDisabled={!isDirty}

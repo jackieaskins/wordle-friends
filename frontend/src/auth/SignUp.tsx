@@ -5,7 +5,7 @@ import InputField from "../form/InputField";
 import { setPendingEmail } from "../localStorage";
 import NotificationFields from "../user/fields/NotificationFields";
 import ShowSquaresField from "../user/fields/ShowSquaresField";
-import { useAuth } from "./AuthContext";
+import { SignUpProps, useAuth } from "./AuthContext";
 import AuthForm from "./AuthForm";
 
 export default function SignUp(): JSX.Element {
@@ -13,7 +13,10 @@ export default function SignUp(): JSX.Element {
   const navigate = useNavigate();
 
   const onSubmit = useCallback(
-    async ({ passwordConfirmation, ...values }) => {
+    async ({
+      passwordConfirmation,
+      ...values
+    }: SignUpProps & { passwordConfirmation: string }) => {
       await signUp(values);
       setPendingEmail(values.username);
       navigate("/verify");

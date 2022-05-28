@@ -6,12 +6,17 @@ import InputField from "../form/InputField";
 import { getPendingEmail, removePendingEmail } from "../localStorage";
 import AuthForm from "./AuthForm";
 
+type VerifyEmailFormValues = {
+  email: string;
+  verificationCode: string;
+};
+
 export default function VerifyEmail(): JSX.Element {
   const [pendingEmail] = useState(getPendingEmail());
   const navigate = useNavigate();
 
   const onSubmit = useCallback(
-    ({ email, verificationCode }) => {
+    ({ email, verificationCode }: VerifyEmailFormValues) => {
       Auth.confirmSignUp(email, verificationCode);
       removePendingEmail();
       navigate("/signin");
@@ -20,9 +25,9 @@ export default function VerifyEmail(): JSX.Element {
   );
 
   return (
-    <AuthForm
+    <AuthForm<{ email: string; verificationCode: string }>
       buttonText="Verify email"
-      defaultValues={{ email: pendingEmail }}
+      defaultValues={{ email: pendingEmail ?? "" }}
       headerText="Verify email"
       onSubmit={onSubmit}
     >

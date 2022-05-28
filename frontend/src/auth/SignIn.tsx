@@ -5,11 +5,16 @@ import InputField from "../form/InputField";
 import { useAuth } from "./AuthContext";
 import AuthForm from "./AuthForm";
 
+type SignInFormValues = {
+  email: string;
+  password: string;
+};
+
 export default function SignIn(): JSX.Element {
   const navigate = useNavigate();
   const { signIn } = useAuth();
   const onSubmit = useCallback(
-    async ({ email, password }) => {
+    async ({ email, password }: SignInFormValues) => {
       await signIn(email, password);
       navigate("/");
     },

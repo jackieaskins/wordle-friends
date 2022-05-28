@@ -18,7 +18,7 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
   const [focused, setFocused] = useBoolean(false);
   const [text, setText] = useState("");
 
-  const handleSubmit = useCallback(
+  const handleSubmit: React.FormEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       e.preventDefault();
 
@@ -30,9 +30,10 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
     [createComment, postId, text]
   );
 
-  const handleChange = useCallback(({ target: { value } }) => {
-    setText(value);
-  }, []);
+  const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> =
+    useCallback(({ target: { value } }) => {
+      setText(value);
+    }, []);
 
   return (
     <Stack as="form" onSubmit={handleSubmit} spacing={2}>
@@ -54,7 +55,7 @@ export default function CommentForm({ postId }: CommentFormProps): JSX.Element {
       {(focused || text) && (
         <Button
           type="submit"
-          isFullWidth
+          width="full"
           size="sm"
           disabled={!text || isLoading}
           loadingText="Creating comment"

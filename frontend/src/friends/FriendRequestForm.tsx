@@ -7,9 +7,12 @@ export default function FriendRequestForm(): JSX.Element {
   const { isLoading, mutate } = useSendFriendRequest();
   const [friendId, setFriendId] = useState("");
 
-  const handleChange = useCallback(({ target: { value } }) => {
-    setFriendId(value);
-  }, []);
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    ({ target: { value } }) => {
+      setFriendId(value);
+    },
+    []
+  );
 
   const sendFriendRequest = useCallback(() => {
     mutate(

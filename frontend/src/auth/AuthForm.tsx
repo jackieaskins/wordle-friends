@@ -1,39 +1,41 @@
 import { Alert, Button, Container, Heading, Stack } from "@chakra-ui/react";
 import { ReactNode, useCallback, useState } from "react";
 import {
+  DeepPartial,
   FieldValues,
   FormProvider,
   SubmitHandler,
+  UnpackNestedValue,
   useForm,
   UseFormReturn,
 } from "react-hook-form";
 
-type AuthFormProps = {
+type AuthFormProps<T extends FieldValues> = {
   buttonText: string;
-  children: (formProps: UseFormReturn<FieldValues, any>) => ReactNode;
+  children: (formProps: UseFormReturn<T, any>) => ReactNode;
   footer?: ReactNode;
-  defaultValues?: FieldValues;
+  defaultValues?: UnpackNestedValue<DeepPartial<T>>;
   headerText: string;
-  onSubmit: SubmitHandler<FieldValues>;
+  onSubmit: SubmitHandler<T>;
 };
 
-export default function AuthForm({
+export default function AuthForm<T extends FieldValues>({
   buttonText,
   children,
   defaultValues,
   footer,
   headerText,
   onSubmit,
-}: AuthFormProps): JSX.Element {
+}: AuthFormProps<T>): JSX.Element {
   const [generalError, setGeneralError] = useState<string | null>(null);
-  const formProps = useForm({ defaultValues });
+  const formProps = useForm<T>({ defaultValues });
   const {
     formState: { isSubmitting },
     handleSubmit,
   } = formProps;
 
   const onSubmitWrapper = useCallback(
-    async (values) => {
+    async (values: UnpackNestedValue<T>) => {
       setGeneralError(null);
       try {
         await onSubmit(values);
@@ -69,7 +71,7 @@ export default function AuthForm({
           <Button
             loadingText="Submitting"
             isLoading={isSubmitting}
-            isFullWidth
+            width="full"
             type="submit"
           >
             {buttonText}

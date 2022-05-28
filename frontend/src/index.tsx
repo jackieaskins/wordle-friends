@@ -2,7 +2,7 @@ import { Amplify } from "aws-amplify";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { StrictMode } from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import App from "./App";
 
 dayjs.extend(relativeTime);
@@ -19,9 +19,14 @@ Amplify.configure({
   aws_appsync_authenticationType: "AMAZON_COGNITO_USER_POOLS",
 });
 
-ReactDOM.render(
+const container = document.getElementById("root");
+
+if (!container) {
+  throw new Error("No element found with id root");
+}
+
+createRoot(container).render(
   <StrictMode>
     <App />
-  </StrictMode>,
-  document.getElementById("root")
+  </StrictMode>
 );

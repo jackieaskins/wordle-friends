@@ -39,11 +39,14 @@ export default function EnterGuessesForm({
         },
       [guesses]
     );
-  const onMessageChange = useCallback(({ target: { value } }) => {
-    setMessage(value);
-  }, []);
+  const onMessageChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(
+    ({ target: { value } }) => {
+      setMessage(value);
+    },
+    []
+  );
 
-  const shareResults = useCallback(
+  const shareResults: React.FormEventHandler<HTMLDivElement> = useCallback(
     (event) => {
       event.preventDefault();
 

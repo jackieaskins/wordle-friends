@@ -12,7 +12,7 @@ import AppRoutes from "./routes/AppRoutes";
 const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
 
 const theme = extendTheme(
-  { config: { useSystemColorMode: true } },
+  { config: { initialColorMode: "system", useSystemColorMode: true } },
   withDefaultColorScheme({ colorScheme: "blue" }),
   withDefaultColorScheme({ colorScheme: "gray", components: ["Table"] })
 );

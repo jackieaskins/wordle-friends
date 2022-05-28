@@ -119,14 +119,17 @@ export function AuthProvider({
     })();
   }, []);
 
-  const updateUserAttributes = useCallback(async (newAttributes) => {
-    const user = await Auth.currentAuthenticatedUser();
-    await Auth.updateUserAttributes(user, newAttributes);
-    const userInfo = await Auth.currentUserInfo();
-    dispatchUserInfo({ type: "set", userAttributes: userInfo?.attributes });
-  }, []);
+  const updateUserAttributes = useCallback(
+    async (newAttributes: Partial<ModifiableUserAttributes>) => {
+      const user = await Auth.currentAuthenticatedUser();
+      await Auth.updateUserAttributes(user, newAttributes);
+      const userInfo = await Auth.currentUserInfo();
+      dispatchUserInfo({ type: "set", userAttributes: userInfo?.attributes });
+    },
+    []
+  );
 
-  const signIn = useCallback(async (email, password) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     // Try to prevent "The quota has been exceeded" error when signing in on Apple devices
     clearCognitoLocalStorage();
 

@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useCallback, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useAuth } from "../auth/AuthContext";
+import { ModifiableUserAttributes, useAuth } from "../auth/AuthContext";
 import { useCurrentUser } from "../auth/CurrentUserContext";
 import NotificationFields from "./fields/NotificationFields";
 import ShowSquaresField from "./fields/ShowSquaresField";
@@ -21,7 +21,7 @@ export default function Preferences(): JSX.Element {
   const { updateUserAttributes } = useAuth();
   const { rawAttributes } = useCurrentUser();
 
-  const formProps = useForm({
+  const formProps = useForm<Partial<ModifiableUserAttributes>>({
     defaultValues: Object.fromEntries(
       Object.entries(rawAttributes).filter(([key]) => key.startsWith("custom:"))
     ),
@@ -33,7 +33,7 @@ export default function Preferences(): JSX.Element {
   } = formProps;
 
   const onSubmit = useCallback(
-    async (values) => {
+    async (values: Partial<ModifiableUserAttributes>) => {
       setError(null);
 
       try {
@@ -94,7 +94,7 @@ export default function Preferences(): JSX.Element {
 
             <Button
               type="submit"
-              isFullWidth
+              width="full"
               isLoading={isSubmitting}
               loadingText="Submitting"
               disabled={!isDirty}
