@@ -1,12 +1,10 @@
 import {
+  Box,
   Button,
-  Flex,
   FormControl,
   FormLabel,
   HStack,
   Input,
-  InputGroup,
-  InputLeftAddon,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -65,10 +63,7 @@ export default function EnterGuessesForm({
 
   return (
     <Stack as="form" onSubmit={shareResults}>
-      <Flex justifyContent="space-between">
-        <Text as="strong">{date.format("MMM D, YYYY")}</Text>
-        <Text>{isHardMode && "Hard mode"}</Text>
-      </Flex>
+      <Text as="strong">{isHardMode && "Hard mode"}</Text>
 
       <FormControl>
         <FormLabel>Comment</FormLabel>
@@ -84,15 +79,18 @@ export default function EnterGuessesForm({
         <FormLabel>Guesses</FormLabel>
         <Stack spacing={1}>
           {guesses.map((guess, guessIndex) => (
-            <HStack key={guessIndex}>
-              <InputGroup>
-                <InputLeftAddon>{guessSquares[guessIndex]}</InputLeftAddon>
-                <Input
-                  value={guess}
-                  onChange={onGuessChange(guessIndex)}
-                  placeholder={`Enter guess ${guessIndex + 1}`}
-                />
-              </InputGroup>
+            <HStack
+              key={guessIndex}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Box whiteSpace="nowrap">{guessSquares[guessIndex]}</Box>
+              <Input
+                value={guess}
+                onChange={onGuessChange(guessIndex)}
+                placeholder={`Enter guess ${guessIndex + 1}`}
+              />
             </HStack>
           ))}
         </Stack>
