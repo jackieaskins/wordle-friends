@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { PaginatedPosts, Post, PostInput } from "wordle-friends-graphql";
-import { batchGet, get, put } from "../clients/dynamo";
+import { batchGet, get, MAX_LIMIT, put, query } from "../clients/dynamo";
 import { POSTS_TABLE } from "../constants";
 
 export type PostKey = {
@@ -48,6 +48,57 @@ export async function getPost(key: PostKey): Promise<SimplePost | undefined> {
 
 export async function getPostById(id: string): Promise<SimplePost | undefined> {
   return await getPost(parsePostId(id));
+}
+
+function handleSortKey(
+  startDate: string | null | undefined,
+  endDate: string | null | undefined
+) {
+  if (startDate && endDate) {
+    return {
+      expression: " and puzzleDate BETWEEN :startDate AND :endDate",
+      values: {
+        ":startDate": startDate,
+        ":endDate": endDate,
+      },
+    };
+  }
+
+  if (startDate) {
+    return {
+      expression: " and puzzleDate >= :startDate",
+      values: { ":startDate": startDate },
+    };
+  }
+
+  if (endDate) {
+    return {
+      expression: " and puzzleDate <= :endDate",
+      values: { ":endDate": endDate },
+    };
+  }
+
+  return { expression: "", values: {} };
+}
+export async function queryPosts(
+  userId: string,
+  startDate: string | null | undefined,
+  endDate: string | null | undefined,
+  nextToken: string | null | undefined
+): Promise<SimplePaginatedPosts> {
+  const { expression, values } = handleSortKey(startDate, endDate);
+
+  const { items: posts, nextToken: newNextToken } = await query<SimplePost>(
+    {
+      TableName: POSTS_TABLE,
+      KeyConditionExpression: `userId = :userId${expression}`,
+      ExpressionAttributeValues: { ":userId": userId, ...values },
+    },
+    MAX_LIMIT,
+    nextToken
+  );
+
+  return { posts, nextToken: newNextToken };
 }
 
 export async function batchGetPosts({

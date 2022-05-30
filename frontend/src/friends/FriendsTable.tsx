@@ -1,18 +1,10 @@
-import {
-  Center,
-  Flex,
-  Table,
-  Tbody,
-  Td,
-  Text,
-  Tr,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Center, Flex, Table, Tbody, Td, Text, Tr } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { UseQueryResult } from "react-query";
 import { Friend } from "wordle-friends-graphql";
 import LoadingIndicator from "../common/LoadingIndicator";
 import UserName from "../common/UserName";
+import { useSecondaryTextColor } from "../utils/colors";
 
 type FriendsTableProps = {
   useFriendsQuery: () => UseQueryResult<Friend[]>;
@@ -28,14 +20,14 @@ export default function FriendsTable({
   useFriendsQuery,
 }: FriendsTableProps): JSX.Element {
   const { isLoading, data: friends } = useFriendsQuery();
-  const grayColor = useColorModeValue("gray.400", "whiteAlpha.300");
+  const secondaryTextColor = useSecondaryTextColor();
 
   return (
     <Table>
       <Tbody>
         {isLoading && (
           <Tr>
-            <Td color={grayColor}>
+            <Td color={secondaryTextColor}>
               <Center>
                 <LoadingIndicator>{loadingNode}</LoadingIndicator>
               </Center>
@@ -44,7 +36,7 @@ export default function FriendsTable({
         )}
         {!isLoading && !friends?.length && (
           <Tr>
-            <Td color={grayColor} textAlign="center">
+            <Td color={secondaryTextColor} textAlign="center">
               {emptyNode}
             </Td>
           </Tr>

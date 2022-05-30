@@ -1,7 +1,8 @@
-import { Skeleton, Stack, Text, useColorModeValue } from "@chakra-ui/react";
+import { Skeleton, Stack, Text } from "@chakra-ui/react";
 import { useMemo } from "react";
 import { useCurrentUser } from "../auth/CurrentUserContext";
 import { useDate } from "../DateContext";
+import { useSecondaryTextColor } from "../utils/colors";
 import { usePosts } from "./api";
 import RevealedPost from "./RevealedPost";
 import UserPostSection from "./UserPostSection";
@@ -9,7 +10,7 @@ import UserPostSection from "./UserPostSection";
 export default function Timeline(): JSX.Element {
   const { id: currentUserId } = useCurrentUser();
   const { selectedPuzzleDate } = useDate();
-  const grayColor = useColorModeValue("gray.400", "whiteAlpha.300");
+  const secondaryTextColor = useSecondaryTextColor();
 
   const { data: allPosts, isLoading: isLoadingAllPosts } =
     usePosts(selectedPuzzleDate);
@@ -46,7 +47,7 @@ export default function Timeline(): JSX.Element {
       <UserPostSection currentUserPost={currentUserPost} />
 
       {!friendPosts?.length && (
-        <Text align="center" color={grayColor}>
+        <Text align="center" color={secondaryTextColor}>
           None of your friends have posted. You should give them a reminder or
           find some new ones.
         </Text>

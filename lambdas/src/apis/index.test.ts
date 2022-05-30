@@ -11,6 +11,7 @@ import { listFriendPostsHandler } from "./listFriendPosts";
 import { listFriendsHandler } from "./listFriends";
 import { listPostCommentsHandler } from "./listPostComments";
 import { listPostsHandler } from "./listPosts";
+import { listUserPostsHandler } from "./listUserPosts";
 import { reactionsHandler } from "./reactions";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
 
@@ -27,6 +28,7 @@ const apiHandlers: [string, any][] = [
   ["listFriends", listFriendsHandler],
   ["listPostComments", listPostCommentsHandler],
   ["listPosts", listPostsHandler],
+  ["listUserPosts", listUserPostsHandler],
   ["reactions", reactionsHandler],
   ["sendFriendRequest", sendFriendRequestHandler],
 ];

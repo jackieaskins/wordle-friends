@@ -7,8 +7,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 import { formatDateString } from "./utils/dates";
+import { useManageSearchParams } from "./utils/searchParams";
 
 type DateContextState = {
   currentDateTime: Dayjs;
@@ -25,8 +25,7 @@ export function DateProvider({
 }: {
   children: ReactNode;
 }): JSX.Element {
-  const { search } = useLocation();
-  const navigate = useNavigate();
+  const { searchParams, removeSearchParam } = useManageSearchParams();
   const [currentDateTime, setCurrentDateTime] = useState(dayjs());
 
   useEffect(() => {
@@ -40,19 +39,19 @@ export function DateProvider({
   }, []);
 
   const dateStr = useMemo(() => {
-    const dateParam = new URLSearchParams(search).get("date")?.trim();
+    const dateParam = searchParams.get("date")?.trim();
     if (!dateParam || currentDateTime.isSame(dateParam, "day")) {
       return undefined;
     }
 
     return dateParam;
-  }, [currentDateTime, search]);
+  }, [currentDateTime, searchParams]);
 
   useEffect(() => {
-    if (search && dateStr === undefined) {
-      navigate("/", { replace: true });
+    if (searchParams.has("date") && dateStr === undefined) {
+      removeSearchParam("date");
     }
-  }, [dateStr, navigate, search]);
+  }, [dateStr, removeSearchParam, searchParams]);
 
   const selectedDate = useMemo(() => dayjs(dateStr, "YYYY-MM-DD"), [dateStr]);
 

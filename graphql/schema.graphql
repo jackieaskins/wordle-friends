@@ -38,6 +38,23 @@ type Reaction {
   userIds: [String!]!
 }
 
+type MinimalPost {
+  id: ID!
+  userId: String!
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  message: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+  guesses: [String!]
+}
+
+type PaginatedMinimalPosts {
+  posts: [MinimalPost!]!
+  nextToken: String
+}
+
 type Post {
   id: ID!
   userId: String!
@@ -100,6 +117,7 @@ input ReactionInput {
 type Query {
   listFriends(status: FriendStatus, limit: Int, nextToken: String): PaginatedFriends!
   listPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
+  listUserPosts(startDate: AWSDate, endDate: AWSDate, nextToken: String): PaginatedMinimalPosts!
   getCurrentUserPost(puzzleDate: AWSDate!): Post
   listFriendPosts(puzzleDate: AWSDate!, limit: Int, nextToken: String): PaginatedPosts!
   listPostComments(postId: String!, limit: Int, nextToken: String): PaginatedComments!

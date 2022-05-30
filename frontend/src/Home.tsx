@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import DateChanger from "./DateChanger";
 import { useDate } from "./DateContext";
 import Timeline from "./posts/Timeline";
+import StatAccordion from "./stats/StatAccordion";
 
 export default function Home(): JSX.Element {
   const { currentDateTime, selectedDate, selectedPuzzleDate } = useDate();
@@ -26,9 +27,13 @@ export default function Home(): JSX.Element {
   }, [navigate]);
 
   return (
-    <Center mb={12} key={selectedPuzzleDate}>
+    <Center mb={12}>
       <Container>
-        <Stack spacing={4} mt={4}>
+        <Box my={4}>
+          <StatAccordion />
+        </Box>
+
+        <Stack spacing={4} key={selectedPuzzleDate}>
           <Box>
             <DateChanger />
           </Box>

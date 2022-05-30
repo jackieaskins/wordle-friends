@@ -1,11 +1,12 @@
 import { Color } from "wordle-friends-graphql";
-import { batchGet, get, put } from "../clients/dynamo";
+import { batchGet, get, put, query } from "../clients/dynamo";
 import { ISO_STRING, PUZZLE_DATE, TIMESTAMPS } from "../tests/constants";
 import {
   batchGetPosts,
   createPost,
   getPost,
   getPostById,
+  queryPosts,
   SimplePost,
 } from "./posts";
 
@@ -14,9 +15,11 @@ jest.mock("../constants", () => ({
 }));
 
 jest.mock("../clients/dynamo", () => ({
+  MAX_LIMIT: 100,
   batchGet: jest.fn(),
   get: jest.fn(),
   put: jest.fn(({ Item: item }) => item),
+  query: jest.fn(),
 }));
 
 jest.mock("dayjs", () => ({
@@ -145,6 +148,102 @@ describe("postsTable", () => {
       await expect(
         batchGetPosts({ userIds: ["123"], puzzleDate: PUZZLE_DATE })
       ).resolves.toEqual([POST]);
+    });
+  });
+
+  describe("queryPosts", () => {
+    beforeEach(() => {
+      (query as jest.Mock).mockResolvedValue({
+        nextToken: "nextToken",
+        items: [POST],
+      });
+    });
+
+    it("queries the posts table", async () => {
+      expect.assertions(1);
+
+      await queryPosts("123", "start", "end", "nextToken");
+
+      expect(query).toHaveBeenCalledWith(
+        expect.objectContaining({
+          TableName: "POSTS_TABLE",
+        }),
+        100,
+        "nextToken"
+      );
+    });
+
+    it("queries between start and end if both provided", async () => {
+      expect.assertions(1);
+
+      await queryPosts("123", "start", "end", null);
+
+      expect((query as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          KeyConditionExpression:
+            "userId = :userId and puzzleDate BETWEEN :startDate AND :endDate",
+          ExpressionAttributeValues: {
+            ":userId": "123",
+            ":startDate": "start",
+            ":endDate": "end",
+          },
+        })
+      );
+    });
+
+    it("queries after start if only start date is provided", async () => {
+      expect.assertions(1);
+
+      await queryPosts("123", "start", null, null);
+
+      expect((query as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          KeyConditionExpression:
+            "userId = :userId and puzzleDate >= :startDate",
+          ExpressionAttributeValues: {
+            ":userId": "123",
+            ":startDate": "start",
+          },
+        })
+      );
+    });
+
+    it("queries before end if only end date is provided", async () => {
+      expect.assertions(1);
+
+      await queryPosts("123", null, "end", null);
+
+      expect((query as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          KeyConditionExpression: "userId = :userId and puzzleDate <= :endDate",
+          ExpressionAttributeValues: {
+            ":userId": "123",
+            ":endDate": "end",
+          },
+        })
+      );
+    });
+
+    it("queries without dates if none provided", async () => {
+      expect.assertions(1);
+
+      await queryPosts("123", null, null, null);
+
+      expect((query as jest.Mock).mock.calls[0][0]).toEqual(
+        expect.objectContaining({
+          KeyConditionExpression: "userId = :userId",
+          ExpressionAttributeValues: { ":userId": "123" },
+        })
+      );
+    });
+
+    it("returns the posts returned from the query request", async () => {
+      expect.assertions(1);
+
+      await expect(queryPosts("123", "start", "end", null)).resolves.toEqual({
+        posts: [POST],
+        nextToken: "nextToken",
+      });
     });
   });
 });

@@ -29,6 +29,7 @@ const RESOLVERS = {
     "getCurrentUserPost",
     "listFriendPosts",
     "listPosts",
+    "listUserPosts",
   ],
   Mutation: [
     "acceptFriendRequest",

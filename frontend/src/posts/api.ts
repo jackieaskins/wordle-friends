@@ -22,6 +22,10 @@ import {
   listPosts,
   ListPostsQuery,
   ListPostsQueryVariables,
+  listUserPosts,
+  ListUserPostsQuery,
+  ListUserPostsQueryVariables,
+  MinimalPost,
   Post,
   Reaction,
   RefType,
@@ -68,6 +72,40 @@ export function usePosts(puzzleDate: string): UseQueryResult<SimplePost[]> {
   });
 }
 
+async function paginateUserPosts(
+  startDate: string,
+  endDate: string,
+  nextToken: string | null | undefined
+): Promise<MinimalPost[]> {
+  const { data } = await callGraphql<
+    ListUserPostsQueryVariables,
+    ListUserPostsQuery
+  >(listUserPosts, { startDate, endDate, nextToken });
+
+  if (!data) {
+    return [];
+  }
+
+  const { posts, nextToken: newNextToken } = data.listUserPosts;
+
+  if (newNextToken) {
+    return [
+      ...posts,
+      ...(await paginateUserPosts(startDate, endDate, newNextToken)),
+    ];
+  }
+
+  return posts;
+}
+export function useUserPosts(
+  startDate: string,
+  endDate: string
+): UseQueryResult<MinimalPost[]> {
+  return useQuery<MinimalPost[]>("userPosts", () =>
+    paginateUserPosts(startDate, endDate, null)
+  );
+}
+
 export function useComments(postId: string): UseQueryResult<Comment[]> {
   return useQuery<Comment[]>(getCommentsKey(postId), { enabled: false });
 }
@@ -109,6 +147,7 @@ export function useCreatePost(): UseMutationResult<
           (posts) => [post, ...(posts ?? [])]
         );
         queryClient.invalidateQueries(getPostsKey(puzzleDate));
+        queryClient.invalidateQueries("userPosts");
       },
     }
   );

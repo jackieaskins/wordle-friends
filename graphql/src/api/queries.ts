@@ -63,6 +63,32 @@ export const listPosts = /* GraphQL */ `
     }
   }
 `;
+export const listUserPosts = /* GraphQL */ `
+  query ListUserPosts(
+    $startDate: AWSDate
+    $endDate: AWSDate
+    $nextToken: String
+  ) {
+    listUserPosts(
+      startDate: $startDate
+      endDate: $endDate
+      nextToken: $nextToken
+    ) {
+      posts {
+        id
+        userId
+        puzzleDate
+        isHardMode
+        message
+        createdAt
+        updatedAt
+        colors
+        guesses
+      }
+      nextToken
+    }
+  }
+`;
 export const getCurrentUserPost = /* GraphQL */ `
   query GetCurrentUserPost($puzzleDate: AWSDate!) {
     getCurrentUserPost(puzzleDate: $puzzleDate) {

@@ -107,6 +107,25 @@ export type PaginatedPosts = {
   nextToken?: string | null,
 };
 
+export type PaginatedMinimalPosts = {
+  __typename: "PaginatedMinimalPosts",
+  posts:  Array<MinimalPost >,
+  nextToken?: string | null,
+};
+
+export type MinimalPost = {
+  __typename: "MinimalPost",
+  id: string,
+  userId: string,
+  puzzleDate: string,
+  isHardMode: boolean,
+  message?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  colors: Array< Array< Color | null > >,
+  guesses?: Array< string > | null,
+};
+
 export type AcceptFriendRequestMutationVariables = {
   friendId: string,
 };
@@ -326,6 +345,31 @@ export type ListPostsQuery = {
         react: string,
         userIds: Array< string >,
       } >,
+    } >,
+    nextToken?: string | null,
+  },
+};
+
+export type ListUserPostsQueryVariables = {
+  startDate?: string | null,
+  endDate?: string | null,
+  nextToken?: string | null,
+};
+
+export type ListUserPostsQuery = {
+  listUserPosts:  {
+    __typename: "PaginatedMinimalPosts",
+    posts:  Array< {
+      __typename: "MinimalPost",
+      id: string,
+      userId: string,
+      puzzleDate: string,
+      isHardMode: boolean,
+      message?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      colors: Array< Array< Color | null > >,
+      guesses?: Array< string > | null,
     } >,
     nextToken?: string | null,
   },
