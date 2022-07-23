@@ -1,5 +1,10 @@
 import dayjs from "dayjs";
-import { PaginatedPosts, Post, PostInput } from "wordle-friends-graphql";
+import {
+  PaginatedPosts,
+  Post,
+  PostInput,
+  UpdatePostInput,
+} from "wordle-friends-graphql";
 import { batchGet, get, MAX_LIMIT, put, query } from "../clients/dynamo";
 import { POSTS_TABLE } from "../constants";
 
@@ -39,6 +44,14 @@ export async function createPost(
       id: generateId(userId, puzzleDate),
     },
     ConditionExpression: "attribute_not_exists(userId)",
+  });
+}
+
+export async function updatePost(input: UpdatePostInput): Promise<SimplePost> {
+  return await put<SimplePost>({
+    TableName: POSTS_TABLE,
+    Item: { ...input, updatedAt: dayjs().toISOString() },
+    ConditionExpression: "attribute_exists(userId)",
   });
 }
 

@@ -14,6 +14,7 @@ import { listPostsHandler } from "./listPosts";
 import { listUserPostsHandler } from "./listUserPosts";
 import { reactionsHandler } from "./reactions";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
+import { updatePostHandler } from "./updatePost";
 
 const apis: Record<
   string,
@@ -34,6 +35,7 @@ const apis: Record<
   listUserPostsHandler,
   reactionsHandler,
   sendFriendRequestHandler,
+  updatePostHandler,
 };
 
 export default apis;

@@ -78,6 +78,31 @@ export type Reaction = {
   userIds: Array< string >,
 };
 
+export type UpdatePostInput = {
+  id: string,
+  userId: string,
+  puzzleDate: string,
+  isHardMode: boolean,
+  message?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  colors: Array< Array< Color | null > >,
+  guesses?: Array< string > | null,
+};
+
+export type MinimalPost = {
+  __typename: "MinimalPost",
+  id: string,
+  userId: string,
+  puzzleDate: string,
+  isHardMode: boolean,
+  message?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  colors: Array< Array< Color | null > >,
+  guesses?: Array< string > | null,
+};
+
 export type CommentInput = {
   postId: string,
   text: string,
@@ -111,19 +136,6 @@ export type PaginatedMinimalPosts = {
   __typename: "PaginatedMinimalPosts",
   posts:  Array<MinimalPost >,
   nextToken?: string | null,
-};
-
-export type MinimalPost = {
-  __typename: "MinimalPost",
-  id: string,
-  userId: string,
-  puzzleDate: string,
-  isHardMode: boolean,
-  message?: string | null,
-  createdAt: string,
-  updatedAt: string,
-  colors: Array< Array< Color | null > >,
-  guesses?: Array< string > | null,
 };
 
 export type AcceptFriendRequestMutationVariables = {
@@ -220,6 +232,25 @@ export type CreatePostMutation = {
       react: string,
       userIds: Array< string >,
     } >,
+  },
+};
+
+export type UpdatePostMutationVariables = {
+  input: UpdatePostInput,
+};
+
+export type UpdatePostMutation = {
+  updatePost:  {
+    __typename: "MinimalPost",
+    id: string,
+    userId: string,
+    puzzleDate: string,
+    isHardMode: boolean,
+    message?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    colors: Array< Array< Color | null > >,
+    guesses?: Array< string > | null,
   },
 };
 

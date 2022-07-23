@@ -8,6 +8,7 @@ import {
   getPostById,
   queryPosts,
   SimplePost,
+  updatePost,
 } from "./posts";
 
 jest.mock("../constants", () => ({
@@ -62,6 +63,32 @@ describe("postsTable", () => {
       expect.assertions(1);
 
       await expect(createPost(POST_INPUT)).resolves.toEqual(POST);
+    });
+  });
+
+  describe("updatePost", () => {
+    it("puts a post in the table", async () => {
+      expect.assertions(1);
+
+      const post = {
+        ...POST,
+        createdAt: "123",
+        updatedAt: "123",
+      };
+
+      await updatePost(post);
+
+      expect(put).toHaveBeenCalledWith({
+        TableName: "POSTS_TABLE",
+        Item: { ...post, updatedAt: ISO_STRING },
+        ConditionExpression: "attribute_exists(userId)",
+      });
+    });
+
+    it("returns the result of the put", async () => {
+      expect.assertions(1);
+
+      await expect(updatePost(POST)).resolves.toEqual(POST);
     });
   });
 

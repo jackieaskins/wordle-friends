@@ -77,6 +77,21 @@ export const createPost = /* GraphQL */ `
     }
   }
 `;
+export const updatePost = /* GraphQL */ `
+  mutation UpdatePost($input: UpdatePostInput!) {
+    updatePost(input: $input) {
+      id
+      userId
+      puzzleDate
+      isHardMode
+      message
+      createdAt
+      updatedAt
+      colors
+      guesses
+    }
+  }
+`;
 export const createComment = /* GraphQL */ `
   mutation CreateComment($input: CommentInput!) {
     createComment(input: $input) {

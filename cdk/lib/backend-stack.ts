@@ -37,6 +37,7 @@ const RESOLVERS = {
     "sendFriendRequest",
     "createComment",
     "createPost",
+    "updatePost",
     "createReaction",
     "deleteReaction",
   ],

@@ -14,6 +14,7 @@ import { listPostsHandler } from "./listPosts";
 import { listUserPostsHandler } from "./listUserPosts";
 import { reactionsHandler } from "./reactions";
 import { sendFriendRequestHandler } from "./sendFriendRequest";
+import { updatePostHandler } from "./updatePost";
 
 const apiHandlers: [string, any][] = [
   ["acceptFriendRequest", acceptFriendRequestHandler],
@@ -31,6 +32,7 @@ const apiHandlers: [string, any][] = [
   ["listUserPosts", listUserPostsHandler],
   ["reactions", reactionsHandler],
   ["sendFriendRequest", sendFriendRequestHandler],
+  ["updatePost", updatePostHandler],
 ];
 
 describe("apis", () => {

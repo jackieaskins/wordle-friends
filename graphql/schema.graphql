@@ -98,6 +98,18 @@ input PostInput {
   guesses: [String!]
 }
 
+input UpdatePostInput {
+  id: ID!
+  userId: String!
+  puzzleDate: AWSDate!
+  isHardMode: Boolean!
+  message: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  colors: [[Color]!]!
+  guesses: [String!]
+}
+
 input CommentInput {
   postId: String!
   text: String!
@@ -128,6 +140,7 @@ type Mutation {
   deleteFriend(friendId: String!): Boolean
   sendFriendRequest(friendId: String!): Friend!
   createPost(input: PostInput!): Post!
+  updatePost(input: UpdatePostInput!): MinimalPost!
   createComment(input: CommentInput!): Comment!
   createReaction(input: ReactionInput!): Reaction!
   deleteReaction(input: ReactionInput!): Reaction!
