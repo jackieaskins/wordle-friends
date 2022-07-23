@@ -29,6 +29,9 @@ import {
   Post,
   Reaction,
   RefType,
+  updatePost,
+  UpdatePostMutation,
+  UpdatePostMutationVariables,
 } from "wordle-friends-graphql";
 import { callGraphql } from "../graphql";
 
@@ -148,6 +151,41 @@ export function useCreatePost(): UseMutationResult<
         );
         queryClient.invalidateQueries(getPostsKey(puzzleDate));
         queryClient.invalidateQueries("userPosts");
+      },
+    }
+  );
+}
+
+export function useUpdatePost(): UseMutationResult<
+  MinimalPost,
+  Error,
+  UpdatePostMutationVariables
+> {
+  const queryClient = useQueryClient();
+
+  return useMutation(
+    async (input) => {
+      const { data } = await callGraphql<
+        UpdatePostMutationVariables,
+        UpdatePostMutation
+      >(updatePost, input);
+
+      if (data?.updatePost) {
+        return data?.updatePost;
+      }
+
+      throw new Error("No post returned");
+    },
+    {
+      onSuccess: (post) => {
+        const { puzzleDate } = post;
+        queryClient.setQueryData<SimplePost[] | null | undefined>(
+          getPostsKey(puzzleDate),
+          (posts) => [
+            { ...posts?.[0], ...post, __typename: "Post" },
+            ...(posts?.slice(1) ?? []),
+          ]
+        );
       },
     }
   );

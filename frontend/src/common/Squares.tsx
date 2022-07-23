@@ -1,6 +1,6 @@
-import { HStack, Square, Stack, useColorModeValue } from "@chakra-ui/react";
-import { useCallback } from "react";
+import { HStack, Square, Stack } from "@chakra-ui/react";
 import { Color } from "wordle-friends-graphql";
+import { useSquareColors } from "../utils/colors";
 
 type SquaresProps = {
   colors: (Color | null)[][];
@@ -13,22 +13,7 @@ export default function Squares({
   guesses,
   squareSize = "25px",
 }: SquaresProps): JSX.Element {
-  const normalFg = useColorModeValue("gray.600", "white");
-  const normalBg = useColorModeValue("gray.300", "gray.600");
-
-  const getColor = useCallback(
-    (color: Color | null, ground: "fg" | "bg") => {
-      switch (color) {
-        case Color.GREEN:
-          return { bg: "green.400", fg: "white" }[ground];
-        case Color.YELLOW:
-          return { bg: "yellow.300", fg: "gray.600" }[ground];
-        default:
-          return { bg: normalBg, fg: normalFg }[ground];
-      }
-    },
-    [normalBg, normalFg]
-  );
+  const { getFgColor, getBgColor } = useSquareColors();
 
   return (
     <Stack spacing={1}>
@@ -38,8 +23,8 @@ export default function Squares({
             <Square
               size={squareSize}
               key={colorIndex}
-              color={getColor(color, "fg")}
-              bg={getColor(color, "bg")}
+              color={getFgColor(color)}
+              bg={getBgColor(color)}
             >
               {guesses?.[rowIndex].charAt(colorIndex).toUpperCase()}
             </Square>

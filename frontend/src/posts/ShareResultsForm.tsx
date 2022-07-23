@@ -16,8 +16,7 @@ import { formatDateString } from "../utils/dates";
 export type ParsedWordleResult = {
   isHardMode: boolean;
   date: Dayjs;
-  guessColors: (Color | null)[][];
-  guessSquares: string[];
+  colors: (Color | null)[][];
 };
 
 type ShareResultsFormProps = {
@@ -59,8 +58,7 @@ export default function ShareResultsForm({
 
       setParsedResult({
         isHardMode: details.endsWith("*"),
-        guessSquares: guesses,
-        guessColors: guesses.map((guess) =>
+        colors: guesses.map((guess) =>
           guess
             .split("")
             .filter((square) => square.toLowerCase() !== "\ud83d")

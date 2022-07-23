@@ -1,109 +1,61 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
-import { ChangeEventHandler, useCallback, useState } from "react";
-import AutoResizeTextArea from "../form/AutoResizeTextArea";
-import { useCreatePost } from "../posts/api";
+import { Button } from "@chakra-ui/react";
+import { FormEventHandler, useCallback, useState } from "react";
 import { formatDateString } from "../utils/dates";
+import { useCreatePost } from "./api";
+import EnterGuessesFormFields from "./EnterGuessesFormFields";
 import { ParsedWordleResult } from "./ShareResultsForm";
 
-type EnterGuessesFormProps = {
+type EnterGuessesSectionProps = {
   parsedResult: ParsedWordleResult;
 };
 
 export default function EnterGuessesForm({
-  parsedResult: { date, guessColors, guessSquares, isHardMode },
-}: EnterGuessesFormProps): JSX.Element {
+  parsedResult,
+}: EnterGuessesSectionProps): JSX.Element {
   const { mutate: createPost, isLoading } = useCreatePost();
-  const [guesses, setGuesses] = useState<string[]>(guessColors.map(() => ""));
-  const [message, setMessage] = useState("");
 
-  const onGuessChange: (index: number) => ChangeEventHandler<HTMLInputElement> =
-    useCallback(
-      (index) =>
-        ({ target: { value } }) => {
-          setGuesses([
-            ...guesses.slice(0, index),
-            value.replace(/[^a-z]/gi, "").substring(0, 5),
-            ...guesses.slice(index + 1),
-          ]);
-        },
-      [guesses]
-    );
-  const onMessageChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(
-    ({ target: { value } }) => {
-      setMessage(value);
-    },
-    []
-  );
+  const guessesState = useState<string[]>(parsedResult.colors.map(() => ""));
+  const [guesses] = guessesState;
+  const messageState = useState<string>("");
+  const [message] = messageState;
 
-  const shareResults: React.FormEventHandler<HTMLDivElement> = useCallback(
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     (event) => {
       event.preventDefault();
 
+      const { colors, date, isHardMode } = parsedResult;
+
       createPost({
         input: {
-          colors: guessColors,
+          colors,
           isHardMode,
           puzzleDate: formatDateString(date),
-          message: message || undefined,
+          message,
           guesses,
         },
       });
     },
-    [createPost, date, guessColors, guesses, isHardMode, message]
+    [createPost, guesses, message, parsedResult]
   );
 
   return (
-    <Stack as="form" onSubmit={shareResults}>
-      <Text as="strong">{isHardMode && "Hard mode"}</Text>
-
-      <FormControl>
-        <FormLabel>Comment</FormLabel>
-        <AutoResizeTextArea
-          rows={1}
-          onChange={onMessageChange}
-          value={message}
-          placeholder="Enter an optional comment"
-        />
-      </FormControl>
-
-      <FormControl>
-        <FormLabel>Guesses</FormLabel>
-        <Stack spacing={1}>
-          {guesses.map((guess, guessIndex) => (
-            <HStack
-              key={guessIndex}
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Box whiteSpace="nowrap">{guessSquares[guessIndex]}</Box>
-              <Input
-                value={guess}
-                onChange={onGuessChange(guessIndex)}
-                placeholder={`Enter guess ${guessIndex + 1}`}
-              />
-            </HStack>
-          ))}
-        </Stack>
-      </FormControl>
+    <form onSubmit={handleSubmit}>
+      <EnterGuessesFormFields
+        {...parsedResult}
+        guessesState={guessesState}
+        messageState={messageState}
+      />
 
       <Button
         type="submit"
+        width="100%"
         isDisabled={guesses.some((guess) => guess.length !== 5)}
         isLoading={isLoading}
         loadingText="Sharing"
+        mt={6}
       >
         Share
       </Button>
-    </Stack>
+    </form>
   );
 }
