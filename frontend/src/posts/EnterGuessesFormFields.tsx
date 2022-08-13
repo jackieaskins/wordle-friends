@@ -5,7 +5,6 @@ import {
   PinInput,
   PinInputField,
   Stack,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import {
   ChangeEventHandler,
@@ -29,7 +28,6 @@ export default function EnterGuessesFormFields({
   messageState,
 }: EnterGuessesFormProps): JSX.Element {
   const { getFgColor, getBgColor } = useSquareColors();
-  const focusBorderColor = useColorModeValue("gray.300", "white");
   const [guesses, setGuesses] = guessesState;
   const [message, setMessage] = messageState;
 
@@ -37,7 +35,10 @@ export default function EnterGuessesFormFields({
     (index) => (value) => {
       setGuesses([
         ...guesses.slice(0, index),
-        value.replace(/[^a-z]/gi, "").substring(0, 5),
+        value
+          .replace(/[^a-z]/gi, "")
+          .substring(0, 5)
+          .toUpperCase(),
         ...guesses.slice(index + 1),
       ]);
     },
@@ -61,18 +62,20 @@ export default function EnterGuessesFormFields({
                 <PinInput
                   type="alphanumeric"
                   onChange={onGuessChange(guessIndex)}
-                  focusBorderColor={focusBorderColor}
-                  value={guess.toUpperCase()}
-                  variant="flushed"
+                  value={guess}
+                  variant="outline"
                 >
                   {colors[guessIndex].map((color, colorIndex) => (
                     <PinInputField
                       key={colorIndex}
+                      autoCapitalize="off"
+                      autoComplete="off"
+                      autoCorrect="off"
                       fontWeight="bold"
-                      borderWidth={0}
                       background={getBgColor(color)}
                       color={getFgColor(color)}
-                      _focus={{ caretColor: getFgColor(color) }}
+                      _hover={{}}
+                      _focusVisible={{ caretColor: getFgColor(color) }}
                       _placeholder={{ color: getFgColor(color), opacity: 0.8 }}
                     />
                   ))}
