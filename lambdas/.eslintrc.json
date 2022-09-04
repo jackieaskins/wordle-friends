@@ -1,3 +1,1 @@
-{
-  "extends": ["wordle-friends", "plugin:jest/recommended", "plugin:jest/style"]
-}
+{ "extends": ["@jackieaskins", "plugin:jest/recommended", "plugin:jest/style"] }

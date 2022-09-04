@@ -28,10 +28,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@jackieaskins/eslint-config": "^1.0.0",
     "@types/node": "^17.0.36",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "eslint": "^8.18.0",
-    "eslint-config-wordle-friends": "^0.0.1",
     "eslint-plugin-import": "^2.26.0",
     "prettier": "^2.7.1",
     "typescript": "^4.7.4"
