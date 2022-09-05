@@ -1,20 +1,20 @@
 import apis from ".";
-import { acceptFriendRequestHandler } from "./acceptFriendRequest";
-import { commentDataHandler } from "./commentData";
-import { createCommentHandler } from "./createComment";
-import { createPostHandler } from "./createPost";
-import { createReactionHandler } from "./createReaction";
-import { deleteFriendHandler } from "./deleteFriend";
-import { deleteReactionHandler } from "./deleteReaction";
-import { getCurrentUserPostHandler } from "./getCurrentUserPost";
-import { listFriendPostsHandler } from "./listFriendPosts";
-import { listFriendsHandler } from "./listFriends";
-import { listPostCommentsHandler } from "./listPostComments";
-import { listPostsHandler } from "./listPosts";
-import { listUserPostsHandler } from "./listUserPosts";
-import { reactionsHandler } from "./reactions";
-import { sendFriendRequestHandler } from "./sendFriendRequest";
-import { updatePostHandler } from "./updatePost";
+import { commentDataHandler } from "./comments/commentData";
+import { createCommentHandler } from "./comments/createComment";
+import { listPostCommentsHandler } from "./comments/listPostComments";
+import { acceptFriendRequestHandler } from "./friends/acceptFriendRequest";
+import { deleteFriendHandler } from "./friends/deleteFriend";
+import { listFriendPostsHandler } from "./friends/listFriendPosts";
+import { listFriendsHandler } from "./friends/listFriends";
+import { sendFriendRequestHandler } from "./friends/sendFriendRequest";
+import { createPostHandler } from "./posts/createPost";
+import { getCurrentUserPostHandler } from "./posts/getCurrentUserPost";
+import { listPostsHandler } from "./posts/listPosts";
+import { listUserPostsHandler } from "./posts/listUserPosts";
+import { updatePostHandler } from "./posts/updatePost";
+import { createReactionHandler } from "./reactions/createReaction";
+import { deleteReactionHandler } from "./reactions/deleteReaction";
+import { reactionsHandler } from "./reactions/reactions";
 
 const apiHandlers: [string, any][] = [
   ["acceptFriendRequest", acceptFriendRequestHandler],
