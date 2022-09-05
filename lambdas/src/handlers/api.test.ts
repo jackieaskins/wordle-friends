@@ -20,7 +20,7 @@ async function callHandler(event: any = EVENT) {
   return await handler(event as AppSyncResolverEvent<any, any>);
 }
 
-describe("handler", () => {
+describe("api", () => {
   it("throws an error if no userId", async () => {
     expect.assertions(1);
 

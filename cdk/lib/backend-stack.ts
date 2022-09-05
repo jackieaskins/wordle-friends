@@ -14,6 +14,7 @@ import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
 import { DynamoConstruct } from "./constructs/dynamo-construct";
 import { NotificationsConstruct } from "./constructs/notifications-construct";
+import { RemindersConstruct } from "./constructs/reminders-construct";
 import { CommentsTableIndex, FriendsTableIndex, Stage } from "./types";
 import { getCloudWatchAlarmTopic } from "./utils";
 import { getUserRequest } from "./vtl";
@@ -81,6 +82,11 @@ export class BackendStack extends Stack {
       userPool,
       usersTable,
     });
+    new RemindersConstruct(this, "Reminders", {
+      postsTable,
+      stage,
+      userPool,
+    });
 
     const api = new GraphqlApi(this, "GraphqlApi", {
       name: `wordle-friends-${stage}`,
@@ -100,7 +106,7 @@ export class BackendStack extends Stack {
       code: Code.fromAsset(path.join(__dirname, "../../lambdas/dist/api")),
       functionName: `wordle-friends-api-${stage}`,
       handler: "index.handler",
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       timeout: Duration.seconds(15),
       environment: {
         COMMENTS_TABLE: commentsTable.tableName,

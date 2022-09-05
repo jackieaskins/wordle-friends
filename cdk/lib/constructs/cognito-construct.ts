@@ -5,6 +5,7 @@ import {
   BooleanAttribute,
   CfnIdentityPool,
   CfnIdentityPoolRoleAttachment,
+  StringAttribute,
   UserPool,
   VerificationEmailStyle,
 } from "aws-cdk-lib/aws-cognito";
@@ -62,7 +63,7 @@ export class CognitoConstruct extends Construct {
         deadLetterQueue: postConfirmationDLQ,
         functionName: `wordle-friends-post-confirmation-${stage}`,
         handler: "index.handler",
-        runtime: Runtime.NODEJS_14_X,
+        runtime: Runtime.NODEJS_16_X,
         timeout: Duration.seconds(30),
         environment: {
           USERS_TABLE: usersTable.tableName,
@@ -100,6 +101,7 @@ export class CognitoConstruct extends Construct {
         notifyOnFriendPost: new BooleanAttribute({ mutable: true }),
         notifyOnPostComment: new BooleanAttribute({ mutable: true }),
         notifyOnCommentReply: new BooleanAttribute({ mutable: true }),
+        timezone: new StringAttribute({ mutable: true }),
       },
     });
 

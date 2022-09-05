@@ -1,6 +1,14 @@
-import { SendBulkTemplatedEmailCommand, SESClient } from "@aws-sdk/client-ses";
+import {
+  SendBulkTemplatedEmailCommand,
+  SendTemplatedEmailCommand,
+  SESClient,
+} from "@aws-sdk/client-ses";
 import { REGION } from "../constants";
 
+export type BaseTemplateData = {
+  firstName: string;
+  puzzleDate: string;
+};
 type BulkEmailDestination<T> = {
   email: string;
   replacementData: T;
@@ -31,7 +39,7 @@ function chunkArr<T>(items: T[]): T[][] {
 }
 
 // TODO: Error handling
-export async function sendBulkEmail<T>(
+export async function sendBulkEmail<T extends BaseTemplateData>(
   template: string,
   defaultData: T,
   destinations: BulkEmailDestination<T>[]
@@ -50,5 +58,20 @@ export async function sendBulkEmail<T>(
         })
       )
     )
+  );
+}
+
+export async function sendTemplatedEmail<T extends BaseTemplateData>(
+  template: string,
+  templateData: T,
+  email: string
+): Promise<void> {
+  await client.send(
+    new SendTemplatedEmailCommand({
+      Source: FROM_ADDRESS,
+      Template: template,
+      TemplateData: JSON.stringify(templateData),
+      Destination: { ToAddresses: [email] },
+    })
   );
 }

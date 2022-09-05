@@ -5,6 +5,7 @@ module.exports = {
     api: "./src/handlers/api.ts",
     notifications: "./src/handlers/notifications.ts",
     postConfirmation: "./src/handlers/postConfirmation.ts",
+    reminders: "./src/handlers/reminders.ts",
   },
   module: { rules: [{ test: /\.ts$/, loader: "ts-loader" }] },
   output: {

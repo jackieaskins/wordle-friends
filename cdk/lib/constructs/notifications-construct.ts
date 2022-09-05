@@ -1,8 +1,7 @@
-import { Arn, Duration, Stack } from "aws-cdk-lib";
+import { Duration } from "aws-cdk-lib";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { UserPool } from "aws-cdk-lib/aws-cognito";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
-import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import {
   Code,
   Function,
@@ -18,8 +17,9 @@ import { ITopic } from "aws-cdk-lib/aws-sns";
 import { Queue, QueueEncryption } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 import path from "path";
-import { DOMAIN_NAME } from "../constants";
+import { getSESPolicyStatement, getUserPoolPolicyStatement } from "../policies";
 import { CommentsTableIndex, FriendsTableIndex, Stage } from "../types";
+import { generateTemplateText } from "../utils";
 
 export interface NotificationsConstructProps {
   cloudWatchAlarmTopic: ITopic;
@@ -29,16 +29,6 @@ export interface NotificationsConstructProps {
   stage: Stage;
   userPool: UserPool;
   usersTable: Table;
-}
-
-function generateTemplateText(body: string[]): string {
-  const siteUrl = `https://${DOMAIN_NAME}`;
-  return [
-    "Hi {{firstName}},",
-    ...body,
-    `Visit Wordle with Friends to respond: ${siteUrl}?date={{puzzleDate}}`,
-    `To update subscription preferences: ${siteUrl}/preferences`,
-  ].join("\r\n\r\n");
 }
 
 export class NotificationsConstruct extends Construct {
@@ -112,7 +102,7 @@ export class NotificationsConstruct extends Construct {
     const streamTables = [commentsTable, postsTable];
     const notificationsHandler = new Function(this, "NotificationsHandler", {
       functionName: `wordle-friends-notifications-${stage}`,
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       code: Code.fromAsset(
         path.join(__dirname, "../../../lambdas/dist/notifications")
       ),
@@ -151,28 +141,9 @@ export class NotificationsConstruct extends Construct {
       ),
     });
 
+    notificationsHandler.addToRolePolicy(getUserPoolPolicyStatement(userPool));
     notificationsHandler.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["cognito-idp:AdminGetUser"],
-        resources: [userPool.userPoolArn],
-      })
-    );
-    notificationsHandler.addToRolePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        actions: ["ses:SendBulkTemplatedEmail"],
-        resources: [
-          Arn.format({
-            service: "ses",
-            resource: "identity",
-            resourceName: DOMAIN_NAME,
-            partition: Stack.of(this).partition,
-            region: Stack.of(this).region,
-            account: Stack.of(this).account,
-          }),
-        ],
-      })
+      getSESPolicyStatement(this, ["ses:SendBulkTemplatedEmail"])
     );
 
     commentsTable.grantReadData(notificationsHandler);

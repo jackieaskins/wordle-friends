@@ -19,5 +19,7 @@ export const COMMENT_REPLY_TEMPLATE_NAME = process.env
   .COMMENT_REPLY_TEMPLATE_NAME as string;
 export const POST_COMMENT_TEMPLATE_NAME = process.env
   .POST_COMMENT_TEMPLATE_NAME as string;
+export const REMINDER_TEMPLATE_NAME = process.env
+  .REMINDER_TEMPLATE_NAME as string;
 
 export const USER_POOL_ID = process.env.USER_POOL_ID as string;

@@ -23,7 +23,7 @@ async function callHandler() {
   return await handler(EVENT);
 }
 
-describe("handler", () => {
+describe("postConfirmation", () => {
   beforeEach(() => {
     ddbMock.reset();
   });

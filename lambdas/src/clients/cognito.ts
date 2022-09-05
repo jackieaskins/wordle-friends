@@ -7,14 +7,15 @@ import {
 import { REGION, USER_POOL_ID } from "../constants";
 
 type BooleanString = "true" | "false";
-type UserAttributes = {
+export type UserAttributes = {
   email: string;
   given_name: string;
   family_name: string;
-  ["custom:notifyOnFriendPost"]?: BooleanString;
-  ["custom:notifyOnPostComment"]?: BooleanString;
-  ["custom:notifyOnCommentReply"]?: BooleanString;
-  ["custom:showSquares"]?: BooleanString;
+  "custom:notifyOnFriendPost"?: BooleanString;
+  "custom:notifyOnPostComment"?: BooleanString;
+  "custom:notifyOnCommentReply"?: BooleanString;
+  "custom:showSquares"?: BooleanString;
+  "custom:timezone"?: string;
 };
 
 const client = new CognitoIdentityProviderClient({ region: REGION });
