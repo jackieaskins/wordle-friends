@@ -2,6 +2,7 @@ import { Checkbox, CheckboxProps } from "@chakra-ui/react";
 import { ChangeEvent } from "react";
 import { useController, useFormContext } from "react-hook-form";
 import FormField, { FormFieldProps } from "./FormField";
+import { getRegisterOptions } from "./utils";
 
 export type CheckboxFieldProps = {
   transformValue?: {
@@ -32,10 +33,7 @@ export default function CheckboxField({
   } = useController({
     name,
     control,
-    rules: {
-      ...(registerOptions ?? {}),
-      required,
-    },
+    rules: getRegisterOptions(registerOptions, required),
     defaultValue,
   });
 

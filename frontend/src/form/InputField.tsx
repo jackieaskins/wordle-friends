@@ -1,6 +1,7 @@
 import { Input, InputProps } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 import FormField, { FormFieldProps } from "./FormField";
+import { getRegisterOptions } from "./utils";
 
 type InputFieldProps = InputProps & FormFieldProps;
 
@@ -15,10 +16,7 @@ export default function InputField(props: InputFieldProps): JSX.Element {
         width="100%"
         id={name}
         {...inputProps}
-        {...register(name, {
-          ...(registerOptions ?? {}),
-          required,
-        })}
+        {...register(name, getRegisterOptions(registerOptions, required))}
       />
     </FormField>
   );

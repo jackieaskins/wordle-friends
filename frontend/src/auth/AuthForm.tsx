@@ -5,7 +5,6 @@ import {
   FieldValues,
   FormProvider,
   SubmitHandler,
-  UnpackNestedValue,
   useForm,
   UseFormReturn,
 } from "react-hook-form";
@@ -14,7 +13,7 @@ type AuthFormProps<T extends FieldValues> = {
   buttonText: string;
   children: (formProps: UseFormReturn<T, any>) => ReactNode;
   footer?: ReactNode;
-  defaultValues?: UnpackNestedValue<DeepPartial<T>>;
+  defaultValues?: DeepPartial<T>;
   headerText: string;
   onSubmit: SubmitHandler<T>;
 };
@@ -35,7 +34,7 @@ export default function AuthForm<T extends FieldValues>({
   } = formProps;
 
   const onSubmitWrapper = useCallback(
-    async (values: UnpackNestedValue<T>) => {
+    async (values: T) => {
       setGeneralError(null);
       try {
         await onSubmit(values);

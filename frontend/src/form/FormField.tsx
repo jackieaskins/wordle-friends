@@ -5,7 +5,12 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { RegisterOptions, useFormState } from "react-hook-form";
+import {
+  FieldError,
+  FieldErrorsImpl,
+  RegisterOptions,
+  useFormState,
+} from "react-hook-form";
 
 export type FormFieldProps = {
   helperText?: ReactNode;
@@ -24,9 +29,12 @@ export default function FormField({
 }: { children: ReactNode } & FormFieldProps): JSX.Element {
   const { errors } = useFormState();
 
-  const error = name
+  const error: FieldError | undefined = name
     .split(".")
-    .reduce((parent, namePart) => parent?.[namePart], errors);
+    .reduce(
+      (parent, namePart) => parent?.[namePart] as FieldErrorsImpl,
+      errors
+    ) as unknown as FieldError | undefined;
 
   return (
     <FormControl isRequired={required} isInvalid={!!error} label={label}>

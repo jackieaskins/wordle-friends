@@ -1,6 +1,7 @@
 import { RadioGroup, RadioGroupProps } from "@chakra-ui/react";
 import { useController, useFormContext } from "react-hook-form";
 import FormField, { FormFieldProps } from "./FormField";
+import { getRegisterOptions } from "./utils";
 
 type RadioGroupFieldProps = RadioGroupProps & FormFieldProps;
 
@@ -20,10 +21,7 @@ export default function RadioGroupField({
   const { field } = useController({
     name,
     control,
-    rules: {
-      ...(registerOptions ?? {}),
-      required,
-    },
+    rules: getRegisterOptions(registerOptions, required),
   });
 
   return (
