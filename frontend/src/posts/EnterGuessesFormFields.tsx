@@ -2,8 +2,8 @@ import {
   Center,
   FormControl,
   FormLabel,
-  PinInput,
-  PinInputField,
+  Input,
+  Square,
   Stack,
 } from "@chakra-ui/react";
 import {
@@ -27,23 +27,25 @@ export default function EnterGuessesFormFields({
   guessesState,
   messageState,
 }: EnterGuessesFormProps): JSX.Element {
-  const { getFgColor, getBgColor } = useSquareColors();
+  const { getBgColor } = useSquareColors();
   const [guesses, setGuesses] = guessesState;
   const [message, setMessage] = messageState;
 
-  const onGuessChange: (index: number) => (value: string) => void = useCallback(
-    (index) => (value) => {
-      setGuesses([
-        ...guesses.slice(0, index),
-        value
-          .replace(/[^a-z]/gi, "")
-          .substring(0, 5)
-          .toUpperCase(),
-        ...guesses.slice(index + 1),
-      ]);
-    },
-    [guesses, setGuesses]
-  );
+  const onGuessChange: (index: number) => ChangeEventHandler<HTMLInputElement> =
+    useCallback(
+      (index) =>
+        ({ target: { value } }) => {
+          setGuesses([
+            ...guesses.slice(0, index),
+            value
+              .replace(/[^a-z]/gi, "")
+              .substring(0, 5)
+              .toUpperCase(),
+            ...guesses.slice(index + 1),
+          ]);
+        },
+      [guesses, setGuesses]
+    );
   const onMessageChange: ChangeEventHandler<HTMLTextAreaElement> = useCallback(
     ({ target: { value } }) => {
       setMessage(value);
@@ -59,27 +61,21 @@ export default function EnterGuessesFormFields({
           <Stack>
             {guesses.map((guess, guessIndex) => (
               <Stack key={guessIndex} direction="row">
-                <PinInput
-                  type="alphanumeric"
-                  onChange={onGuessChange(guessIndex)}
-                  value={guess}
-                  variant="outline"
-                >
+                <Stack direction="row" alignItems="center">
                   {colors[guessIndex].map((color, colorIndex) => (
-                    <PinInputField
+                    <Square
                       key={colorIndex}
-                      autoCapitalize="off"
-                      autoComplete="off"
-                      autoCorrect="off"
-                      fontWeight="bold"
-                      background={getBgColor(color)}
-                      color={getFgColor(color)}
-                      _hover={{}}
-                      _focusVisible={{ caretColor: getFgColor(color) }}
-                      _placeholder={{ color: getFgColor(color), opacity: 0.8 }}
+                      bg={getBgColor(color)}
+                      size="20px"
                     />
                   ))}
-                </PinInput>
+                </Stack>
+
+                <Input
+                  onChange={onGuessChange(guessIndex)}
+                  value={guess}
+                  placeholder={`Enter guess ${guessIndex + 1}`}
+                />
               </Stack>
             ))}
           </Stack>
