@@ -19,7 +19,7 @@ import path from "path";
 import { Stage } from "../types";
 
 export interface CognitoConstructProps {
-  cloudWatchAlarmTopic: ITopic;
+  cloudWatchAlarmTopic: ITopic | null;
   stage: Stage;
   usersTable: Table;
 }
@@ -41,7 +41,7 @@ export class CognitoConstruct extends Construct {
       queueName: `wordle-friends-post-confirmation-dlq-${stage}`,
       encryption: QueueEncryption.KMS_MANAGED,
     });
-    postConfirmationDLQ
+    const dlqAlarm = postConfirmationDLQ
       .metricApproximateNumberOfMessagesVisible()
       .createAlarm(this, "PostConfirmationDLQVisibleMessagesAlarm", {
         threshold: 1,
@@ -49,8 +49,11 @@ export class CognitoConstruct extends Construct {
         alarmName: `Post Confirmation DLQ Alarm ${stage
           .charAt(0)
           .toUpperCase()}${stage.slice(1)}`,
-      })
-      .addAlarmAction(new SnsAction(cloudWatchAlarmTopic));
+      });
+
+    if (cloudWatchAlarmTopic) {
+      dlqAlarm.addAlarmAction(new SnsAction(cloudWatchAlarmTopic));
+    }
 
     const postConfirmationHandler = new Function(
       this,

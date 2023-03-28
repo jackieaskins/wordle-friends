@@ -22,7 +22,7 @@ import { CommentsTableIndex, FriendsTableIndex, Stage } from "../types";
 import { generateTemplateText } from "../utils";
 
 export interface NotificationsConstructProps {
-  cloudWatchAlarmTopic: ITopic;
+  cloudWatchAlarmTopic: ITopic | null;
   commentsTable: Table;
   friendsTable: Table;
   postsTable: Table;
@@ -51,7 +51,7 @@ export class NotificationsConstruct extends Construct {
       queueName: `wordle-friends-notifications-dlq-${stage}`,
       encryption: QueueEncryption.KMS_MANAGED,
     });
-    notificationsDLQ
+    const dlqAlarm = notificationsDLQ
       .metricApproximateNumberOfMessagesVisible()
       .createAlarm(this, "NotificationsDLQVisibleMessagesAlarm", {
         threshold: 1,
@@ -59,8 +59,11 @@ export class NotificationsConstruct extends Construct {
         alarmName: `Notifications DLQ Alarm ${stage
           .charAt(0)
           .toUpperCase()}${stage.slice(1)}`,
-      })
-      .addAlarmAction(new SnsAction(cloudWatchAlarmTopic));
+      });
+
+    if (cloudWatchAlarmTopic) {
+      dlqAlarm.addAlarmAction(new SnsAction(cloudWatchAlarmTopic));
+    }
 
     const friendPostTemplateName = `friend-post-template-${stage}`;
     new CfnTemplate(this, "FriendPostEmailTemplate", {

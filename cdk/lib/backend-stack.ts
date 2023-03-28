@@ -9,6 +9,7 @@ import {
 } from "@aws-cdk/aws-appsync-alpha";
 import { Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Topic } from "aws-cdk-lib/aws-sns";
 import { Construct } from "constructs";
 import path from "path";
 import { CognitoConstruct } from "./constructs/cognito-construct";
@@ -16,7 +17,6 @@ import { DynamoConstruct } from "./constructs/dynamo-construct";
 import { NotificationsConstruct } from "./constructs/notifications-construct";
 import { RemindersConstruct } from "./constructs/reminders-construct";
 import { CommentsTableIndex, FriendsTableIndex, Stage } from "./types";
-import { getCloudWatchAlarmTopic } from "./utils";
 import { getUserRequest } from "./vtl";
 
 interface BackendStackProps extends StackProps {
@@ -56,10 +56,14 @@ export class BackendStack extends Stack {
 
     const { stage } = props;
 
-    const cloudWatchAlarmTopic = getCloudWatchAlarmTopic(
-      this,
-      "CloudWatchAlarmTopic"
-    );
+    const cloudWatchAlarmTopicArn = process.env.CLOUD_WATCH_ALARM_TOPIC_ARN;
+    const cloudWatchAlarmTopic = cloudWatchAlarmTopicArn
+      ? Topic.fromTopicArn(
+          this,
+          "CloudWatchAlarmTopic",
+          cloudWatchAlarmTopicArn
+        )
+      : null;
 
     const {
       commentsTable,
