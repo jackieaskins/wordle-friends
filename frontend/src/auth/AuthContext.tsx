@@ -15,6 +15,7 @@ export type ModifiableUserAttributes = {
   ["custom:notifyOnFriendPost"]?: string;
   ["custom:notifyOnPostComment"]?: string;
   ["custom:notifyOnCommentReply"]?: string;
+  ["custom:timezone"]?: string;
 };
 type UserAttributes = ModifiableUserAttributes & {
   email: string;
@@ -31,6 +32,7 @@ export type UserInfo = {
   notifyOnFriendPost?: boolean;
   notifyOnPostComment?: boolean;
   notifyOnCommentReply?: boolean;
+  timezone?: string;
   rawAttributes: UserAttributes;
 };
 type UserInfoState = {
@@ -80,6 +82,7 @@ function userInfoReducer(
           ["custom:notifyOnFriendPost"]: notifyOnFriendPost,
           ["custom:notifyOnPostComment"]: notifyOnPostComment,
           ["custom:notifyOnCommentReply"]: notifyOnCommentReply,
+          ["custom:timezone"]: timezone,
         } = userAttributes;
         return {
           isLoading: false,
@@ -92,6 +95,7 @@ function userInfoReducer(
             notifyOnFriendPost: convertBoolString(notifyOnFriendPost),
             notifyOnPostComment: convertBoolString(notifyOnPostComment),
             notifyOnCommentReply: convertBoolString(notifyOnCommentReply),
+            timezone,
             rawAttributes: userAttributes,
           },
         };

@@ -14,6 +14,7 @@ import { ModifiableUserAttributes, useAuth } from "../auth/AuthContext";
 import { useCurrentUser } from "../auth/CurrentUserContext";
 import NotificationFields from "./fields/NotificationFields";
 import ShowSquaresField from "./fields/ShowSquaresField";
+import TimezoneSelectField from "./fields/TimezoneSelectField";
 
 export default function Preferences(): JSX.Element {
   const toast = useToast();
@@ -30,7 +31,10 @@ export default function Preferences(): JSX.Element {
     handleSubmit,
     formState: { isDirty, isSubmitting },
     reset,
+    getValues,
   } = formProps;
+
+  console.log(getValues());
 
   const onSubmit = useCallback(
     async (values: Partial<ModifiableUserAttributes>) => {
@@ -56,7 +60,12 @@ export default function Preferences(): JSX.Element {
       {
         key: "general",
         headingText: "General",
-        content: <ShowSquaresField />,
+        content: (
+          <Stack spacing={4}>
+            <TimezoneSelectField />
+            <ShowSquaresField />
+          </Stack>
+        ),
       },
       {
         key: "notifications",
