@@ -12,6 +12,7 @@ export function generateEvent<T, S = Record<string, any> | null>(
     stash: {},
     request: {
       headers: { authorization: AUTHORIZATION },
+      domainName: null,
     },
     source,
     info: {
