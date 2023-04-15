@@ -20,22 +20,25 @@ export class FrontendStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const hostedZone = HostedZone.fromLookup(this, "HostedZone", {
-      domainName: DOMAIN_NAME,
-    });
-    const certificate = new DnsValidatedCertificate(this, "SiteCertificate", {
-      domainName: DOMAIN_NAME,
-      hostedZone,
-      region: "us-east-1",
-    });
-    const viewerCertificate = ViewerCertificate.fromAcmCertificate(
-      certificate,
-      {
-        sslMethod: SSLMethod.SNI,
-        securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2018,
-        aliases: [DOMAIN_NAME],
-      }
-    );
+    const hostedZone = DOMAIN_NAME
+      ? HostedZone.fromLookup(this, "HostedZone", { domainName: DOMAIN_NAME })
+      : undefined;
+    const certificate =
+      DOMAIN_NAME && hostedZone
+        ? new DnsValidatedCertificate(this, "SiteCertificate", {
+            domainName: DOMAIN_NAME,
+            hostedZone,
+            region: "us-east-1",
+          })
+        : undefined;
+    const viewerCertificate =
+      DOMAIN_NAME && certificate
+        ? ViewerCertificate.fromAcmCertificate(certificate, {
+            sslMethod: SSLMethod.SNI,
+            securityPolicy: SecurityPolicyProtocol.TLS_V1_2_2018,
+            aliases: [DOMAIN_NAME],
+          })
+        : undefined;
 
     const originAccessIdentity = new OriginAccessIdentity(
       this,
@@ -80,11 +83,13 @@ export class FrontendStack extends Stack {
       }
     );
 
-    new ARecord(this, "SiteARecord", {
-      recordName: DOMAIN_NAME,
-      target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
-      zone: hostedZone,
-    });
+    if (hostedZone) {
+      new ARecord(this, "SiteARecord", {
+        recordName: DOMAIN_NAME,
+        target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+        zone: hostedZone,
+      });
+    }
 
     new BucketDeployment(this, "AssetsBucketDeployment", {
       destinationBucket: assetsBucket,
@@ -93,6 +98,8 @@ export class FrontendStack extends Stack {
       sources: [Source.asset(path.join(__dirname, "../../frontend/build"))],
     });
 
-    new CfnOutput(this, "DomainName", { value: `https://${DOMAIN_NAME}` });
+    new CfnOutput(this, "DomainName", {
+      value: `https://${DOMAIN_NAME ?? distribution.distributionDomainName}`,
+    });
   }
 }

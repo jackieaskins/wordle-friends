@@ -23,3 +23,5 @@ export const REMINDER_TEMPLATE_NAME = process.env
   .REMINDER_TEMPLATE_NAME as string;
 
 export const USER_POOL_ID = process.env.USER_POOL_ID as string;
+
+export const FROM_EMAIL_ADDRESS = process.env.FROM_EMAIL_ADDRESS as string;

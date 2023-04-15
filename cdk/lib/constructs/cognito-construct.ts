@@ -66,7 +66,7 @@ export class CognitoConstruct extends Construct {
         deadLetterQueue: postConfirmationDLQ,
         functionName: `wordle-friends-post-confirmation-${stage}`,
         handler: "index.handler",
-        runtime: Runtime.NODEJS_16_X,
+        runtime: Runtime.NODEJS_18_X,
         timeout: Duration.seconds(30),
         environment: {
           USERS_TABLE: usersTable.tableName,

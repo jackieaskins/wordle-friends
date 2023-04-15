@@ -6,6 +6,10 @@ import {
 import { mockClient } from "aws-sdk-client-mock";
 import { sendBulkEmail, sendTemplatedEmail } from "./ses";
 
+jest.mock("../constants", () => ({
+  FROM_EMAIL_ADDRESS: "no-reply@example.com",
+}));
+
 const TEMPLATE = "templateName";
 const EMAIL = "email";
 const DEFAULT_DATA = { firstName: "Default", puzzleDate: "default" };
@@ -31,8 +35,7 @@ describe("ses", () => {
 
       expect(
         sesClient.commandCalls(SendBulkTemplatedEmailCommand, {
-          Source:
-            "Wordle with Friends <no-reply@wordle-friends.jackieaskins.com>",
+          Source: "Wordle with Friends <no-reply@example.com>",
           Template: TEMPLATE,
           DefaultTemplateData: JSON.stringify(DEFAULT_DATA),
           Destinations: [
@@ -69,8 +72,7 @@ describe("ses", () => {
 
       expect(
         sesClient.commandCalls(SendTemplatedEmailCommand, {
-          Source:
-            "Wordle with Friends <no-reply@wordle-friends.jackieaskins.com>",
+          Source: "Wordle with Friends <no-reply@example.com>",
           Template: TEMPLATE,
           TemplateData: JSON.stringify(REPLACEMENT_DATA),
           Destination: { ToAddresses: [EMAIL] },

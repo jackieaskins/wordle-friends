@@ -1,7 +1,9 @@
 import { DOMAIN_NAME } from "./constants";
 
 export function generateTemplateText(body: string[]): string {
-  const siteUrl = `https://${DOMAIN_NAME}`;
+  const siteUrl = DOMAIN_NAME
+    ? `https://${DOMAIN_NAME}`
+    : "http://localhost:8080";
 
   return [
     "Hi {{firstName}},",

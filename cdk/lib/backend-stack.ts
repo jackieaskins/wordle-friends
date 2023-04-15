@@ -110,7 +110,7 @@ export class BackendStack extends Stack {
       code: Code.fromAsset(path.join(__dirname, "../../lambdas/dist/api")),
       functionName: `wordle-friends-api-${stage}`,
       handler: "index.handler",
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       timeout: Duration.seconds(15),
       environment: {
         COMMENTS_TABLE: commentsTable.tableName,

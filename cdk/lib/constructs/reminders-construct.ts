@@ -6,6 +6,7 @@ import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { CfnTemplate } from "aws-cdk-lib/aws-ses";
 import { Construct } from "constructs";
 import path from "path";
+import { FROM_EMAIL_ADDRESS } from "../constants";
 import { getSESPolicyStatement, getUserPoolPolicyStatement } from "../policies";
 import { Stage } from "../types";
 import { generateTemplateText } from "../utils";
@@ -41,7 +42,7 @@ export class RemindersConstruct extends Construct {
 
     const remindersHandler = new Function(this, "RemindersHandler", {
       functionName: `wordle-friends-reminders-${stage}`,
-      runtime: Runtime.NODEJS_16_X,
+      runtime: Runtime.NODEJS_18_X,
       code: Code.fromAsset(
         path.join(__dirname, "../../../lambdas/dist/reminders")
       ),
@@ -51,12 +52,13 @@ export class RemindersConstruct extends Construct {
         POSTS_TABLE: postsTable.tableName,
         USER_POOL_ID: userPool.userPoolId,
         REMINDER_TEMPLATE_NAME: reminderTemplateName,
+        FROM_EMAIL_ADDRESS,
       },
     });
 
     remindersHandler.addToRolePolicy(getUserPoolPolicyStatement(userPool));
     remindersHandler.addToRolePolicy(
-      getSESPolicyStatement(userPool, ["ses:SendTemplatedEmail"])
+      getSESPolicyStatement(this, ["ses:SendTemplatedEmail"])
     );
 
     postsTable.grantReadData(remindersHandler);

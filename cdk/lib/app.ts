@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import * as cdk from "aws-cdk-lib";
 import * as dotenv from "dotenv";
+dotenv.config();
+
+import * as cdk from "aws-cdk-lib";
 import { BackendStack } from "./backend-stack";
 import { FrontendStack } from "./frontend-stack";
-
-dotenv.config();
 
 const env = {
   account: process.env.CDK_DEFAULT_ACCOUNT,

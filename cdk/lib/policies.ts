@@ -2,7 +2,7 @@ import { Arn, Stack } from "aws-cdk-lib";
 import { UserPool } from "aws-cdk-lib/aws-cognito";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Construct } from "constructs";
-import { DOMAIN_NAME } from "./constants";
+import { SES_VERIFIED_IDENTITY } from "./constants";
 
 export function getUserPoolPolicyStatement(
   userPool: UserPool
@@ -23,12 +23,12 @@ export function getSESPolicyStatement(
     actions,
     resources: [
       Arn.format({
-        service: "ses",
-        resource: "identity",
-        resourceName: DOMAIN_NAME,
         partition: Stack.of(scope).partition,
         region: Stack.of(scope).region,
         account: Stack.of(scope).account,
+        service: "ses",
+        resource: "identity",
+        resourceName: SES_VERIFIED_IDENTITY,
       }),
     ],
   });
