@@ -6,7 +6,7 @@ import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { CfnTemplate } from "aws-cdk-lib/aws-ses";
 import { Construct } from "constructs";
 import path from "path";
-import { FROM_EMAIL_ADDRESS } from "../constants";
+import { FROM_EMAIL_ADDRESS, SITE_NAME } from "../constants";
 import { getSESPolicyStatement, getUserPoolPolicyStatement } from "../policies";
 import { Stage } from "../types";
 import { generateTemplateText } from "../utils";
@@ -53,6 +53,7 @@ export class RemindersConstruct extends Construct {
         USER_POOL_ID: userPool.userPoolId,
         REMINDER_TEMPLATE_NAME: reminderTemplateName,
         FROM_EMAIL_ADDRESS,
+        SITE_NAME,
       },
     });
 

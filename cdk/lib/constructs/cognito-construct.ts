@@ -7,6 +7,7 @@ import {
   CfnIdentityPoolRoleAttachment,
   StringAttribute,
   UserPool,
+  UserPoolEmail,
   VerificationEmailStyle,
 } from "aws-cdk-lib/aws-cognito";
 import { Table } from "aws-cdk-lib/aws-dynamodb";
@@ -16,6 +17,11 @@ import { ITopic } from "aws-cdk-lib/aws-sns";
 import { Queue, QueueEncryption } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 import path from "path";
+import {
+  FROM_EMAIL_ADDRESS,
+  SES_VERIFIED_IDENTITY,
+  SITE_NAME,
+} from "../constants";
 import { Stage } from "../types";
 
 export interface CognitoConstructProps {
@@ -24,8 +30,7 @@ export interface CognitoConstructProps {
   usersTable: Table;
 }
 
-const VERIFICATION_MESSAGE =
-  "Thanks for signing up for Wordle with Friends! Your verification code is {####}";
+const VERIFICATION_MESSAGE = `Thanks for signing up for ${SITE_NAME}! Your verification code is {####}`;
 
 export class CognitoConstruct extends Construct {
   userPool: UserPool;
@@ -79,11 +84,18 @@ export class CognitoConstruct extends Construct {
       userPoolName: `wordle-friends-userpool-${stage}`,
       selfSignUpEnabled: true,
       userVerification: {
-        emailSubject: "Verify your email for Wordle with Friends",
+        emailSubject: `Verify your email for ${SITE_NAME}`,
         emailBody: VERIFICATION_MESSAGE,
         emailStyle: VerificationEmailStyle.CODE,
         smsMessage: VERIFICATION_MESSAGE,
       },
+      email: UserPoolEmail.withSES({
+        fromEmail: FROM_EMAIL_ADDRESS,
+        fromName: SITE_NAME,
+        sesVerifiedDomain: SES_VERIFIED_IDENTITY.includes("@")
+          ? undefined
+          : SES_VERIFIED_IDENTITY,
+      }),
       signInAliases: { email: true },
       autoVerify: { email: true },
       accountRecovery: AccountRecovery.EMAIL_ONLY,

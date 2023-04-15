@@ -3,7 +3,7 @@ import {
   SendTemplatedEmailCommand,
   SESClient,
 } from "@aws-sdk/client-ses";
-import { FROM_EMAIL_ADDRESS, REGION } from "../constants";
+import { FROM_EMAIL_ADDRESS, REGION, SITE_NAME } from "../constants";
 
 export type BaseTemplateData = {
   firstName: string;
@@ -15,7 +15,7 @@ type BulkEmailDestination<T> = {
 };
 
 const CHUNK_SIZE = 50;
-const FROM_ADDRESS = `Wordle with Friends <${FROM_EMAIL_ADDRESS}>`;
+const FROM_ADDRESS = `${SITE_NAME} <${FROM_EMAIL_ADDRESS}>`;
 
 const client = new SESClient({ region: REGION });
 

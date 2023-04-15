@@ -1,4 +1,4 @@
-import { DOMAIN_NAME } from "./constants";
+import { DOMAIN_NAME, SITE_NAME } from "./constants";
 
 export function generateTemplateText(body: string[]): string {
   const siteUrl = DOMAIN_NAME
@@ -8,7 +8,7 @@ export function generateTemplateText(body: string[]): string {
   return [
     "Hi {{firstName}},",
     ...body,
-    `Visit Wordle with Friends: ${siteUrl}?date={{puzzleDate}}`,
+    `Visit ${SITE_NAME}: ${siteUrl}?date={{puzzleDate}}`,
     `To update subscription preferences: ${siteUrl}/preferences`,
   ].join("\r\n\r\n");
 }

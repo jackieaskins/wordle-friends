@@ -17,7 +17,7 @@ import { ITopic } from "aws-cdk-lib/aws-sns";
 import { Queue, QueueEncryption } from "aws-cdk-lib/aws-sqs";
 import { Construct } from "constructs";
 import path from "path";
-import { FROM_EMAIL_ADDRESS } from "../constants";
+import { FROM_EMAIL_ADDRESS, SITE_NAME } from "../constants";
 import { getSESPolicyStatement, getUserPoolPolicyStatement } from "../policies";
 import { CommentsTableIndex, FriendsTableIndex, Stage } from "../types";
 import { generateTemplateText } from "../utils";
@@ -113,6 +113,8 @@ export class NotificationsConstruct extends Construct {
       handler: "index.handler",
       timeout: Duration.minutes(5),
       environment: {
+        FROM_EMAIL_ADDRESS,
+        SITE_NAME,
         // Table names
         COMMENTS_TABLE: commentsTable.tableName,
         FRIENDS_TABLE: friendsTable.tableName,
@@ -130,8 +132,6 @@ export class NotificationsConstruct extends Construct {
         POST_COMMENT_TEMPLATE_NAME: postCommentTemplateName,
         // User pool
         USER_POOL_ID: userPool.userPoolId,
-        // Email address
-        FROM_EMAIL_ADDRESS,
       },
       retryAttempts: 0,
       deadLetterQueueEnabled: true,

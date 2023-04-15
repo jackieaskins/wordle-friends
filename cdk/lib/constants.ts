@@ -13,3 +13,5 @@ export const SES_VERIFIED_IDENTITY = getRequiredEnvVariable(
   "SES_VERIFIED_IDENTITY"
 );
 export const FROM_EMAIL_ADDRESS = getRequiredEnvVariable("FROM_EMAIL_ADDRESS");
+
+export const SITE_NAME = "Wordle with Friends";

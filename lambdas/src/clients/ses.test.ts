@@ -8,6 +8,7 @@ import { sendBulkEmail, sendTemplatedEmail } from "./ses";
 
 jest.mock("../constants", () => ({
   FROM_EMAIL_ADDRESS: "no-reply@example.com",
+  SITE_NAME: "Site name",
 }));
 
 const TEMPLATE = "templateName";
@@ -35,7 +36,7 @@ describe("ses", () => {
 
       expect(
         sesClient.commandCalls(SendBulkTemplatedEmailCommand, {
-          Source: "Wordle with Friends <no-reply@example.com>",
+          Source: "Site name <no-reply@example.com>",
           Template: TEMPLATE,
           DefaultTemplateData: JSON.stringify(DEFAULT_DATA),
           Destinations: [
@@ -72,7 +73,7 @@ describe("ses", () => {
 
       expect(
         sesClient.commandCalls(SendTemplatedEmailCommand, {
-          Source: "Wordle with Friends <no-reply@example.com>",
+          Source: "Site name <no-reply@example.com>",
           Template: TEMPLATE,
           TemplateData: JSON.stringify(REPLACEMENT_DATA),
           Destination: { ToAddresses: [EMAIL] },
