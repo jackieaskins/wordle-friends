@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build -ws --if-present",
     "build:backend": "npm run build -w graphql -w lambdas -w cdk",
     "cdk": "npm run cdk -w cdk",
     "check-types": "npm run check-types -ws --if-present",

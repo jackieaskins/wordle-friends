@@ -7,7 +7,7 @@ import {
   MappingTemplate,
   Schema,
 } from "@aws-cdk/aws-appsync-alpha";
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Code, Function, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { Construct } from "constructs";
@@ -150,5 +150,7 @@ export class BackendStack extends Stack {
         apiLambdaDS.createResolver({ typeName, fieldName });
       });
     });
+
+    new CfnOutput(this, "GraphqlUrl", { value: api.graphqlUrl });
   }
 }

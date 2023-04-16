@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-appsync-alpha": "^2.40.0-alpha.0",
-    "aws-cdk-lib": "^2.70.0"
+    "aws-cdk-lib": "^2.70.0",
+    "aws-crt": "^1.15.15"
   }
 }
